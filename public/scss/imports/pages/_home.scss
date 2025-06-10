@@ -188,3 +188,48 @@
         }
     }
 }
+
+@include xs {
+    .homepage {
+        .hero-banner {
+            height: 60dvh !important;
+
+            .container-fluid {
+                padding: unset;
+            }
+
+            .banner-image {
+                height: 60dvh !important;
+            }
+        }
+
+        .product-recommendations {
+            .recommendation-grid {
+                grid-template-columns: repeat(2, 1fr);
+
+                .grid-item {
+                    height: 300px;
+
+                    &.large {
+                        max-height: 500px;
+                        height: 100%;
+                        grid-column: span 2;
+                        grid-row: unset;
+                    }
+
+                    &:nth-child(n+2) {
+                        .product-card {
+                            .card-content {
+                                a {
+                                    padding: unset;
+                                    width: auto;
+                                    padding: 0px 4px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

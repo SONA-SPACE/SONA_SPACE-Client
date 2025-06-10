@@ -1,9 +1,11 @@
+import React from 'react';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import InteriorDesign from "../../components/InteriorDesign";
-import CategorySlider from "../../components/CategorySlider";
 import ProductSlider from "../../components/ProductSlider";
 import GetInTouch from "../../components/GetInTouch";
+import PopularCategory from "../../components/PopularCategory";
+import CategoryList from '../../components/CategoryList';
 
 const HomePage = () => {
   return (
@@ -15,6 +17,23 @@ const HomePage = () => {
           <div className="container-fluid">
             <div className="banner-image">
               <img src="/images/hero-banner.png" alt="SONA Space Interior" />
+            </div>
+          </div>
+        </section>
+
+        {/* Popular Categories - Hiển thị các danh mục phổ biến */}
+        <PopularCategory />
+
+        {/* All Categories - Hiển thị tất cả danh mục */}
+        <section className="all-categories-section">
+          <div className="container">
+            <h2 className="section-title">Tất cả danh mục sản phẩm</h2>
+            <CategoryList limit={6} showProductCount={true} />
+            <div className="view-all-categories">
+              <a href="/san-pham" className="btn btn-outline">
+                Xem tất cả danh mục
+                <img src="/images/icons/arrow-right-1.svg" alt="" />
+              </a>
             </div>
           </div>
         </section>
@@ -70,15 +89,6 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Product Categories */}
-        <section className="product-categories">
-          <div className="container">
-            <h2 className="section-title">Danh Mục Sản Phẩm</h2>
-
-            <CategorySlider />
           </div>
         </section>
 

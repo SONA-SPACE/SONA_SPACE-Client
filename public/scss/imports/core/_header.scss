@@ -464,3 +464,13 @@
         }
     }
 }
+
+@include mdX{
+    .header{
+        &-wrapper{
+            .main-nav{
+                display: none;
+            }
+        }
+    }
+}

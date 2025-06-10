@@ -25,6 +25,8 @@ import News from './pages/News'
 import NewsDetail from './pages/NewsDetail'
 import NotFoundPage from './pages/404'
 import '../public/fonts/stylesheet.css'
+import TestPage from './pages/TestPage'
+
 function App() {
   return (
     <BrowserRouter>
@@ -51,6 +53,7 @@ function App() {
         <Route path="/chinh-sach-bao-mat" element={<Policy />} />
         <Route path="/tin-tuc" element={<News />} />
         <Route path="/tin-tuc/:slug" element={<NewsDetail />} />
+        <Route path="/test" element={<TestPage />} />
         {/* Catch-all route for 404 errors */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
