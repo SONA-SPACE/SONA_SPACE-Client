@@ -37,6 +37,23 @@ function assertVercelRewrite() {
   pass('vercel.json has SPA fallback rewrite')
 }
 
+function assertVercelHtmlCacheHeader() {
+  const filePath = path.join(rootDir, 'vercel.json')
+  if (!fs.existsSync(filePath)) return
+
+  const config = readJson(filePath)
+  const headers = Array.isArray(config.headers) ? config.headers : []
+  const htmlHeader = headers.find((entry) => entry.source === '/((?!assets/).*)')
+  const cacheControl = htmlHeader?.headers?.find((header) => header.key.toLowerCase() === 'cache-control')
+
+  if (!cacheControl?.value.includes('no-cache')) {
+    fail('vercel.json must set no-cache Cache-Control for non-asset HTML routes')
+    return
+  }
+
+  pass('vercel.json prevents stale HTML shell caching')
+}
+
 function assertRouterContract() {
   const appPath = path.join(rootDir, 'src', 'App.tsx')
   const source = fs.readFileSync(appPath, 'utf8')
@@ -103,6 +120,7 @@ function assertNoRcVendorSplit() {
 }
 
 assertVercelRewrite()
+assertVercelHtmlCacheHeader()
 assertRouterContract()
 assertBuiltAssets()
 assertNoRcVendorSplit()

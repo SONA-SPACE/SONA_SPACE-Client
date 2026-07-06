@@ -150,6 +150,7 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
 
 - Added `vercel.json` in the client root with:
   - `rewrites: [{ "source": "/(.*)", "destination": "/index.html" }]`;
+  - `Cache-Control: no-cache, no-store, must-revalidate` for non-asset HTML routes;
   - immutable cache headers for `/assets/(.*)`.
 - Added `scripts/qa-spa-routing-contract.js`.
 - Added `npm run qa:spa-routing`.
@@ -161,6 +162,7 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
 - `npm run build` passed.
 - `npm run qa:spa-routing` passed:
   - Vercel SPA fallback rewrite exists;
+  - Vercel prevents stale HTML shell caching;
   - `BrowserRouter` and app-level `path="*"` route exist;
   - `dist/index.html` references existing built assets.
   - no standalone `vendor-rc` chunk exists.
