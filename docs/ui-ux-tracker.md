@@ -31,6 +31,7 @@
 | Sprint 2 | Loading skeleton + empty/error state | skeleton system dùng chung, retry state rõ ràng | `Review` |
 | Sprint 3 | Commerce, account, content UX hardening | checkout/account/wishlist/banner UX nhất quán | `In Progress` |
 | Sprint 4 | Performance, accessibility, release readiness | code split, smoke checklist, release baseline | `In Progress` |
+| Sprint 5 | Staging SPA 404 hardening | Vercel SPA fallback, base-path contract, deep-link verification | `In Progress` |
 
 ## 3. Sprint Checklist
 
@@ -63,10 +64,20 @@
 ### Sprint 4
 
 - [x] Code split các route nặng.
-- [ ] Giảm bundle, dọn font và asset không cần thiết.
+- [x] Giảm bundle, dọn font và asset không cần thiết.
 - [ ] Xử lý cảnh báo Sass deprecated và asset unresolved.
 - [ ] Chạy pass accessibility cơ bản.
 - [ ] Hoàn tất QA matrix và release checklist.
+
+### Sprint 5
+
+- [ ] Xác định các URL staging bị host-level 404.
+- [ ] Xác nhận Vercel project root, output directory, và app mount path.
+- [x] Thêm SPA rewrite về `index.html` tại deployment root.
+- [ ] Đồng bộ Vite `base` và React Router `basename` nếu staging dùng subpath.
+- [x] Kiểm tra deep-link refresh/direct access cho các route chính ở local preview.
+- [x] Kiểm tra asset build không bị rewrite nhầm thành HTML ở local preview.
+- [ ] Ghi evidence staging curl/browser smoke vào sprint doc.
 
 ## 4. Module Tracker
 
@@ -80,7 +91,8 @@
 | Commerce | `src/pages/CartPage/index.tsx`, `src/pages/Payment/index.tsx`, `src/pages/OrderComplete/index.tsx` | `Review` | 2026-06-28 | Cart/Payment loading/empty/error states migrated; Cart micro UX now has pending states, delete-all modal, promo/stock helper feedback; Payment checkout CTA is a semantic button with loading/disabled guard |
 | Auth/Account | `src/contexts/AuthContext.tsx`, `src/services/loginService.ts`, `src/pages/User/index.tsx`, `src/pages/DetailOrder/index.tsx` | `Review` | 2026-06-28 | Auth token/user reads are centralized; account order loading/empty/error states migrated; DetailOrder now has skeleton/retry error state and no debug/test toast on order detail load/cancel product |
 | Wishlist/Content | `src/pages/Wishlist/index.tsx`, `src/components/Wishlist/WishlistSidebar.tsx`, `src/components/MiniNotify/index.tsx`, `src/components/BannerSlider/index.tsx`, `src/api/banner.ts`, `src/pages/News/index.tsx`, `src/pages/NewsDetail/index.tsx`, `src/components/CategoryNews/index.tsx`, `src/components/RecentPosts/index.tsx` | `Review` | 2026-06-29 | Wishlist guest/auth empty states and sidebar pending UX are aligned; MiniNotify has loading/error/empty state, semantic internal/external links, button delete, and pending guards; BannerSlider loading skeleton/fallback migrated; News/NewsDetail/category/recent-post blocks now use skeleton, retry, and empty states with sidebar consistency |
-| QA/Performance | `vite.config.ts`, `public/scss/*`, toàn app | `In Progress` | 2026-06-29 | Build pass; unresolved arrow asset warning đã được gỡ, route-level lazy load đã thêm trong `App.tsx`, `vendor` chunk giữ ở ~261.88 kB, và chunk `antd` đã được tách nhỏ để chunk lớn nhất còn ~450.70 kB; warning chính còn lại là Sass `@import` |
+| QA/Performance | `vite.config.ts`, `public/scss/*`, toàn app | `In Progress` | 2026-07-06 | Build pass with no chunk-size warning; `ChatBot`/`PopupAd` are lazy-mounted, vendor chunks are split by React/AntD/rc/socket/markdown/HTTP/Swiper, largest JS chunk is ~441.60 kB, CSS is ~380.17 kB, and font output is reduced to 11 WOFF2 files totaling ~803.28 kB; remaining warning class is Sass `@import` |
+| Deployment Routing | `vercel.json`, `scripts/qa-spa-routing-contract.js`, `src/App.tsx` | `In Progress` | 2026-07-07 | Vercel SPA fallback was added so `/(.*)` rewrites to `/index.html`; `npm run build`, `npm run qa:spa-routing`, and local preview deep-link checks passed. Staging deploy verification is still pending. |
 
 ## 5. Execution Log
 
@@ -108,6 +120,7 @@
 | 2026-06-29 | AI Agent | Sprint 4 - Antd chunk split follow-up | Removed `antd` usage from `User`, replaced `CategorySlider` skeleton dependency, lazy-mounted order modals, and split the `antd` ecosystem into `antd`, `antd-icons`, `antd-dialog`, `antd-forms`, and `antd-media` chunks | `npm run build` passed; no chunk remains above 500 kB, largest `antd` chunk dropped to ~450.70 kB, and `vendor` stayed ~261.88 kB | Continue with accessibility keyboard/focus pass and remaining Sass `@import` migration planning |
 | 2026-07-02 | AI Agent | Sprint 3 - Payment redirect/error hardening | Hardened checkout fallback when `/thanh-toan` is opened without `selectedItems`, added inline checkout error state, cleaned pending redirect data on failure/COD success, kept coupon state through external payment handoff, and made `PaymentResult` redirect failed/cancelled results back to checkout without a crash | `npm run build` passed; Browser desktop smoke rendered `/thanh-toan` retry state without framework overlay; Browser smoke for `/thanh-toan-result?resultCode=1` redirected to `/thanh-toan` and showed no `PaymentResult` errors; backend/chat was not running, so Header fetch errors remain unrelated environmental noise | Run backend-connected authenticated cart smoke for address modal, COD submit, and MoMo success redirect before closing the remaining Payment redirect QA row |
 | 2026-07-02 | AI Agent | Sprint 4 - Accessibility pass slice | Added Escape-to-close and accessible dialog labelling for mobile navigation, checkout address editing, and cart delete-all confirmation; decorative icons now use empty alt text when visible text/aria labels already describe the action; focus-visible styles were added for the touched controls | `npm run build` passed; remaining release-readiness warnings are Sass `@import` deprecations and a large JS chunk around 1,079.25 kB | Continue Sprint 4 with bundle/font import audit, then Sass `@import` migration planning |
+| 2026-07-06 | AI Agent | Sprint 4 - Bundle/font audit + import cleanup | Lazy-mounted global `ChatBot` and `PopupAd`, split vendor chunks in `vite.config.ts`, and reduced font-face declarations to referenced WOFF2 families only | `npm run build` passed with no chunk-size warning; browser smoke passed `/` and opening ChatBot on `127.0.0.1:5174` without console errors; full desktop/mobile QA playbook not run in this slice | Continue Sprint 4 with Sass `@import` migration planning, then run the full release QA matrix |
 
 ## 6. Blocker Log
 
@@ -119,7 +132,7 @@
 | C-004 | 2026-06-28 | UX State | Thiếu loading skeleton và nhiều màn hình chỉ có text loading/error; shared state system exists and Sprint 2 target surfaces are migrated with desktop/mobile smoke evidence | High | TBD | Sprint 2 | Review |
 | C-007 | 2026-06-28 | Header | Header category/room dropdown nested `<a>` fixed by moving dropdowns outside parent links; cart icon interactive nesting also fixed | Medium | AI Agent | Sprint 3 | Closed |
 | C-005 | 2026-06-28 | Banner Contract | Client previously ignored some banner fields; adapter now preserves server fields, UI usage still needs Sprint 3 review | Medium | TBD | Sprint 1-3 | Review |
-| C-006 | 2026-06-28 | Performance | Bundle JS/CSS vẫn lớn; Sass deprecated warnings đã giảm theo từng batch, unresolved arrow asset warning đã gỡ xong, nhưng còn dư ở `ChatWidget`, `emailVerified`, và toàn bộ kiến trúc `@import` cũ | Medium | TBD | Sprint 4 | Open |
+| C-006 | 2026-06-28 | Performance | Bundle chunk-size warning is closed after lazy-mounting global widgets, vendor chunking, and font-face cleanup; remaining build debt is the legacy Sass `@import` architecture and any follow-up visual regression from migrating it | Medium | TBD | Sprint 4 | Open |
 
 ## 7. Exit Checklist
 
@@ -129,6 +142,6 @@
 - [x] Màn hình quan trọng có skeleton, empty state, error state, retry UX rõ ràng.
 - [ ] Cart/checkout/account flow pass QA trên desktop + mobile.
 - [x] `npm run build` pass.
-- [ ] Có baseline performance được ghi lại.
+- [x] Có baseline performance được ghi lại.
 - [ ] QA matrix và blocker log được cập nhật đầy đủ.
-- [ ] Docs sprint và handoff được cập nhật tới trạng thái cuối.
+- [x] Docs sprint và handoff được cập nhật tới trạng thái cuối.

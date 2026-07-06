@@ -28,6 +28,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "qa:spa-routing": "node scripts/qa-spa-routing-contract.js"
   }
 }

@@ -52,6 +52,16 @@ Cập nhật sau build ngày `2026-06-29`:
 - Cảnh báo asset `arrow-down*.svg` unresolved đã được xử lý xong.
 - Cảnh báo còn lại tập trung ở Sass `@import` deprecated.
 
+Update after build on `2026-07-06`:
+
+- Pre-work regression snapshot showed the entry JS chunk had grown again to `1079.55 kB` gzip `311.14 kB`.
+- `ChatBot` and `PopupAd` are now lazy-mounted from `src/main.tsx`, so chat/socket/markdown and popup/swiper are no longer in the initial entry path.
+- `vite.config.ts` now splits React, Ant Design, rc, HTTP, socket, markdown, Swiper, and residual vendor chunks.
+- Largest JS chunk is now `vendor-react-BfwqDmAP.js` at `441.60 kB` gzip `135.01 kB`; no Vite chunk-size warning remains.
+- Main CSS is now `380.17 kB` gzip `44.70 kB`.
+- Font build output now emits `11` WOFF2 files, about `803.28 kB` total, instead of the previous broad WOFF/WOFF2 font set.
+- Remaining build debt is Sass `@import` deprecation; this needs a separate migration plan because `public/scss/style.scss` still imports the legacy Sass tree globally.
+
 ## 4. Work Checklist
 
 ### Route-Level Performance Audit
@@ -63,8 +73,8 @@ Cập nhật sau build ngày `2026-06-29`:
 ### Bundle and Asset Optimization
 
 - [x] Lazy load route nặng.
-- [ ] Rà font imports và asset duplication.
-- [ ] Giảm các import không cần render ban đầu.
+- [x] Rà font imports và asset duplication.
+- [x] Giảm các import không cần render ban đầu.
 
 ### CSS and Build Cleanup
 
@@ -80,9 +90,9 @@ Cập nhật sau build ngày `2026-06-29`:
 
 ### Release Gate
 
-- [ ] Chạy build final.
+- [x] Chạy build final.
 - [ ] Chạy QA flow chính theo playbook.
-- [ ] Cập nhật tracker, blocker, execution log, baseline mới.
+- [x] Cập nhật tracker, blocker, execution log, baseline mới.
 
 ## 5. QA Matrix
 
@@ -108,6 +118,7 @@ Cập nhật sau build ngày `2026-06-29`:
 | 2026-06-29 | Route splitting + chunk rebalance | Converted non-home routes in `src/App.tsx` to `React.lazy` with a shared loading fallback; updated `vite.config.ts` manual chunks to remove the empty `router` chunk, split toast feedback, and move `antd` ecosystem packages out of `vendor` | `npm run build` passed; `vendor` fell from ~551.20 kB to ~261.88 kB, `router` empty chunk disappeared, and `antd` became the main remaining heavy chunk at ~599.97 kB | Continue with targeted `antd` import audit, font cleanup, and accessibility pass |
 | 2026-06-29 | Antd chunk split follow-up | Removed `antd` usage from `src/pages/User/index.tsx`, replaced `CategorySlider` skeleton dependency, lazy-mounted order modals in `DetailOrder`/`User`, and split `antd` internals into forms/dialog/media/icons chunks | `npm run build` passed; no chunk remains above 500 kB, `antd` main chunk reduced to ~450.70 kB, and `vendor` stayed ~261.88 kB | Continue with keyboard/focus accessibility pass and Sass `@import` migration planning |
 | 2026-07-02 | Accessibility pass slice | Added Escape-to-close and dialog labelling for mobile menu, checkout address modal, and cart delete-all modal; normalized decorative icon alt text where text/aria labels already exist; added focus-visible styles for header controls, checkout modal controls, and cart confirm buttons | `npm run build` passed; remaining warnings are global Sass `@import` deprecations and a large JS chunk (`index-hxZPvHbb.js` ~1,079.25 kB, gzip ~311.04 kB) | Continue with bundle/font audit to explain the new large chunk, then migrate Sass `@import` or document release blocker |
+| 2026-07-06 | Bundle/font audit + initial import cleanup | Lazy-mounted global `ChatBot` and `PopupAd`, split vendor chunks in `vite.config.ts`, and reduced `public/fonts/stylesheet.css` to the font families actually referenced by current styles using WOFF2 only | `npm run build` passed with no chunk-size warning; largest JS chunk is `vendor-react-BfwqDmAP.js` ~441.60 kB gzip ~135.01 kB; main CSS is ~380.17 kB gzip ~44.70 kB; font assets are 11 WOFF2 files totaling ~803.28 kB; browser smoke passed `/` and opening ChatBot on `127.0.0.1:5174` with no console errors | Continue Sass `@import` module migration planning and full desktop/mobile QA playbook |
 
 ## 8. Exit Criteria
 

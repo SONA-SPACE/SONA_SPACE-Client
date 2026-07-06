@@ -29,6 +29,8 @@
   - cart, checkout, account, wishlist, content UX.
 - `docs/sprints/sprint-04-performance-accessibility-release-readiness.md`
   - performance, accessibility, regression và release readiness.
+- `docs/sprints/sprint-05-staging-spa-404-hardening.md`
+  - staging SPA fallback, Vercel rewrite, base path, and deep-link 404 verification.
 
 ## 3. Source of Truth cần đối chiếu
 
