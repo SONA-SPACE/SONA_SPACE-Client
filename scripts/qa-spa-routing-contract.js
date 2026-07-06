@@ -84,9 +84,28 @@ function assertBuiltAssets() {
   pass(`dist/index.html references ${assetRefs.length} existing built asset(s)`)
 }
 
+function assertNoRcVendorSplit() {
+  const assetsDir = path.join(rootDir, 'dist', 'assets')
+
+  if (!fs.existsSync(assetsDir)) {
+    fail('dist/assets is missing; run npm run build before qa:spa-routing')
+    return
+  }
+
+  const rcChunks = fs.readdirSync(assetsDir).filter((fileName) => /^vendor-rc-.*\.js$/.test(fileName))
+
+  if (rcChunks.length > 0) {
+    fail(`rc packages must not be split into a standalone vendor-rc chunk: ${rcChunks.join(', ')}`)
+    return
+  }
+
+  pass('rc packages are not split into a standalone vendor-rc chunk')
+}
+
 assertVercelRewrite()
 assertRouterContract()
 assertBuiltAssets()
+assertNoRcVendorSplit()
 
 if (process.exitCode) {
   process.exit(process.exitCode)

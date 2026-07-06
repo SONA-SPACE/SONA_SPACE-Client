@@ -14,11 +14,12 @@ export default defineConfig({
             return 'vendor-react'
           }
 
-          if (id.includes('rc-') || id.includes('@rc-component')) {
-            return 'vendor-rc'
-          }
-
-          if (id.includes('antd') || id.includes('@ant-design')) {
+          if (
+            id.includes('antd') ||
+            id.includes('@ant-design') ||
+            id.includes('rc-') ||
+            id.includes('@rc-component')
+          ) {
             return 'vendor-antd'
           }
 

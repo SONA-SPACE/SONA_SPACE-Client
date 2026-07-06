@@ -153,11 +153,17 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
   - immutable cache headers for `/assets/(.*)`.
 - Added `scripts/qa-spa-routing-contract.js`.
 - Added `npm run qa:spa-routing`.
+- Hotfix after staging runtime error:
+  - `vite.config.ts` no longer emits a standalone `vendor-rc` chunk.
+  - `rc-*` and `@rc-component` packages are bundled with `antd` / `@ant-design` in `vendor-antd`.
+  - Reason: splitting Ant Design's rc dependency graph into a separate production chunk can trigger minified TDZ runtime errors such as `Cannot access 'Xi' before initialization`.
+  - `scripts/qa-spa-routing-contract.js` now fails if a standalone `vendor-rc-*.js` chunk is emitted again.
 - `npm run build` passed.
 - `npm run qa:spa-routing` passed:
   - Vercel SPA fallback rewrite exists;
   - `BrowserRouter` and app-level `path="*"` route exist;
   - `dist/index.html` references existing built assets.
+  - no standalone `vendor-rc` chunk exists.
 - Local preview checks passed:
   - `/` -> `200 text/html`;
   - `/san-pham` -> `200 text/html`;
