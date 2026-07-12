@@ -59,6 +59,17 @@ interface OrderDetails {
   };
 }
 
+const firstImageUrl = (value: unknown): string => {
+  if (Array.isArray(value)) {
+    return String(value.find((image) => String(image || "").trim()) || "/images/default.jpg");
+  }
+
+  return String(value || "")
+    .split(",")
+    .map((image) => image.trim())
+    .find(Boolean) || "/images/default.jpg";
+};
+
 const DetailOrder: React.FC = () => {
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const [isOrderLoading, setIsOrderLoading] = useState(true);
@@ -105,7 +116,7 @@ const DetailOrder: React.FC = () => {
               order_item_id: p.id || p.item_id || p.order_item_id,
               product_id: p.product_id || p.id,
               name: p.product_name || p.name,
-              image: p.image || p.product_image || "/images/default.jpg",
+              image: firstImageUrl(p.image || p.product_image),
               price: p.price_sale ?? p.price,
               quantity: p.quantity,
               slug: p.slug,
@@ -789,13 +800,8 @@ const DetailOrder: React.FC = () => {
   };
 
 const formatPrice1 = (value: number | string): string => {
-  if (!value) return "0";
-
-  const cleaned = String(value).replace(/[^\d]/g, "");
-
-  const result = Math.floor(Number(cleaned) / 100);
-
-  return result.toLocaleString("vi-VN");
+  const amount = Number(value);
+  return Number.isFinite(amount) ? amount.toLocaleString("vi-VN") : "0";
 };
 
   
@@ -954,7 +960,14 @@ const formatPrice1 = (value: number | string): string => {
                 return (
                   <div className="product-item" key={product.order_item_id}>
                     <div className="product-image">
-                      <img src={product.image} alt={product.name} />
+                      <img
+                        src={firstImageUrl(product.image)}
+                        alt={product.name}
+                        onError={(event) => {
+                          event.currentTarget.onerror = null;
+                          event.currentTarget.src = "/images/default.jpg";
+                        }}
+                      />
                     </div>
                     <div className="product-detailss">
                       <h4>{product.name}</h4>
