@@ -2335,7 +2335,7 @@ section p {
 }
 .header .main-nav ul li a img.arrow-icon {
   transition: transform 0.3s ease;
-  content: url("../../../public/images/icons/arrow-down.svg");
+  content: url("/images/icons/arrow-down.svg");
 }
 .header .main-nav ul li a:after {
   content: "";
@@ -2352,7 +2352,7 @@ section p {
 }
 .header .main-nav ul li a:hover img.arrow-icon, .header .main-nav ul li a.active img.arrow-icon {
   transform: rotate(180deg);
-  content: url("../../../public/images/icons/arrow-down-2.svg");
+  content: url("/images/icons/arrow-down-2.svg");
 }
 .header .main-nav ul li a:hover:after, .header .main-nav ul li a.active:after {
   width: 100%;

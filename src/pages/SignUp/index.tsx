@@ -333,7 +333,7 @@ const SignUp: React.FC = () => {
           <div className="custom-modal">
             <div className="modal-header">
               <div className="success-icon">
-                {/* Với Vite, ảnh nên đặt trong public/images/... */}
+                {/* Với Vite, ảnh trong public/ được truy cập từ /images/... */}
                 <img src="/images/Email/checked.png" alt="Thành công" />
               </div>
               <h2>Đăng ký tài khoản thành công!</h2>

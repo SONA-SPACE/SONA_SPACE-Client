@@ -314,7 +314,7 @@ const Header = () => {
           {latestProducts.map((item, idx) => (
             <div className="search-link-item" key={item.id || idx}>
               <Link to={`/san-pham/${encodeURIComponent(item.slug)}`}>
-                <img src="../public/images/icons/magnifier-gray.svg" alt="search" />
+                <img src="/images/icons/magnifier-gray.svg" alt="search" />
                 <span>{item.name}</span>
               </Link>
             </div>
@@ -330,7 +330,7 @@ const Header = () => {
             setSearchTerm(kw);
           }}
         >
-          <img src="../public/images/icons/magnifier-gray.svg" alt="search" />
+          <img src="/images/icons/magnifier-gray.svg" alt="search" />
           <span>{kw}</span>
         </button>
       </div>
@@ -602,7 +602,7 @@ const Header = () => {
                         />
                         <button type="submit" aria-label="Tìm kiếm">
                           <img
-                            src="../public/images/icons/magnifier-gray.svg"
+                            src="/images/icons/magnifier-gray.svg"
                             alt="search"
                           />
                         </button>

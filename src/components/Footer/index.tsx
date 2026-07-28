@@ -93,16 +93,16 @@ const Footer = () => {
               <h3>Theo dõi chúng tôi</h3>
               <div className="social-icons">
                 <a href="#" className="social-icon facebook">
-                  <img src="./public/images/icons/facebook.svg" alt="" />
+                  <img src="/images/icons/facebook.svg" alt="" />
                 </a>
                 <a href="#" className="social-icon instagram">
-                  <img src="./public/images/icons/ins.svg" alt="" />
+                  <img src="/images/icons/ins.svg" alt="" />
                 </a>
                 <a href="#" className="social-icon pinterest">
-                  <img src="./public/images/icons/pint.svg" alt="" />
+                  <img src="/images/icons/pint.svg" alt="" />
                 </a>
                 <a href="#" className="social-icon phone">
-                  <img src="./public/images/icons/phone.svg" alt="" />
+                  <img src="/images/icons/phone.svg" alt="" />
                 </a>
               </div>
             </div>

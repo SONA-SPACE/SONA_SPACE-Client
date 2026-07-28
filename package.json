@@ -30,6 +30,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "qa:spa-routing": "node scripts/qa-spa-routing-contract.js",
-    "qa:about-page": "node scripts/qa-about-page-contract.js"
+    "qa:about-page": "node scripts/qa-about-page-contract.js",
+    "qa:public-asset-paths": "node scripts/qa-public-asset-paths.js"
   }
 }
