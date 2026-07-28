@@ -1,3 +1,6 @@
+@use "mixins";
+@use "variables";
+
 // css img, button, heading, title, input, elements, components...
 img {
     max-width: 100%;
@@ -20,15 +23,15 @@ a {
 
 // colors (tuỳ chỉnh)
 .--white-cl {
-    color: $white-cl;
+    color: variables.$white-cl;
 }
 
 .--black-cl {
-    color: $black-cl;
+    color: variables.$black-cl;
 }
 
 .--blue-cl {
-    color: $blue-cl;
+    color: variables.$blue-cl;
 }
 
 // css article (nội dung chi tiết bài viết)
@@ -111,13 +114,13 @@ article {
         iframe,
         video {
             position: absolute;
-            @include size(100%);
+            @include mixins.size(100%);
             top: 0;
             left: 0;
         }
     }
 
-    @include xs {
+    @include mixins.xs {
         img {
             margin: 20px auto;
         }
@@ -151,12 +154,12 @@ article {
 //Custome Component [Title & Description]
 section {
     .section-title {
-        @include text(24px, M-SB, normal, $dark-cl, null);
+        @include mixins.text(24px, M-SB, normal, variables.$dark-cl, null);
         margin-bottom: 12px;
     }
 
     p {
-        @include text(18px, Be-R, normal, $dark-cl, null);
+        @include mixins.text(18px, Be-R, normal, variables.$dark-cl, null);
         text-align: center;
         margin-bottom: 32px;
     }

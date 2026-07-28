@@ -1,3 +1,5 @@
+@use "../core/variables";
+
 .signup-page {
   padding: 60px 0;
 
@@ -160,7 +162,7 @@
 
             &:hover {
               text-decoration: none;
-              color: $yellow-cl;
+              color: variables.$yellow-cl;
             }
           }
         }
@@ -269,7 +271,7 @@
         text-decoration: underline;
 
         &:hover {
-          color: $yellow-cl;
+          color: variables.$yellow-cl;
           text-decoration: none;
         }
       }
@@ -422,9 +424,9 @@
   align-items: center;
   margin-bottom: 20px;
   padding: 24px;
-  background: color-mix(in srgb, $yellow-cl 1%, transparent);
+  background: color-mix(in srgb, variables.$yellow-cl 1%, transparent);
   border-radius: 12px;
-  border-left: 4px solid $yellow-cl;
+  border-left: 4px solid variables.$yellow-cl;
 }
 
 .step-item:last-child {

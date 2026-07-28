@@ -1,3 +1,5 @@
+@use "../core/mixins";
+
 body {
   background-color: #fcfcfc;
 }
@@ -41,7 +43,7 @@ body {
     }
   }
 
-  @include lg {
+  @include mixins.lg {
     .header-banner {
       height: 80dvh;
     }

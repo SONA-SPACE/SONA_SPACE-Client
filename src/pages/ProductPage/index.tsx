@@ -34,6 +34,35 @@ const DEFAULT_FILTER_LABELS = [
   "Sắp xếp",
 ];
 
+type ProductFilters = { [key: string]: string };
+
+const PRODUCT_FILTER_KEYS = ["category", "room", "price", "color", "sort"];
+
+const getFiltersFromSearchParams = (
+  searchParams: URLSearchParams
+): ProductFilters =>
+  PRODUCT_FILTER_KEYS.reduce<ProductFilters>((currentFilters, key) => {
+    const value = searchParams.get(key);
+
+    if (value && !DEFAULT_FILTER_LABELS.includes(value)) {
+      currentFilters[key] = value;
+    }
+
+    return currentFilters;
+  }, {});
+
+const getSearchParamsFromFilters = (filters: ProductFilters) => {
+  const nextParams = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value && !DEFAULT_FILTER_LABELS.includes(value)) {
+      nextParams.set(key, value);
+    }
+  });
+
+  return nextParams;
+};
+
 const ProductPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -41,8 +70,9 @@ const ProductPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState<{ [key: string]: string }>({});
+  const [filters, setFilters] = useState<ProductFilters>({});
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const searchParamsKey = searchParams.toString();
 
   const fetchProducts = async (
     pageNumber: number,
@@ -80,51 +110,23 @@ const ProductPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const pageParam = parseInt(searchParams.get("page") || "1", 10);
-    setPage(pageParam);
-
-    const urlFilters: { [key: string]: string } = {};
-    const category = searchParams.get("category");
-    const room = searchParams.get("room");
-    const price = searchParams.get("price");
-    const color = searchParams.get("color");
-    const sort = searchParams.get("sort");
-
-    if (category && category !== "Chọn danh mục")
-      urlFilters.category = category;
-    if (room && room !== "Chọn phòng") urlFilters.room = room;
-    if (price && price !== "Chọn giá") urlFilters.price = price;
-    if (color && color !== "Chọn màu") urlFilters.color = color;
-    if (sort && sort !== "Sắp xếp") urlFilters.sort = sort;
-
-    setFilters(urlFilters);
-    fetchProducts(pageParam, urlFilters, false);
-  }, []);
-
-  useEffect(() => {
-    const params: { [key: string]: string } = {};
-
-    if (page > 1) {
-      params.page = page.toString();
-    }
-
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && !DEFAULT_FILTER_LABELS.includes(value)) {
-        params[key] = value;
-      }
-    });
-
-    if (Object.keys(params).length > 0) {
-      setSearchParams(new URLSearchParams(params));
-    } else {
-      setSearchParams({});
-    }
-  }, [page, filters, setSearchParams]);
-
-  const handleFilterChange = (newFilters: { [key: string]: string }) => {
+    const urlFilters = getFiltersFromSearchParams(searchParams);
     setPage(1);
-    setFilters(newFilters);
-    fetchProducts(1, newFilters, false);
+    setFilters(urlFilters);
+    fetchProducts(1, urlFilters, false);
+  }, [searchParamsKey]);
+
+  const handleFilterChange = (newFilters: ProductFilters) => {
+    const nextParams = getSearchParamsFromFilters(newFilters);
+
+    if (nextParams.toString() === searchParamsKey) {
+      setPage(1);
+      setFilters(newFilters);
+      fetchProducts(1, newFilters, false);
+      return;
+    }
+
+    setSearchParams(nextParams);
   };
 
   const handleSeeMore = () => {
@@ -154,7 +156,10 @@ const ProductPage: React.FC = () => {
       </section>
 
       <section className="product-section mt-94">
-        <Filter onFilterChange={handleFilterChange} />
+        <Filter
+          initialFilters={filters}
+          onFilterChange={handleFilterChange}
+        />
         <div className="boxProducts">
           <div className="container">
             <div className="section-box-products">

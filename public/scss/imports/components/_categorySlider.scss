@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .categories-flex {
   width: 100%;
   box-sizing: border-box;
@@ -38,7 +41,7 @@
 
     .category-name {
       text-align: left;
-      @include text(20px, Be-B, auto, $text-cl, none);
+      @include mixins.text(20px, Be-B, auto, variables.$text-cl, none);
     }
   }
 }

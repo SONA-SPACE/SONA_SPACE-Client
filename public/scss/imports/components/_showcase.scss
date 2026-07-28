@@ -1,6 +1,9 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .design-showcase-swiper {
   .section-title {
-    @include text(24px, "M-SB", normal, $text-cl, none);
+    @include mixins.text(24px, "M-SB", normal, variables.$text-cl, none);
     margin-bottom: 32px;
   }
   .showcase-loading,

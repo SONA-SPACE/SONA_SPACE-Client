@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .chat-widget {
   position: fixed;
   bottom: 200px;
@@ -10,10 +13,10 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    @include size(60px);
+    @include mixins.size(60px);
     border-radius: 50%;
     border: none;
-    background: $yellow-cl;
+    background: variables.$yellow-cl;
     cursor: pointer;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
     transition: transform 0.25s ease, box-shadow 0.2s ease, opacity 0.3s ease, visibility 0.3s ease;
@@ -105,7 +108,7 @@
 
     // Header
     .chat-header {
-      background: linear-gradient(135deg, #f4b026 0%, $yellow-cl 100%);
+      background: linear-gradient(135deg, #f4b026 0%, variables.$yellow-cl 100%);
       color: #fff;
       padding: 12px 14px;
       display: flex;
@@ -250,7 +253,7 @@
         flex-direction: row-reverse;
 
         .message-content {
-          background: linear-gradient(135deg, $yellow-cl 0%, #f6cd7b 100%);
+          background: linear-gradient(135deg, variables.$yellow-cl 0%, #f6cd7b 100%);
           color: #fff;
         }
       }
@@ -396,7 +399,7 @@
         button {
           padding: 0 18px;
           height: 40px;
-          background: $yellow-cl;
+          background: variables.$yellow-cl;
           color: #fff;
           border: none;
           border-radius: 10px;
@@ -439,7 +442,7 @@
 
 
 // Responsive
-@include sm {
+@include mixins.sm {
   .chat-widget{
     bottom: 48px;
     .chat-bubble {
@@ -470,7 +473,7 @@
   }
 }
 
-@include xs{
+@include mixins.xs{
   .chat-widget{
     bottom: 24px;
     .chat-bubble {

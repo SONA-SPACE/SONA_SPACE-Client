@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 /* Container chứa cả overlay và sidebar */
 .wishlist-sidebar-container {
     position: fixed;
@@ -46,7 +49,7 @@
         border-bottom: 1px solid #f0f0f0;
 
         h2 {
-            @include text(24px, M-B, auto, #333, null);
+            @include mixins.text(24px, M-B, auto, #333, null);
         }
     }
 
@@ -65,7 +68,7 @@
     padding: 5px;
 
     &:focus-visible {
-        outline: 2px solid $yellow-cl;
+        outline: 2px solid variables.$yellow-cl;
         outline-offset: 2px;
         border-radius: 4px;
     }
@@ -98,13 +101,13 @@
     }
 
     p {
-        @include text(16px, M-R, auto, #333, null);
+        @include mixins.text(16px, M-R, auto, #333, null);
         white-space: nowrap;
         padding-bottom: 30px;
     }
 
     a {
-        @include text(16px, M-B, auto, $white-cl, null);
+        @include mixins.text(16px, M-B, auto, variables.$white-cl, null);
     }
 }
 
@@ -178,12 +181,12 @@
     }
 
     &-name {
-        @include text(16px, M-SB, auto, #333, null);
+        @include mixins.text(16px, M-SB, auto, #333, null);
         margin-bottom: 8px;
         text-decoration: none;
 
         &:hover {
-            color: $yellow-cl;
+            color: variables.$yellow-cl;
         }
     }
 
@@ -191,17 +194,17 @@
         margin-bottom: 10px;
 
         .sale-price {
-            @include text(16px, M-B, auto, $yellow-cl, null);
+            @include mixins.text(16px, M-B, auto, variables.$yellow-cl, null);
             margin-right: 8px;
         }
 
         .original-price {
-            @include text(14px, M-R, auto, #999, null);
+            @include mixins.text(14px, M-R, auto, #999, null);
             text-decoration: line-through;
         }
 
         .regular-price {
-            @include text(16px, M-B, auto, #333, null);
+            @include mixins.text(16px, M-B, auto, #333, null);
         }
     }
 
@@ -239,7 +242,7 @@
             }
 
             &:focus-visible {
-                outline: 2px solid $yellow-cl;
+                outline: 2px solid variables.$yellow-cl;
                 outline-offset: 2px;
                 border-radius: 6px;
             }
@@ -255,12 +258,12 @@
         }
 
         .add-to-cart-button {
-            color: $yellow-cl;
+            color: variables.$yellow-cl;
         }
     }
 
     &-action-label {
-        @include text(12px, Be-M, auto, #666, null);
+        @include mixins.text(12px, Be-M, auto, #666, null);
         white-space: nowrap;
     }
 }
@@ -273,7 +276,7 @@
     height: 200px;
 
     p {
-        @include text(16px, M-R, auto, #666, null);
+        @include mixins.text(16px, M-R, auto, #666, null);
         position: relative;
         padding-left: 30px;
 
@@ -285,7 +288,7 @@
             transform: translateY(-50%);
             width: 20px;
             height: 20px;
-            border: 2px solid $yellow-cl;
+            border: 2px solid variables.$yellow-cl;
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -301,7 +304,7 @@
     height: 200px;
 
     p {
-        @include text(16px, M-R, auto, #ff4d4f, null);
+        @include mixins.text(16px, M-R, auto, #ff4d4f, null);
         position: relative;
         padding-left: 30px;
 

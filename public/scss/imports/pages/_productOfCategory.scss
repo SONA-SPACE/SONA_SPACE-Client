@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .product-of-category {
 
   // Banner Section
@@ -38,7 +41,7 @@
         }
 
         h1 {
-          @include text(52px, M-B, normal, $white-cl, null);
+          @include mixins.text(52px, M-B, normal, variables.$white-cl, null);
           margin: 0;
         }
       }
@@ -657,7 +660,7 @@
   }
 
   // Responsive Styles
-  @media (max-width: $md-max) {
+  @media (max-width: variables.$md-max) {
 
     .product-listing .products-grid,
     .category-navigation .categories-grid {
@@ -665,7 +668,7 @@
     }
   }
 
-  @media (max-width: $sm-max) {
+  @media (max-width: variables.$sm-max) {
     .banner-content {
       h1 {
         font-size: 2.5rem;
@@ -681,7 +684,7 @@
     }
   }
 
-  @media (max-width: $xs-max) {
+  @media (max-width: variables.$xs-max) {
     .container-fluid {
       padding: 0 15px;
     }

@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .detail-order-page {
   padding: 60px 0;
   margin-top: 94px;
@@ -406,7 +409,7 @@
           & .btn-cancel-product {
             padding: 12px 16px;
             border-radius: 4px;
-            @include text(13px, Be-M, 16px, null, null);
+            @include mixins.text(13px, Be-M, 16px, null, null);
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
@@ -423,14 +426,14 @@
           & .btn-buy-again {
             padding: 12px 16px;
             border-radius: 4px;
-            @include text(13px, Be-M, 16px, null, null);
+            @include mixins.text(13px, Be-M, 16px, null, null);
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
             width: max-content;
             background-color: #fff;
-            color: $text-gray;
-            border: 1px solid $gray-cl-5;
+            color: variables.$text-gray;
+            border: 1px solid variables.$gray-cl-5;
 
             &:hover {
               background-color: #EAEAEA;

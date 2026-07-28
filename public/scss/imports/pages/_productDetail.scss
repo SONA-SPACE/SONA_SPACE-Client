@@ -1,3 +1,5 @@
+@use "../core/variables";
+
 .product-detail-page {
 
   // Product Detail Section
@@ -702,7 +704,7 @@
 
 
   // Responsive Styles
-  @media (max-width: $md-max) {
+  @media (max-width: variables.$md-max) {
     .product-detail .product-detail-grid {
       grid-template-columns: 1fr;
       gap: 30px;
@@ -718,7 +720,7 @@
     }
   }
 
-  @media (max-width: $sm-max) {
+  @media (max-width: variables.$sm-max) {
     .product-detail .product-images .main-image {
       height: 400px;
     }
@@ -732,7 +734,7 @@
     }
   }
 
-  @media (max-width: $xs-max) {
+  @media (max-width: variables.$xs-max) {
     .product-detail .product-images .main-image {
       height: 300px;
     }

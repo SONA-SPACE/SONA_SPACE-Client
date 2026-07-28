@@ -1,3 +1,5 @@
+@use "../core/mixins";
+
 .box-recomment {
     display: flex;
     justify-content: space-around;
@@ -260,7 +262,7 @@
 }
 
 
-@include lg {
+@include mixins.lg {
     .box-comment {
         .box-recomment {
             .recomment-star {
@@ -280,7 +282,7 @@
     }
 }
 
-@include md {
+@include mixins.md {
     .box-comment {
         .box-recomment {
             .recomment-user {
@@ -318,7 +320,7 @@
     }
 }
 
-@include sm {
+@include mixins.sm {
     .box-comment {
         .box-recomment {
             .recomment-user {
@@ -359,7 +361,7 @@
     }
 }
 
-@include xs {
+@include mixins.xs {
     .box-comment {
         .box-recomment {
             .recomment-user {

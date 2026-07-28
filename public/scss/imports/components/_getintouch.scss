@@ -1,7 +1,10 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .get-in-touch {
   .get-in-touch__title {
     text-align: left;
-    @include text(30px, M-SB, normal, $text-cl, null);
+    @include mixins.text(30px, M-SB, normal, variables.$text-cl, null);
   }
 
   .get-in-touch__box {
@@ -17,7 +20,7 @@
 
       p {
         margin-top: 20px;
-        @include text(14px, Be-R, normal, $text-cl, null);
+        @include mixins.text(14px, Be-R, normal, variables.$text-cl, null);
       }
     }
 
@@ -37,7 +40,7 @@
         }
 
         .get-in-touch__label {
-          @include text(16px, Be-M, normal, $text-cl, null);
+          @include mixins.text(16px, Be-M, normal, variables.$text-cl, null);
         }
 
         .get-in-touch__icon {
@@ -69,7 +72,7 @@
 
         .get-in-touch__content {
           padding-top: 8px;
-          @include text(14px, Be-R, normal, $text-cl, null);
+          @include mixins.text(14px, Be-R, normal, variables.$text-cl, null);
 
           p {
             margin: 0;
@@ -79,7 +82,7 @@
     }
   }
 
-  @include md {
+  @include mixins.md {
     .get-in-touch__box {
       grid-template-columns: 1fr;
 
@@ -93,9 +96,9 @@
     }
   }
 
-  @include sm {
+  @include mixins.sm {
   }
 
-  @include xs {
+  @include mixins.xs {
   }
 }

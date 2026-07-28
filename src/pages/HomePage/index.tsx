@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -10,6 +10,11 @@ import type { Product as ProductType } from "../../types";
 import ProductComponent from "../../components/Product";
 import { getNewestProducts } from "../../api/product";
 import { formatProductForDisplay } from "../../services/productService";
+import {
+  EmptyState,
+  PageSectionSkeleton,
+  RetryState,
+} from "../../components/StateFeedback";
 
 // Định nghĩa kiểu dữ liệu phù hợp với component Product
 
@@ -19,34 +24,29 @@ const HomePage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Lấy danh sách sản phẩm mới nhất khi component mount
+  const fetchNewestProducts = async () => {
+    try {
+      setLoading(true);
+      const products = await getNewestProducts(8);
+      const formattedProducts = products.map((product) =>
+        formatProductForDisplay(product)
+      );
+      const uniqueProducts = formattedProducts.filter(
+        (product, index, self) =>
+          index === self.findIndex((candidate) => candidate.id === product.id)
+      );
+
+      setNewestProducts(uniqueProducts);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching newest products:", error);
+      setError("Không thể tải sản phẩm mới nhất. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchNewestProducts = async () => {
-      try {
-        setLoading(true);
-        const products = await getNewestProducts(8); // Lấy 8 sản phẩm mới nhất
-
-        // Format sản phẩm để phù hợp với component Product
-        const formattedProducts = products.map((product) => {
-          return formatProductForDisplay(product);
-        });
-
-        // Đảm bảo các id là duy nhất
-        const uniqueProducts = formattedProducts.filter((product, index, self) =>
-          index === self.findIndex(p => p.id === product.id)
-        );
-
-        // console.log("Formatted products:", uniqueProducts);
-        setNewestProducts(uniqueProducts);
-        setError(null);
-      } catch (error) {
-        console.error("Error fetching newest products:", error);
-        setError("Không thể tải sản phẩm mới nhất. Vui lòng thử lại sau.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchNewestProducts();
   }, []);
 
@@ -63,7 +63,7 @@ const HomePage = () => {
     return shuffledIndices.map(index => newestProducts[index]);
   };
 
-  const hotProducts = getRandomProducts(4);
+  const hotProducts = useMemo(() => getRandomProducts(4), [newestProducts]);
 
   return (
     <>
@@ -181,17 +181,34 @@ const HomePage = () => {
           <div className="container">
             <div className="section-box-products">
               <h5>Sản Phẩm Mới</h5>
-              {loading && <div className="loading-indicator">Đang tải sản phẩm...</div>}
-              {error && <div className="error-message">{error}</div>}
-              <div className="box-products-container">
-                {newestProducts.map((product) => (
-                  <ProductComponent
-                    key={`new-${product.id}`}
-                    product={product}
-                    slug={product.slug}
-                  />
-                ))}
-              </div>
+              {loading && <PageSectionSkeleton count={8} />}
+              {!loading && error && (
+                <RetryState
+                  message={error}
+                  onRetry={fetchNewestProducts}
+                  secondaryActionLabel="Xem tất cả sản phẩm"
+                  secondaryActionTo="/san-pham"
+                />
+              )}
+              {!loading && !error && newestProducts.length === 0 && (
+                <EmptyState
+                  title="Chưa có sản phẩm mới"
+                  message="Bạn có thể khám phá toàn bộ bộ sưu tập của SONA SPACE."
+                  actionLabel="Xem tất cả sản phẩm"
+                  actionTo="/san-pham"
+                />
+              )}
+              {!loading && !error && newestProducts.length > 0 && (
+                <div className="box-products-container">
+                  {newestProducts.map((product) => (
+                    <ProductComponent
+                      key={`new-${product.id}`}
+                      product={product}
+                      slug={product.slug}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -201,15 +218,18 @@ const HomePage = () => {
           <div className="container">
             <div className="section-box-products">
               <h5>Sản Phẩm Hot</h5>
-              <div className="box-products-container">
-                {hotProducts.map((product, index) => (
-                  <ProductComponent
-                    key={`hot-${product.id}-${index}`}
-                    product={product}
-                    slug={product.slug}
-                  />
-                ))}
-              </div>
+              {loading && <PageSectionSkeleton count={4} />}
+              {!loading && !error && hotProducts.length > 0 && (
+                <div className="box-products-container">
+                  {hotProducts.map((product) => (
+                    <ProductComponent
+                      key={`hot-${product.id}`}
+                      product={product}
+                      slug={product.slug}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </section>

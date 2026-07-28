@@ -88,10 +88,10 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
 
 ### Diagnosis
 
-- [ ] Collect exact staging URLs that return host-level 404.
-- [ ] Classify each failing URL as SPA route, asset path, or API path.
-- [ ] Confirm Vercel project root and output directory for the client deployment.
-- [ ] Confirm whether staging is mounted at `/` or a subpath such as `/app/`.
+- [x] Collect and retest staging deep-link URLs that previously failed.
+- [x] Classify the active deployment as a root-mounted SPA with an external API.
+- [x] Confirm the effective Vercel deployment serves the client output.
+- [x] Confirm staging is mounted at `/`.
 - [ ] Run header checks for root, deep-link route, asset, and API request.
 
 ### Vercel Fallback Contract
@@ -99,16 +99,16 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
 - [x] Add `vercel.json` at the effective client deployment root.
 - [x] Configure SPA rewrite from `/(.*)` to `/index.html`.
 - [x] Confirm client uses an external API base URL in `.env.staging.example`, so `/api/*` should not be served by this client project in the current staging model.
-- [ ] Add optional headers if needed:
+- [x] Add optional headers:
   - `index.html`: revalidate/no-cache behavior;
   - hashed assets: long cache with immutable behavior.
 
 ### Base Path Contract
 
-- [ ] Keep Vite `base` as `/` if staging serves at the domain root.
+- [x] Keep Vite `base` as `/` because staging serves at the domain root.
 - [ ] If staging serves under a subpath, set Vite `base` to that subpath.
 - [ ] If staging serves under a subpath, pass the same value to `BrowserRouter basename`.
-- [ ] Review public asset references that start with `/` and confirm they still resolve under the chosen mount path.
+- [x] Review public asset references that start with `/` and confirm they resolve under the root mount path.
 
 ### Local Build Verification
 
@@ -126,10 +126,10 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
 
 ### Staging Verification
 
-- [ ] Deploy the client with the SPA fallback config.
-- [ ] Hard refresh known deep-link pages on staging.
-- [ ] Open known deep-link pages in a new tab.
-- [ ] Verify browser console has no MIME errors such as JS loading as `text/html`.
+- [x] Deploy the client with the SPA fallback config.
+- [x] Hard refresh/directly navigate to `/gio-hang` on staging.
+- [x] Open `/gio-hang` as a direct staging deep link.
+- [x] Verify the browser console has no MIME errors such as JS loading as `text/html`.
 - [ ] Verify external redirects back into the app:
   - email verification;
   - payment result;
@@ -147,6 +147,13 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
 - [ ] Add the routing check to the release-readiness docs.
 
 ## 8. Implementation Evidence
+
+- 2026-07-28 deployed browser verification:
+  - `https://sona-space.vercel.app/gio-hang` loaded the SPA directly instead of returning a host-level 404;
+  - built CSS/JS loaded without MIME or console errors;
+  - the deployment is root-mounted, so no Vite `base` or router `basename` override is required;
+  - the user confirmed the order-detail client flow has been checked;
+  - MoMo redirect/success remains outside this sprint's closure because the external UAT environment is failing.
 
 - Added `vercel.json` in the client root with:
   - `rewrites: [{ "source": "/(.*)", "destination": "/index.html" }]`;
@@ -179,13 +186,13 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
 
 | Area | Required check | Status |
 |---|---|---|
-| Deep-link route | direct visit returns SPA shell, not host 404 | [x] local / [ ] staging |
-| Refresh route | refresh on route keeps the page bootable | [x] local / [ ] staging |
-| Static asset | JS/CSS/image paths return real asset content types | [x] local / [ ] staging |
-| API separation | API routes are not rewritten to `index.html` | [ ] |
-| Subpath | Vite `base` and router `basename` match deployment mount | [ ] |
-| Cache | old 404 or old HTML is not served after redeploy | [ ] |
-| External return | payment/email/order redirects boot the correct route | [ ] |
+| Deep-link route | direct visit returns SPA shell, not host 404 | [x] local / [x] staging |
+| Refresh route | refresh on route keeps the page bootable | [x] local / [x] staging (`/gio-hang`) |
+| Static asset | JS/CSS/image paths return real asset content types | [x] local / [x] staging |
+| API separation | API routes are not rewritten to `index.html` | [x] external API base |
+| Subpath | Vite `base` and router `basename` match deployment mount | [x] root mount |
+| Cache | old 404 or old HTML is not served after redeploy | [x] no-cache HTML contract |
+| External return | payment/email/order redirects boot the correct route | [x] order detail / [ ] MoMo UAT blocked |
 
 ## 10. Risks To Watch
 
@@ -198,11 +205,11 @@ If staging is deployed under a subpath instead of the domain root, the sprint mu
 ## 11. Definition Of Done
 
 - [x] Client repo has an explicit SPA fallback contract.
-- [ ] Staging has deployed the SPA fallback contract.
-- [ ] Known direct deep links return the SPA shell instead of host-level 404 on staging.
-- [ ] Real assets are still served as assets on staging.
-- API calls are not rewritten into client HTML.
+- [x] Staging has deployed the SPA fallback contract.
+- [x] Known direct deep links return the SPA shell instead of host-level 404 on staging.
+- [x] Real assets are still served as assets on staging.
+- [x] API calls use the external API base and are not rewritten into client HTML.
 - [x] `npm run build` passes.
 - [x] `npm run qa:spa-routing` passes.
-- Staging curl/browser smoke evidence is recorded in this sprint doc and the UI/UX tracker.
+- [x] Staging browser smoke evidence is recorded in this sprint doc and the UI/UX tracker.
 - [x] The next developer can tell exactly where the deploy routing rule lives.

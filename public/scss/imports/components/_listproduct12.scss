@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 /* box-produúc */
 .section-box-products {
 
@@ -200,7 +203,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background-color: #fff;
-            @include text(16px, 'Be-M', normal, $text-cl, none);
+            @include mixins.text(16px, 'Be-M', normal, variables.$text-cl, none);
 
             &:hover {
               background-color: #F0A00A;
@@ -216,7 +219,7 @@
     }
   }
 
-  @include lg {
+  @include mixins.lg {
     .box-products-container {
       .box-products-frame {
         .products-frame-cart {
@@ -249,7 +252,7 @@
     }
   }
 
-  @include md {
+  @include mixins.md {
     .box-products-container {
       grid-template-columns: repeat(3, 1fr);
 
@@ -326,7 +329,7 @@
     }
   }
 
-  @include sm {
+  @include mixins.sm {
     .box-products-container {
       grid-template-columns: repeat(2, 1fr);
 
@@ -403,7 +406,7 @@
     }
   }
 
-  @include xs {
+  @include mixins.xs {
     .box-products-container {
       grid-template-columns: repeat(1, 1fr);
 
@@ -480,7 +483,7 @@
     }
   }
 
-  @include xxs {
+  @include mixins.xxs {
     .box-products-container {
       grid-template-columns: repeat(1, 1fr);
 

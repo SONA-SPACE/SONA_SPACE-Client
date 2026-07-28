@@ -1,7 +1,10 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .hero-banner {
     margin-top: unset !important;
     .hero-banner__title {
-        @include text(64px, M-B, auto, $white-cl, null);
+        @include mixins.text(64px, M-B, auto, variables.$white-cl, null);
         height: 100%;
         text-align: center;
         align-content: center;

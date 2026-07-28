@@ -104,7 +104,6 @@
 
       .banner-text {
         color: white;
-        animation: slideInLeft 1s ease-out;
 
         background: rgba(255, 255, 255, 0.2);
         border-radius: 16px;
@@ -114,6 +113,35 @@
         border: 1px solid rgba(255, 255, 255, 0.3);
         padding: 16px;
 
+        &.banner-text--skeleton {
+          display: grid;
+          justify-items: start;
+          width: 100%;
+        }
+
+        .banner-skeleton__subtitle {
+          width: min(120px, 100%);
+          height: 23px;
+          margin-bottom: 12px;
+        }
+
+        .banner-skeleton__title {
+          width: min(760px, 100%);
+          height: clamp(76px, 6vw, 92px);
+          margin-bottom: 20px;
+        }
+
+        .banner-skeleton__description {
+          width: min(500px, 100%);
+          height: 58px;
+          margin-bottom: 30px;
+        }
+
+        .banner-skeleton__button {
+          width: min(275px, 100%);
+          height: 58px;
+        }
+
         .banner-subtitle {
           font-size: 16px;
           font-weight: 400;
@@ -121,7 +149,6 @@
           letter-spacing: 2px;
           margin-bottom: 12px;
           opacity: 0.9;
-          animation: fadeInUp 1s ease-out 0.2s both;
         }
 
         .banner-title {
@@ -131,7 +158,6 @@
           line-height: 1.2;
           margin-bottom: 20px;
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-          animation: fadeInUp 1s ease-out 0.4s both;
         }
 
         .banner-description {
@@ -140,7 +166,6 @@
           margin-bottom: 30px;
           opacity: 0.95;
           max-width: 500px;
-          animation: fadeInUp 1s ease-out 0.6s both;
         }
 
         .banner-button {
@@ -156,7 +181,6 @@
           font-size: 16px;
           border-radius: 8px;
           transition: all 0.3s ease;
-          animation: fadeInUp 1s ease-out 0.8s both;
 
           i {
             transition: transform 0.3s ease;
@@ -170,6 +194,11 @@
             i {
               transform: translateX(4px);
             }
+          }
+
+          &:focus-visible {
+            outline: 3px solid white;
+            outline-offset: 4px;
           }
         }
       }
@@ -258,31 +287,6 @@
   }
 }
 
-// Animations
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-100px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 // Responsive Design
 @media (max-width: 768px) {
   .hero-banner {
@@ -293,6 +297,26 @@
         .banner-text {
           padding: 0 20px;
           text-align: center;
+
+          &.banner-text--skeleton {
+            justify-items: center;
+          }
+
+          .banner-skeleton__title {
+            width: min(620px, 92%);
+            height: clamp(58px, 14vw, 96px);
+          }
+
+          .banner-skeleton__description {
+            width: min(500px, 88%);
+            height: 52px;
+            margin-bottom: 24px;
+          }
+
+          .banner-skeleton__button {
+            width: min(235px, 72%);
+            height: 50px;
+          }
 
           .banner-title {
             font-size: clamp(24px, 8vw, 40px);
@@ -357,6 +381,26 @@
 
     .banner-nav-arrow {
       display: none; // Hide arrows on very small screens
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-banner {
+    .banner-slide {
+      .banner-image img,
+      &:hover .banner-image img {
+        transition: none;
+        transform: none;
+      }
+    }
+
+    .banner-button,
+    .banner-button i,
+    .banner-nav-arrow,
+    .banner-nav-arrow i,
+    .banner-bullet {
+      transition: none;
     }
   }
 }

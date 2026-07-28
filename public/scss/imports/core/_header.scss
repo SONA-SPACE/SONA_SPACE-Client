@@ -1,3 +1,6 @@
+@use "mixins";
+@use "variables";
+
 // Header styles
 .header {
   position: fixed;
@@ -16,7 +19,7 @@
   //font
   &-actions-buttons {
     a {
-      @include text(18px, Be-M, auto, $white-cl !important, null);
+      @include mixins.text(18px, Be-M, auto, variables.$white-cl !important, null);
     }
 
     .user-greeting {
@@ -30,7 +33,7 @@
         padding: 8px 0;
 
         span {
-          @include text(18px, Be-M, auto, $white-cl, null);
+          @include mixins.text(18px, Be-M, auto, variables.$white-cl, null);
         }
 
         img {
@@ -74,13 +77,13 @@
               border: 0;
               background: transparent;
               text-align: left;
-              @include text(16px, Be-R, auto, #333 !important, null);
+              @include mixins.text(16px, Be-R, auto, #333 !important, null);
               cursor: pointer;
               transition: all 0.2s ease;
 
               &:hover {
                 background-color: #f9f9f9;
-                color: $yellow-cl !important;
+                color: variables.$yellow-cl !important;
               }
             }
           }
@@ -152,7 +155,7 @@
           font-weight: 500;
           // transition: color 0.3s ease;
           padding: 25px 0px;
-          @include text(18px, BE-M, auto, $white-cl, null);
+          @include mixins.text(18px, BE-M, auto, variables.$white-cl, null);
           display: flex;
           align-items: center;
           gap: 5px;
@@ -171,13 +174,13 @@
             left: 0;
             width: 0;
             height: 2px;
-            background-color: $yellow-cl;
+            background-color: variables.$yellow-cl;
             transition: width 0.3s ease;
           }
 
           &:hover,
           &.active {
-            color: $yellow-cl;
+            color: variables.$yellow-cl;
 
             img.arrow-icon {
               transform: rotate(180deg);
@@ -254,7 +257,7 @@
                     font-size: 16px;
                     padding: 0;
                     display: block;
-                    @include text(16px, BE-R, auto, #333, null);
+                    @include mixins.text(16px, BE-R, auto, #333, null);
                     position: relative;
 
                     &:after {
@@ -264,12 +267,12 @@
                       left: 0;
                       width: 0;
                       height: 1px;
-                      background-color: $yellow-cl;
+                      background-color: variables.$yellow-cl;
                       transition: width 0.3s ease;
                     }
 
                     &:hover {
-                      color: $yellow-cl;
+                      color: variables.$yellow-cl;
                       width: 100%;
 
                       &:after {
@@ -287,7 +290,7 @@
 
               .title {
                 padding-bottom: 20px;
-                @include text(20px, M-SB, auto, $black-cl, null);
+                @include mixins.text(20px, M-SB, auto, variables.$black-cl, null);
               }
 
               .product-row {
@@ -336,7 +339,7 @@
 
                     &:hover {
                       .product-title {
-                        color: $yellow-cl;
+                        color: variables.$yellow-cl;
                       }
                     }
                   }
@@ -359,7 +362,7 @@
     &:hover,
     &:focus-within {
       > a {
-        color: $yellow-cl;
+        color: variables.$yellow-cl;
 
         img.arrow-icon {
           transform: rotate(180deg);
@@ -442,7 +445,7 @@
               font-size: 16px;
               padding: 0;
               display: block;
-              @include text(16px, BE-R, auto, #333, null);
+              @include mixins.text(16px, BE-R, auto, #333, null);
               position: relative;
 
               &:after {
@@ -452,12 +455,12 @@
                 left: 0;
                 width: 0;
                 height: 1px;
-                background-color: $yellow-cl;
+                background-color: variables.$yellow-cl;
                 transition: width 0.3s ease;
               }
 
               &:hover {
-                color: $yellow-cl;
+                color: variables.$yellow-cl;
                 width: 100%;
 
                 &:after {
@@ -475,7 +478,7 @@
 
         .title {
           padding-bottom: 20px;
-          @include text(20px, M-SB, auto, $black-cl, null);
+          @include mixins.text(20px, M-SB, auto, variables.$black-cl, null);
         }
 
         .product-row {
@@ -523,7 +526,7 @@
 
               &:hover {
                 .product-title {
-                  color: $yellow-cl;
+                  color: variables.$yellow-cl;
                 }
               }
             }
@@ -600,7 +603,7 @@
               border: none;
               outline: none;
               width: 100%;
-              @include text(16px, M-SB, auto, $black-cl, null);
+              @include mixins.text(16px, M-SB, auto, variables.$black-cl, null);
             }
 
             button {
@@ -624,7 +627,7 @@
           .search-content {
             h3 {
               text-align: left;
-              @include text(16px, M-SB, auto, $black-cl, null);
+              @include mixins.text(16px, M-SB, auto, variables.$black-cl, null);
               margin-bottom: 20px;
             }
 
@@ -643,7 +646,7 @@
                   border: 0;
                   background: transparent;
                   padding: 0;
-                  @include text(14px, Be-M, auto, $gray-cl-5, null);
+                  @include mixins.text(14px, Be-M, auto, variables.$gray-cl-5, null);
                   cursor: pointer;
                   transition: color 0.3s;
                   position: relative;
@@ -661,12 +664,12 @@
                     left: 26px;
                     width: 0;
                     height: 1px;
-                    background-color: $yellow-cl;
+                    background-color: variables.$yellow-cl;
                     transition: width 0.3s ease;
                   }
 
                   &:hover {
-                    color: $yellow-cl;
+                    color: variables.$yellow-cl;
 
                     &:after {
                       width: 50%;
@@ -711,7 +714,7 @@
                     }
 
                     .product-title {
-                      @include text(16px, Be-R, auto, $black-cl, null);
+                      @include mixins.text(16px, Be-R, auto, variables.$black-cl, null);
                       text-align: initial;
                       transition: all 0.3s ease;
                       position: relative;
@@ -723,14 +726,14 @@
                         left: 0;
                         width: 0;
                         height: 1px;
-                        background-color: $yellow-cl;
+                        background-color: variables.$yellow-cl;
                         transition: width 0.3s ease;
                       }
                     }
 
                     &:hover {
                       .product-title {
-                        color: $yellow-cl;
+                        color: variables.$yellow-cl;
                         transition: all 0.3s ease;
 
                         &:after {
@@ -753,7 +756,7 @@
       }
 
       &:focus-visible {
-        outline: 2px solid $yellow-cl;
+        outline: 2px solid variables.$yellow-cl;
         outline-offset: 2px;
         border-radius: 6px;
       }
@@ -780,10 +783,10 @@
       &.sign-in {
         background-color: transparent;
         color: #fff;
-        border: 1px solid $yellow-cl;
+        border: 1px solid variables.$yellow-cl;
 
         &:hover {
-          background-color: $yellow-cl;
+          background-color: variables.$yellow-cl;
           color: #fff;
         }
       }
@@ -792,8 +795,8 @@
         background-color: transparent;
 
         &:hover {
-          background-color: $yellow-cl;
-          color: $yellow-cl;
+          background-color: variables.$yellow-cl;
+          color: variables.$yellow-cl;
 
           &+.sign-in {
             border: 1px solid transparent;
@@ -807,7 +810,7 @@
 
 //Responsive Device
 
-@include md {
+@include mixins.md {
   .header {
     &-wrapper {
       .logo {
@@ -876,7 +879,7 @@
   }
 }
 
-@include sm {
+@include mixins.sm {
   .header {
     display: block !important;
 
@@ -913,8 +916,8 @@
       top: 50%;
       transform: translateY(-60%);
       display: block;
-      @include size(1px, 20px);
-      background-color: $white-cl;
+      @include mixins.size(1px, 20px);
+      background-color: variables.$white-cl;
     }
 
     &-actions-buttons {
@@ -933,7 +936,7 @@
   }
 }
 
-@include xs {
+@include mixins.xs {
   .header {
     &-actions {
       &-icons {
@@ -965,7 +968,7 @@
   }
 }
 
-@include mdX {
+@include mixins.mdX {
   .header {
     &-actions {
       position: relative;
@@ -1172,7 +1175,7 @@ body.mobile-menu-open {
     top: 0;
     bottom: 0;
     width: 4px;
-    background-color: $yellow-cl;
+    background-color: variables.$yellow-cl;
     transition: right 0.3s ease;
   }
 
@@ -1191,11 +1194,11 @@ body.mobile-menu-open {
 
   &.active {
     background: #f8f8f8;
-    border-left: 4px solid $yellow-cl;
+    border-left: 4px solid variables.$yellow-cl;
 
     &::after {
       right: 0;
-      background-color: $yellow-cl;
+      background-color: variables.$yellow-cl;
     }
 
     a span {
@@ -1553,7 +1556,7 @@ body.mobile-menu-open {
   .mobile-signup-btn:focus-visible,
   .mobile-guest-btn:focus-visible,
   .main-nav a:focus-visible {
-    outline: 2px solid $yellow-cl;
+    outline: 2px solid variables.$yellow-cl;
     outline-offset: 3px;
     border-radius: 6px;
   }

@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .cart-page {
 
   // Banner Section
@@ -31,11 +34,11 @@
       
 
       h1 {
-        @include text(32px, "M-SB", normal, $black-cl, null);
+        @include mixins.text(32px, "M-SB", normal, variables.$black-cl, null);
       }
 
       .items-count {
-        @include text(16px, "M-R", normal, $black-cl, null);
+        @include mixins.text(16px, "M-R", normal, variables.$black-cl, null);
         margin: 0;
 
       }
@@ -71,7 +74,7 @@
       }
     }
     .delete-all {
-      @include text(16px, "M-R", normal, $error-cl, null);
+      @include mixins.text(16px, "M-R", normal, variables.$error-cl, null);
       margin: 0 12px;
       cursor: pointer;
     }
@@ -345,7 +348,7 @@
               .apply-btn {
                 height: 40px;
                 padding: 0 15px;
-                background-color: $yellow-cl;
+                background-color: variables.$yellow-cl;
                 color: #fff;
                 border: none;
                 border-radius: 0 4px 4px 0;
@@ -392,7 +395,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: $yellow-cl;
+          background-color: variables.$yellow-cl;
           border: none;
           border-radius: 4px;
           color: #fff;
@@ -611,7 +614,7 @@
   }
 
   // Responsive Styles
-  @media (max-width: $md-max) {
+  @media (max-width: variables.$md-max) {
     .cart-content .cart-grid {
       grid-template-columns: 1fr;
     }
@@ -627,7 +630,7 @@
     }
   }
 
-  @media (max-width: $sm-max) {
+  @media (max-width: variables.$sm-max) {
     .cart-banner {
       height: 200px;
     }
@@ -660,7 +663,7 @@
     }
   }
 
-  @media (max-width: $xs-max) {
+  @media (max-width: variables.$xs-max) {
     .cart-banner {
       height: 150px;
     }
@@ -686,7 +689,7 @@
   line-height: 1.4;
 
   &.error {
-    color: $error-cl;
+    color: variables.$error-cl;
   }
 }
 
@@ -744,7 +747,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid $yellow-cl;
+      outline: 2px solid variables.$yellow-cl;
       outline-offset: 2px;
     }
   }
@@ -757,6 +760,6 @@
 }
 
 .cart-confirm-danger {
-  background: $error-cl;
+  background: variables.$error-cl;
   color: #fff;
 }

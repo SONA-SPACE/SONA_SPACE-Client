@@ -1,68 +1,68 @@
 /* Core variables and mixins*/
-@import "imports/core/reset";
-@import "imports/core/variables";
-@import "imports/core/mixins";
-@import "imports/core/layouts";
-@import "imports/core/components";
-@import "imports/core/libs";
-@import "imports/core/loading";
-@import "imports/core/bootstrap_mini"; // Nếu không Responsive bằng BooTstrap 4 Grid thì không cần import vào.
+@use "imports/core/reset";
+@use "imports/core/variables";
+@use "imports/core/mixins";
+@use "imports/core/layouts";
+@use "imports/core/components";
+@use "imports/core/libs";
+@use "imports/core/loading";
+@use "imports/core/bootstrap_mini"; // Nếu không Responsive bằng BooTstrap 4 Grid thì không cần import vào.
 
 /* Navigation, header, footer*/
-@import "imports/core/header";
-@import "imports/core/nav";
-@import "imports/core/footer";
+@use "imports/core/header";
+@use "imports/core/nav";
+@use "imports/core/footer";
 
 /* Pages */
-@import "imports/pages/home";
-@import "imports/pages/contact";
-@import "imports/pages/product";
-@import "imports/pages/productOfCategory";
-@import "imports/pages/productDetail";
-@import "imports/pages/wishlist";
-@import "imports/pages/cart";
-@import "imports/pages/payment";
-@import "imports/pages/orderComplete";
-@import "imports/pages/room";
-@import "imports/pages/roomDetail";
-@import "imports/pages/contactForm";
-@import "imports/pages/contactFormArch";
-@import "imports/pages/contactFormDesign";
-@import "imports/pages/signUp";
-@import "imports/pages/signIn";
-@import "imports/pages/forgotPassword";
-@import "imports/pages/user";
-@import "imports/pages/detailOrder";
-@import "imports/pages/privacy";
-@import "imports/pages/policy";
-@import "imports/pages/news";
-@import "imports/pages/newsDetail";
-@import "imports/pages/404";
-@import "imports/pages/detailpage";
-@import "imports/pages/about";
-@import "imports/pages/wishlist";
-@import "imports/pages/order";
+@use "imports/pages/home";
+@use "imports/pages/contact";
+@use "imports/pages/product";
+@use "imports/pages/productOfCategory";
+@use "imports/pages/productDetail";
+@use "imports/pages/wishlist";
+@use "imports/pages/cart";
+@use "imports/pages/payment";
+@use "imports/pages/orderComplete";
+@use "imports/pages/room";
+@use "imports/pages/roomDetail";
+@use "imports/pages/contactForm";
+@use "imports/pages/contactFormArch";
+@use "imports/pages/contactFormDesign";
+@use "imports/pages/signUp";
+@use "imports/pages/signIn";
+@use "imports/pages/forgotPassword";
+@use "imports/pages/user";
+@use "imports/pages/detailOrder";
+@use "imports/pages/privacy";
+@use "imports/pages/policy";
+@use "imports/pages/news";
+@use "imports/pages/newsDetail";
+@use "imports/pages/404" as page404;
+@use "imports/pages/detailpage";
+@use "imports/pages/about";
+
+@use "imports/pages/order";
 
 /* Components */
-@import "imports/components/demoComponent";
-@import "imports/components/popularcategory";
-@import "imports/components/filter";
-@import "imports/components/listproduct12";
-@import "imports/components/policyProduct";
-@import "imports/components/getintouch";
-@import "imports/components/interiorDesign";
-@import "imports/components/categorySlider";
-@import "imports/components/productSlider";
-@import "imports/components/categoryNews";
-@import "imports/components/recentPosts";
-@import "imports/components/bannerSection";
-@import "imports/components/comment";
-@import "imports/components/wishListSideBar";
-@import "imports/components/miniCart";
-@import "imports/components/notifycation";
-@import "imports/components/ChatWidget";
-@import "imports/components/showcase";
+@use "imports/components/demoComponent";
+@use "imports/components/popularcategory";
+@use "imports/components/filter";
+@use "imports/components/listproduct12";
+@use "imports/components/policyProduct";
+@use "imports/components/getintouch";
+@use "imports/components/interiorDesign";
+@use "imports/components/categorySlider";
+@use "imports/components/productSlider";
+@use "imports/components/categoryNews";
+@use "imports/components/recentPosts";
+@use "imports/components/bannerSection";
+@use "imports/components/comment";
+@use "imports/components/wishListSideBar";
+@use "imports/components/miniCart";
+@use "imports/components/notifycation";
+@use "imports/components/ChatWidget";
+@use "imports/components/showcase";
 //Testing-monial
-@import "imports/pages/categoryList";
-@import "imports/pages/emailVerified";
-@import "imports/components/popupAd";
+@use "imports/pages/categoryList";
+@use "imports/pages/emailVerified";
+@use "imports/components/popupAd";

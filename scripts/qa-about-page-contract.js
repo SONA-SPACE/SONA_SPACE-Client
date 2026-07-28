@@ -24,9 +24,16 @@ const assertions = [
     "all existing contact fields remain available",
   ],
   [page.includes("setIsLoading") && page.includes("disabled={isLoading}"), "submission loading state remains available"],
-  [globalStyle.includes('@import "imports/pages/about";'), "about SCSS is imported from the global entry"],
+  [
+    globalStyle.includes('@use "imports/pages/about";'),
+    "about SCSS is loaded from the global entry",
+  ],
   ...requiredAssets.map((asset) => [page.includes(asset), `page references ${asset}`]),
-  [style.includes("@include xs") && style.includes("@include sm"), "responsive SCSS breakpoints are defined"],
+  [
+    style.includes("@include mixins.xs") &&
+      style.includes("@include mixins.sm"),
+    "responsive SCSS breakpoints are defined",
+  ],
   [!style.includes("--about-"), "about page uses the shared Sass color tokens"],
   [style.includes("$dark-cl") && style.includes("$yellow-cl") && style.includes("$text-gray"), "about page uses the shared brand palette"],
   [page.includes("about-button--primary"), "about actions use the project primary-button treatment"],

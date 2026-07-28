@@ -1,3 +1,6 @@
+@use "mixins";
+@use "variables";
+
 @-ms-viewport {
   width: device-width;
 }
@@ -17,16 +20,16 @@ html {
 
 body {
   width: 100%;
-  max-width: $container-max-width;
+  max-width: variables.$container-max-width;
   margin: auto;
-  @include text(
+  @include mixins.text(
     var(--body16-fs),
     ir,
     var(--body16-lh),
-    $black-cl,
+    variables.$black-cl,
     null
   ); // tuỳ chỉnh
-  background: $white-cl;
+  background: variables.$white-cl;
   position: relative;
 
   .container-fluid {
@@ -36,7 +39,7 @@ body {
     margin-right: auto;
     margin-left: auto;
 
-    @include xs {
+    @include mixins.xs {
       padding-right: calc(var(--gap) / 2);
       padding-left: calc(var(--gap) / 2);
     }
@@ -50,40 +53,40 @@ body {
     margin-left: auto;
   }
 
-  @media (min-width: $xxs-min) {
+  @media (min-width: variables.$xxs-min) {
     .container {
       max-width: 540px;
     }
   }
 
-  @media (min-width: $xs-min) {
+  @media (min-width: variables.$xs-min) {
     .container {
       max-width: 720px;
     }
   }
 
-  @media (min-width: $sm-min) {
+  @media (min-width: variables.$sm-min) {
     .container {
       max-width: 960px;
     }
   }
 
-  @media (min-width: $md-min) {
+  @media (min-width: variables.$md-min) {
     .container {
       max-width: 1200px;
     }
   }
 
-  @media (min-width: $lg-min) {
+  @media (min-width: variables.$lg-min) {
     .container {
-      max-width: $container-width;
+      max-width: variables.$container-width;
     }
   }
 
   .mainwrapper {
     width: 100%;
     margin: auto;
-    @include visible;
+    @include mixins.visible;
   }
 
   // .homepage {
@@ -128,23 +131,23 @@ body {
     }
   }
 
-  @include lg {
+  @include mixins.lg {
     // CSS responsive large desktop
   }
 
-  @include md {
+  @include mixins.md {
     // CSS responsive desktop
   }
 
-  @include sm {
+  @include mixins.sm {
     // CSS responsive tablet
   }
 
-  @include xs {
+  @include mixins.xs {
     // CSS responsive mobile
   }
 
-  @include xxs {
+  @include mixins.xxs {
     // CSS responsive small mobile
   }
 

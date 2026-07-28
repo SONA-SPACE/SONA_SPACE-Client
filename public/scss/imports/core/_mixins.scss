@@ -1,49 +1,51 @@
+@use "variables";
+
 // MIXINS
 // large desktop
 @mixin lg {
-	@media screen and (max-width: $lg-max) {
+	@media screen and (max-width: variables.$lg-max) {
 		@content;
 	}
 }
 // desktop
 @mixin md {
-	@media screen and (max-width: $md-max) {
+	@media screen and (max-width: variables.$md-max) {
 		@content;
 	}
 }
 // tablet
 @mixin sm {
-	@media screen and (max-width: $sm-max) {
+	@media screen and (max-width: variables.$sm-max) {
 		@content;
 	}
 }
 // mobile
 @mixin xs {
-	@media screen and (max-width: $xs-max) {
+	@media screen and (max-width: variables.$xs-max) {
 		@content;
 	}
 }
 // small mobile
 @mixin xxs {
-	@media (max-width: $xxs-max) {
+	@media (max-width: variables.$xxs-max) {
 		@content;
 	}
 }
 // desktop landscape
 @mixin mdX {
-	@media screen and (max-width: $md-max) and (orientation: landscape) {
+	@media screen and (max-width: variables.$md-max) and (orientation: landscape) {
 		@content;
 	}
 }
 // tablet landscape
 @mixin smX {
-	@media screen and (max-width: $sm-max) and (orientation: landscape) {
+	@media screen and (max-width: variables.$sm-max) and (orientation: landscape) {
 		@content;
 	}
 }
 // mobile landscape
 @mixin xsX {
-	@media screen and (max-width: $xs-max) and (orientation: landscape) {
+	@media screen and (max-width: variables.$xs-max) and (orientation: landscape) {
 		@content;
 	}
 }
@@ -205,7 +207,7 @@
 }
 
 // Hover line animation mixin
-@mixin hover-line-animation($color: $dark-cl, $height: 1px, $duration: 0.3s) {
+@mixin hover-line-animation($color: variables.$dark-cl, $height: 1px, $duration: 0.3s) {
 	position: relative;
 	padding-bottom: 2px;
 	

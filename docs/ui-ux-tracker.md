@@ -28,10 +28,10 @@
 | Sprint | Goal | Main Output | Status |
 |---|---|---|---|
 | Sprint 1 | Foundation, navigation, contract alignment | routing ổn định, auth source thống nhất, API contract không drift | `Done` |
-| Sprint 2 | Loading skeleton + empty/error state | skeleton system dùng chung, retry state rõ ràng | `Review` |
+| Sprint 2 | Loading skeleton + empty/error state | skeleton system dùng chung, retry state rõ ràng | `Done` |
 | Sprint 3 | Commerce, account, content UX hardening | checkout/account/wishlist/banner UX nhất quán | `In Progress` |
 | Sprint 4 | Performance, accessibility, release readiness | code split, smoke checklist, release baseline | `In Progress` |
-| Sprint 5 | Staging SPA 404 hardening | Vercel SPA fallback, base-path contract, deep-link verification | `In Progress` |
+| Sprint 5 | Staging SPA 404 hardening | Vercel SPA fallback, base-path contract, deep-link verification | `Done` |
 
 ## 3. Sprint Checklist
 
@@ -47,7 +47,7 @@
 ### Sprint 2
 
 - [x] Tạo thư viện skeleton cơ bản dùng lại được.
-- [ ] Thêm skeleton cho home, product list, product detail. Banner/home hero and product list/detail done; remaining home product-section review pending.
+- [x] Thêm skeleton cho home, product list, product detail.
 - [x] Thêm skeleton cho cart, checkout, wishlist, account.
 - [x] Chuẩn hóa empty state có CTA rõ ràng cho product list/detail/cart/wishlist/payment/account.
 - [x] Chuẩn hóa error state có retry hoặc hướng quay lại.
@@ -58,26 +58,26 @@
 - [x] Sửa semantics và micro UX của cart/checkout.
 - [x] Nâng UX account, order detail, wishlist, notification.
 - [x] Tận dụng đầy đủ contract banner/content đã ổn định từ server.
-- [ ] Sửa search/filter state để back-forward không gây trải nghiệm xấu.
+- [x] Sửa search/filter state để back-forward không gây trải nghiệm xấu.
 - [ ] Kiểm tra responsive cho các màn hình mua hàng và tài khoản.
 
 ### Sprint 4
 
 - [x] Code split các route nặng.
 - [x] Giảm bundle, dọn font và asset không cần thiết.
-- [ ] Xử lý cảnh báo Sass deprecated và asset unresolved.
-- [ ] Chạy pass accessibility cơ bản.
+- [x] Xử lý cảnh báo Sass deprecated và asset unresolved.
+- [x] Chạy pass accessibility cơ bản.
 - [ ] Hoàn tất QA matrix và release checklist.
 
 ### Sprint 5
 
-- [ ] Xác định các URL staging bị host-level 404.
-- [ ] Xác nhận Vercel project root, output directory, và app mount path.
+- [x] Xác định và xác minh các URL staging từng bị host-level 404.
+- [x] Xác nhận deployment root phục vụ đúng SPA tại `https://sona-space.vercel.app/`.
 - [x] Thêm SPA rewrite về `index.html` tại deployment root.
-- [ ] Đồng bộ Vite `base` và React Router `basename` nếu staging dùng subpath.
+- [x] Xác nhận staging chạy ở root path nên không cần Vite `base` hoặc React Router `basename`.
 - [x] Kiểm tra deep-link refresh/direct access cho các route chính ở local preview.
 - [x] Kiểm tra asset build không bị rewrite nhầm thành HTML ở local preview.
-- [ ] Ghi evidence staging curl/browser smoke vào sprint doc.
+- [x] Ghi nhận browser smoke trực tiếp trên Vercel; `/gio-hang` deep-link tải đúng SPA.
 
 ## 4. Module Tracker
 
@@ -87,12 +87,12 @@
 | Navigation/Search | `src/components/Header/index.tsx`, `src/pages/ProductPage/index.tsx` | `Review` | 2026-06-28 | Main nav/search product/category/room links use router navigation; DOM smoke found no `/phong/*` links and no nested anchor warnings |
 | Catalog | `src/api/product.ts`, `src/services/productService.ts`, `src/pages/ProductPage/index.tsx` | `In Progress` | 2026-06-28 | Product API/service token reads use `getAuthToken()`; ProductPage loading/empty/error state migrated in Sprint 2 |
 | Product Detail | `src/pages/ProductDetailPage/index.tsx` | `Review` | 2026-06-28 | Product detail now uses skeleton/retry/empty state instead of plain loading text or immediate fetch-error redirect |
-| Skeleton & State UX | `src/components/StateFeedback/*`, `src/pages/*` | `In Progress` | 2026-06-28 | Shared skeleton/empty/retry components added; ProductPage and ProductDetailPage migrated; commerce/account/home/banner still pending |
+| Skeleton & State UX | `src/components/StateFeedback/*`, `src/pages/*` | `Review` | 2026-07-28 | Banner skeleton now matches loaded content geometry; home newest/hot product sections use shared skeleton/retry/empty states |
 | Commerce | `src/pages/CartPage/index.tsx`, `src/pages/Payment/index.tsx`, `src/pages/OrderComplete/index.tsx` | `Review` | 2026-06-28 | Cart/Payment loading/empty/error states migrated; Cart micro UX now has pending states, delete-all modal, promo/stock helper feedback; Payment checkout CTA is a semantic button with loading/disabled guard |
 | Auth/Account | `src/contexts/AuthContext.tsx`, `src/services/loginService.ts`, `src/pages/User/index.tsx`, `src/pages/DetailOrder/index.tsx` | `Review` | 2026-06-28 | Auth token/user reads are centralized; account order loading/empty/error states migrated; DetailOrder now has skeleton/retry error state and no debug/test toast on order detail load/cancel product |
 | Wishlist/Content | `src/pages/Wishlist/index.tsx`, `src/components/Wishlist/WishlistSidebar.tsx`, `src/components/MiniNotify/index.tsx`, `src/components/BannerSlider/index.tsx`, `src/api/banner.ts`, `src/pages/News/index.tsx`, `src/pages/NewsDetail/index.tsx`, `src/components/CategoryNews/index.tsx`, `src/components/RecentPosts/index.tsx` | `Review` | 2026-06-29 | Wishlist guest/auth empty states and sidebar pending UX are aligned; MiniNotify has loading/error/empty state, semantic internal/external links, button delete, and pending guards; BannerSlider loading skeleton/fallback migrated; News/NewsDetail/category/recent-post blocks now use skeleton, retry, and empty states with sidebar consistency |
-| QA/Performance | `vite.config.ts`, `public/scss/*`, toàn app | `In Progress` | 2026-07-06 | Build pass with no chunk-size warning; `ChatBot`/`PopupAd` are lazy-mounted, vendor chunks are split by React/AntD/rc/socket/markdown/HTTP/Swiper, largest JS chunk is ~441.60 kB, CSS is ~380.17 kB, and font output is reduced to 11 WOFF2 files totaling ~803.28 kB; remaining warning class is Sass `@import` |
-| Deployment Routing | `vercel.json`, `scripts/qa-spa-routing-contract.js`, `src/App.tsx`, `vite.config.ts` | `In Progress` | 2026-07-07 | Vercel SPA fallback was added so `/(.*)` rewrites to `/index.html`; `rc-*` packages are no longer split into a standalone `vendor-rc` chunk after the staging TDZ runtime error; `npm run build` and `npm run qa:spa-routing` passed. Staging redeploy verification is still pending. |
+| QA/Performance | `vite.config.ts`, `public/scss/*`, toàn app | `In Progress` | 2026-07-28 | Sass entrypoint and dependent partials migrated from deprecated `@import` to `@use`; build passes without Sass deprecation warnings. The Ant Design chunk-size warning remains open. |
+| Deployment Routing | `vercel.json`, `scripts/qa-spa-routing-contract.js`, `src/App.tsx`, `vite.config.ts` | `Done` | 2026-07-28 | Vercel SPA fallback is active on `https://sona-space.vercel.app/`; direct `/gio-hang` navigation loads the SPA. |
 
 ## 5. Execution Log
 

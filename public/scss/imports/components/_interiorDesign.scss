@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .interior-design {
       .section-title {
             display: flex;
@@ -6,12 +9,12 @@
 
             .title {
                   margin-bottom: 12px;
-                  @include text(24px, M-SB, normal, $text-cl, null);
+                  @include mixins.text(24px, M-SB, normal, variables.$text-cl, null);
             }
 
             .description {
                   align-items: center;
-                  @include text(16px, M-M, normal, $text-cl, null);
+                  @include mixins.text(16px, M-M, normal, variables.$text-cl, null);
             }
       }
 
@@ -44,11 +47,11 @@
                   .design-content {
                         h3 {
                               margin: 24px 0 12px 0;
-                              @include text(20px, M-SB, normal, $text-cl, null);
+                              @include mixins.text(20px, M-SB, normal, variables.$text-cl, null);
                         }
 
                         p {
-                              @include text(14px, Be-R, normal, $text-cl, null);
+                              @include mixins.text(14px, Be-R, normal, variables.$text-cl, null);
                               margin-bottom: 24px;
                               text-align: left;
                         }
@@ -56,27 +59,27 @@
                         .btn {
                               padding: 10px 40px;
                               border-radius: 4px;
-                              @include text(14px, Be-B, normal, $text-cl, null);
+                              @include mixins.text(14px, Be-B, normal, variables.$text-cl, null);
                               text-decoration: none;
                               transition: all 0.4s ease;
                               display: inline-block;
 
                               .icon {
                                     margin-left: 10px;
-                                    color: $text-cl;
+                                    color: variables.$text-cl;
                                     transition: all 0.4s ease;
                               }
 
                               &.btn-primary {
-                                    background-color: $white-cl;
-                                    color: $text-cl;
+                                    background-color: variables.$white-cl;
+                                    color: variables.$text-cl;
                                     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
                                     &:hover {
-                                          background-color: $yellow-cl;
-                                          color: $white-cl;
+                                          background-color: variables.$yellow-cl;
+                                          color: variables.$white-cl;
                                           .icon {
-                                                color: $white-cl;
+                                                color: variables.$white-cl;
                                           }
                                     }
                               }
@@ -85,7 +88,7 @@
             }
       }
 
-      @include sm {
+      @include mixins.sm {
             .design-grid {
                   grid-template-columns: repeat(1, 1fr);
             }

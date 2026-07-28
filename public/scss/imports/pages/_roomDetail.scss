@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .room-detail-page {
 
   // Banner Section
@@ -32,12 +35,12 @@
 
       .inspiration-text {
         h2 {
-          @include text(24px, M-SB, normal, $text-cl, null);
+          @include mixins.text(24px, M-SB, normal, variables.$text-cl, null);
           margin-bottom: 32px;
         }
 
         p {
-          @include text(16px, Be-R, normal, $dark-cl, null);
+          @include mixins.text(16px, Be-R, normal, variables.$dark-cl, null);
           margin-bottom: 24px;
           text-align: left;
         }
@@ -45,26 +48,26 @@
         .discover-btn {
           padding: 12px 30px;
           border-radius: 4px;
-          @include text(14px, Be-B, normal, $text-cl, null);
+          @include mixins.text(14px, Be-B, normal, variables.$text-cl, null);
           text-decoration: none;
           transition: all 0.4s ease;
           display: inline-block;
-          background-color: $white-cl;
-          color: $text-cl;
+          background-color: variables.$white-cl;
+          color: variables.$text-cl;
           box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
           .icon {
             margin-left: 10px;
-            color: $text-cl;
+            color: variables.$text-cl;
             transition: all 0.4s ease;
           }
 
           &:hover {
-            background-color: $yellow-cl;
-            color: $white-cl;
+            background-color: variables.$yellow-cl;
+            color: variables.$white-cl;
 
             .icon {
-              color: $white-cl;
+              color: variables.$white-cl;
             }
           }
         }
@@ -90,7 +93,7 @@
     .section-title {
       margin-bottom: 30px;
       text-align: left;
-      @include text(24px, M-SB, auto, $text-cl, none);
+      @include mixins.text(24px, M-SB, auto, variables.$text-cl, none);
     }
   }
 }

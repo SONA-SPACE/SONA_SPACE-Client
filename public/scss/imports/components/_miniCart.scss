@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .mini-cart {
   position: absolute;
   top: 100%;
@@ -32,7 +35,7 @@
     align-items: center;
 
     h3 {
-      @include text(18px, M-SB, auto, $black-cl, none);
+      @include mixins.text(18px, M-SB, auto, variables.$black-cl, none);
       margin: 0;
     }
 
@@ -57,7 +60,7 @@
       }
 
       &:focus-visible {
-        outline: 2px solid $yellow-cl;
+        outline: 2px solid variables.$yellow-cl;
         outline-offset: 2px;
         border-radius: 4px;
       }
@@ -100,7 +103,7 @@
       flex: 1;
 
       .item-name {
-        @include text(14px, M-SB, auto, $black-cl, none);
+        @include mixins.text(14px, M-SB, auto, variables.$black-cl, none);
         margin: 0 0 5px 0;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -121,7 +124,7 @@
           gap: 10px;
         }
         span {
-          color: $gray-cl-5;
+          color: variables.$gray-cl-5;
         }
 
         .item-coloss {
@@ -129,7 +132,7 @@
           align-items: center;
           gap: 3px;
           span{
-            @include text(12px, M-SB, auto, $gray-cl-5, none);
+            @include mixins.text(12px, M-SB, auto, variables.$gray-cl-5, none);
           }
         }
 
@@ -155,31 +158,31 @@
             cursor: pointer;
         }
            &:focus-visible {
-            outline: 2px solid $yellow-cl;
+            outline: 2px solid variables.$yellow-cl;
             outline-offset: 2px;
             border-radius: 24px;
            }
         }
         .item-color {
-          @include size(16px);
+          @include mixins.size(16px);
           border-radius: 50%;
           cursor: pointer;
-          @include text(12px, M-R, auto, $gray-cl-5, none);
+          @include mixins.text(12px, M-R, auto, variables.$gray-cl-5, none);
 
 
         }
 
         .item-quantity {
-          @include text(12px, M-R, auto, $gray-cl-5, none);
+          @include mixins.text(12px, M-R, auto, variables.$gray-cl-5, none);
 
           span {
-            @include text(12px, M-SB, auto, $gray-cl-5, none);
+            @include mixins.text(12px, M-SB, auto, variables.$gray-cl-5, none);
           }
         }
       }
 
       .item-price {
-        @include text(14px, M-SB, auto, $yellow-cl, none);
+        @include mixins.text(14px, M-SB, auto, variables.$yellow-cl, none);
       }
     }
 
@@ -218,10 +221,10 @@
       margin-bottom: 15px;
 
       span {
-        @include text(14px, M-R, auto, $black-cl, none);
+        @include mixins.text(14px, M-R, auto, variables.$black-cl, none);
 
         &.total-amount {
-          @include text(16px, M-B, auto, $yellow-cl, none);
+          @include mixins.text(16px, M-B, auto, variables.$yellow-cl, none);
         }
       }
     }
@@ -238,7 +241,7 @@
         border-radius: 4px;
         transition: all 0.3s ease;
         flex: 1;
-        @include text(14px, M-SB, auto, #fff, none);
+        @include mixins.text(14px, M-SB, auto, #fff, none);
         text-decoration: none;
       }
 
@@ -251,7 +254,7 @@
         }
 
         &:focus-visible {
-          outline: 2px solid $yellow-cl;
+          outline: 2px solid variables.$yellow-cl;
           outline-offset: 2px;
         }
       }
@@ -265,7 +268,7 @@
         }
 
         &:focus-visible {
-          outline: 2px solid $yellow-cl;
+          outline: 2px solid variables.$yellow-cl;
           outline-offset: 2px;
         }
       }
@@ -292,7 +295,7 @@
   }
 
   p {
-    @include text(14px, M-R, auto, $gray-cl-5, none);
+    @include mixins.text(14px, M-R, auto, variables.$gray-cl-5, none);
     margin-bottom: 15px;
   }
 
@@ -304,7 +307,7 @@
     border-radius: 4px;
     text-decoration: none;
     transition: background-color 0.3s ease;
-    @include text(14px, M-SB, auto, #333, none);
+    @include mixins.text(14px, M-SB, auto, #333, none);
 
     &:hover {
       background-color: #c69b00;
@@ -337,7 +340,7 @@
 }
 
 // Responsive
-@include sm {
+@include mixins.sm {
   .mini-cart {
     position: fixed;
     top: 0;

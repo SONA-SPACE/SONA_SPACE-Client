@@ -1,3 +1,5 @@
+@use "../core/mixins";
+
 .not-found-page {
   padding: 100px 0;
   background-color: #fff;
@@ -31,7 +33,7 @@
       font-weight: 500;
       text-decoration: none;
       margin-bottom: 48px;
-      @include hover-line-animation(#221D00, 1px, 0.3s);
+      @include mixins.hover-line-animation(#221D00, 1px, 0.3s);
       
       .arrow {
         margin-left: 5px;

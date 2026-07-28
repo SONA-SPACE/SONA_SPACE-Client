@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 // Products Grid (used for both Featured and Hot products)
 .products-grid {
     display: grid;
@@ -28,7 +31,7 @@
 
         .product-info {
             .product-name {
-                @include text(18px, Be-B, 25.2px, $dark-cl, null);
+                @include mixins.text(18px, Be-B, 25.2px, variables.$dark-cl, null);
                 margin-bottom: 10px;
             }
 
@@ -201,12 +204,12 @@
 
             .product-info {
                 .product-name {
-                    @include text(18px, Be-B, 25.2px, $dark-cl, null);
+                    @include mixins.text(18px, Be-B, 25.2px, variables.$dark-cl, null);
                     margin-bottom: 10px;
                 }
 
                 .product-category {
-                    @include text(16px, Be-L, 28px, $dark-cl, null);
+                    @include mixins.text(16px, Be-L, 28px, variables.$dark-cl, null);
                 }
 
                 .product-colors {
@@ -216,7 +219,7 @@
                     margin-bottom: 10px;
 
                     span {
-                        @include text(16px, Be-L, 28px, $text-gray, null);
+                        @include mixins.text(16px, Be-L, 28px, variables.$text-gray, null);
                     }
 
                     .color-option {
@@ -244,7 +247,7 @@
                     display: block;
                     height: 1px;
                     width: 100%;
-                    border: 1px solid $gray-cl-4;
+                    border: 1px solid variables.$gray-cl-4;
                 }
 
                 .product-price {
@@ -258,11 +261,11 @@
                         flex-direction: column;
 
                         .price {
-                            @include text(20px, Be-B, 28px, $dark-cl, null);
+                            @include mixins.text(20px, Be-B, 28px, variables.$dark-cl, null);
                         }
 
                         .price-sale {
-                            @include text(18px, Be-L, 28px, $text-gray, null);
+                            @include mixins.text(18px, Be-L, 28px, variables.$text-gray, null);
                             text-decoration: line-through;
                         }
                     }
@@ -275,15 +278,15 @@
                         transition: all 0.3s ease;
 
                         .price-tag {
-                            @include text(12px, Be-SB, auto, $dark-cl, null);
+                            @include mixins.text(12px, Be-SB, auto, variables.$dark-cl, null);
                         }
 
                         &:hover {
-                            background-color: $yellow-cl;
+                            background-color: variables.$yellow-cl;
                             transition: all 0.3s ease;
 
                             .price-tag {
-                                color: $white-cl
+                                color: variables.$white-cl
                             }
                         }
                     }

@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { convertToAdminApiUrl } from "../../utils/url";
 
+type FilterValues = {
+  category?: string;
+  room?: string;
+  price?: string;
+  color?: string;
+  sort?: string;
+  roomSlug?: string;
+};
+
+const EMPTY_FILTERS: FilterValues = {};
+
 interface FilterProps {
-  onFilterChange: (filters: {
-    category?: string;
-    room?: string;
-    price?: string;
-    color?: string;
-    sort?: string;
-    roomSlug?: string;
-  }) => void;
+  onFilterChange: (filters: FilterValues) => void;
+  initialFilters?: FilterValues;
   hideRoomFilter?: boolean;
   colorMode?: "name" | "hex";
   hideCategoryFilter?: boolean;
@@ -18,6 +23,7 @@ interface FilterProps {
 
 const Filter: React.FC<FilterProps> = ({
   onFilterChange,
+  initialFilters = EMPTY_FILTERS,
   hideRoomFilter = false,
   colorMode = "name",
   hideCategoryFilter = false,
@@ -43,6 +49,16 @@ const Filter: React.FC<FilterProps> = ({
 
   const filterRef = useRef<HTMLDivElement>(null);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setCurrentFilters(initialFilters);
+    setSelectedCategory(initialFilters.category || "Chọn danh mục");
+    setSelectedRoom(initialFilters.room || "Chọn phòng");
+    setSelectedPrice(initialFilters.price || "Chọn giá");
+    setSelectedColor(initialFilters.color || "Chọn màu");
+    setSelectedSort(initialFilters.sort || "Sắp xếp");
+    setOpenedDropdown(null);
+  }, [initialFilters]);
 
   const toggleDropdown = (type: string) => {
     setOpenedDropdown((prev) => (prev === type ? null : type));
@@ -227,9 +243,12 @@ const Filter: React.FC<FilterProps> = ({
           {/* Category */}
           {!hideCategoryFilter && (
             <div className="filter-dropdown">
-              <div
+              <button
+                type="button"
                 className="dropdown-toggle"
                 onClick={() => toggleDropdown("category")}
+                aria-expanded={openedDropdown === "category"}
+                aria-controls="category-filter-menu"
               >
                 {selectedCategory !== "Chọn danh mục" && (
                   <img
@@ -253,14 +272,16 @@ const Filter: React.FC<FilterProps> = ({
                     openedDropdown === "category" ? "open" : ""
                   }`}
                 />
-              </div>
+              </button>
               <div
+                id="category-filter-menu"
                 className={`dropdown-menu ${
                   openedDropdown === "category" ? "show" : ""
                 }`}
               >
                 {categories.map((cat) => (
-                  <div
+                  <button
+                    type="button"
                     key={cat.category_id}
                     className={`dropdown-item ${
                       selectedCategory === cat.category_name ? "selected" : ""
@@ -274,15 +295,16 @@ const Filter: React.FC<FilterProps> = ({
                     />
 
                     {cat.category_name}
-                  </div>
+                  </button>
                 ))}
 
-                <div
+                <button
+                  type="button"
                   className="dropdown-item clear-item"
                   onClick={() => handleClear("category")}
                 >
                   Xoá bộ lọc
-                </div>
+                </button>
               </div>
             </div>
           )}
@@ -290,9 +312,12 @@ const Filter: React.FC<FilterProps> = ({
           {/* Room */}
           {!hideRoomFilter && (
             <div className="filter-dropdown">
-              <div
+              <button
+                type="button"
                 className="dropdown-toggle"
                 onClick={() => toggleDropdown("room")}
+                aria-expanded={openedDropdown === "room"}
+                aria-controls="room-filter-menu"
               >
                 <span className="label">{selectedRoom}</span>
                 <i
@@ -300,14 +325,16 @@ const Filter: React.FC<FilterProps> = ({
                     openedDropdown === "room" ? "open" : ""
                   }`}
                 />
-              </div>
+              </button>
               <div
+                id="room-filter-menu"
                 className={`dropdown-menu ${
                   openedDropdown === "room" ? "show" : ""
                 }`}
               >
                 {rooms.map((room) => (
-                  <div
+                  <button
+                    type="button"
                     key={room.room_id}
                     className={`dropdown-item ${
                       selectedRoom === room.room_name ? "selected" : ""
@@ -315,24 +342,28 @@ const Filter: React.FC<FilterProps> = ({
                     onClick={() => handleSelect("room", room.room_name)}
                   >
                     {room.room_name}
-                  </div>
+                  </button>
                 ))}
 
-                <div
+                <button
+                  type="button"
                   className="dropdown-item clear-item"
                   onClick={() => handleClear("room")}
                 >
                   Xoá bộ lọc
-                </div>
+                </button>
               </div>
             </div>
           )}
 
           {/* Price */}
           <div className="filter-dropdown">
-            <div
+            <button
+              type="button"
               className="dropdown-toggle"
               onClick={() => toggleDropdown("price")}
+              aria-expanded={openedDropdown === "price"}
+              aria-controls="price-filter-menu"
             >
               <span>{selectedPrice}</span>
               <i
@@ -340,14 +371,16 @@ const Filter: React.FC<FilterProps> = ({
                   openedDropdown === "price" ? "open" : ""
                 }`}
               />
-            </div>
+            </button>
             <div
+              id="price-filter-menu"
               className={`dropdown-menu ${
                 openedDropdown === "price" ? "show" : ""
               }`}
             >
               {prices.map((price) => (
-                <div
+                <button
+                  type="button"
                   key={price}
                   className={`dropdown-item ${
                     selectedPrice === price ? "selected" : ""
@@ -355,23 +388,27 @@ const Filter: React.FC<FilterProps> = ({
                   onClick={() => handleSelect("price", price)}
                 >
                   {price}
-                </div>
+                </button>
               ))}
 
-              <div
+              <button
+                type="button"
                 className="dropdown-item clear-item"
                 onClick={() => handleClear("price")}
               >
                 Xoá bộ lọc
-              </div>
+              </button>
             </div>
           </div>
 
           {/* Color */}
           <div className="filter-dropdown">
-            <div
+            <button
+              type="button"
               className="dropdown-toggle"
               onClick={() => toggleDropdown("color")}
+              aria-expanded={openedDropdown === "color"}
+              aria-controls="color-filter-menu"
             >
               {selectedColor !== "Chọn màu" && (
                 <span
@@ -391,14 +428,16 @@ const Filter: React.FC<FilterProps> = ({
                   openedDropdown === "color" ? "open" : ""
                 }`}
               />
-            </div>
+            </button>
             <div
+              id="color-filter-menu"
               className={`dropdown-menu ${
                 openedDropdown === "color" ? "show" : ""
               }`}
             >
               {colors.map((color) => (
-                <div
+                <button
+                  type="button"
                   key={color.color_id}
                   className={`dropdown-item ${
                     selectedColor === color.color_name ? "selected" : ""
@@ -413,15 +452,16 @@ const Filter: React.FC<FilterProps> = ({
                     }}
                   ></span>
                   {color.color_name}
-                </div>
+                </button>
               ))}
 
-              <div
+              <button
+                type="button"
                 className="dropdown-item clear-item"
                 onClick={() => handleClear("color")}
               >
                 Xoá bộ lọc
-              </div>
+              </button>
             </div>
           </div>
         </div>
@@ -429,22 +469,34 @@ const Filter: React.FC<FilterProps> = ({
         {/* Sort */}
         <div className="filter-right">
           <div className="filter-sort">
-            <div className="sort-toggle" onClick={() => toggleDropdown("sort")}>
-              <img src="/images/products/arrow-down-up.svg" alt="Sort" />
+            <button
+              type="button"
+              className="sort-toggle"
+              onClick={() => toggleDropdown("sort")}
+              aria-expanded={openedDropdown === "sort"}
+              aria-controls="sort-filter-menu"
+            >
+              <img
+                src="/images/products/arrow-down-up.svg"
+                alt=""
+                aria-hidden="true"
+              />
               <span>{selectedSort}</span>
               <i
                 className={`dropdown-icon ${
                   openedDropdown === "sort" ? "open" : ""
                 }`}
               />
-            </div>
+            </button>
             <div
+              id="sort-filter-menu"
               className={`dropdown-menu ${
                 openedDropdown === "sort" ? "show" : ""
               }`}
             >
               {sortOptions.map((option) => (
-                <div
+                <button
+                  type="button"
                   key={option}
                   className={`dropdown-item ${
                     selectedSort === option ? "selected" : ""
@@ -452,15 +504,16 @@ const Filter: React.FC<FilterProps> = ({
                   onClick={() => handleSelect("sort", option)}
                 >
                   {option}
-                </div>
+                </button>
               ))}
 
-              <div
+              <button
+                type="button"
                 className="dropdown-item clear-item"
                 onClick={() => handleClear("sort")}
               >
                 Xoá bộ lọc
-              </div>
+              </button>
             </div>
           </div>
           <div className="filter-clear-all">

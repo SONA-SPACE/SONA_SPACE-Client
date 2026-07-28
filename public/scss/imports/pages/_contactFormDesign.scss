@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .contact-form-page {
   // Banner Section
   .banner-section {
@@ -68,7 +71,7 @@
   // Services Section
   .services-section {
     .section-title {
-      @include text(28px, M-SB, normal, $text-cl, null);
+      @include mixins.text(28px, M-SB, normal, variables.$text-cl, null);
       margin-bottom: 48px;
       margin-left: 100px;
       text-align: left;
@@ -111,12 +114,12 @@
 
         .service-content {
           h3 {
-            @include text(18px, M-SB, normal, $text-cl, null);
+            @include mixins.text(18px, M-SB, normal, variables.$text-cl, null);
             margin-bottom: 10px;
           }
 
           p {
-            @include text(14px, BE-R, normal, $text-cl, null);
+            @include mixins.text(14px, BE-R, normal, variables.$text-cl, null);
             line-height: 1.5;
           }
         }
@@ -142,15 +145,15 @@
         margin-bottom: 60px;
         padding: 24px;
         align-items: start;
-        border-left: 4px solid $yellow-cl;
-        background: color-mix(in srgb, $yellow-cl 1%, transparent);
+        border-left: 4px solid variables.$yellow-cl;
+        background: color-mix(in srgb, variables.$yellow-cl 1%, transparent);
 
         &:last-child {
           margin-bottom: 0;
         }
 
         .step-number {
-          @include text(36px, M-SB, normal, $text-cl, null);
+          @include mixins.text(36px, M-SB, normal, variables.$text-cl, null);
           grid-column: 1;
         }
 
@@ -158,12 +161,12 @@
           grid-column: 2;
 
           h3 {
-            @include text(20px, M-SB, normal, $text-cl, null);
+            @include mixins.text(20px, M-SB, normal, variables.$text-cl, null);
             margin-bottom: 15px;
           }
 
           p {
-            @include text(14px, BE-R, normal, $text-cl, null);
+            @include mixins.text(14px, BE-R, normal, variables.$text-cl, null);
             line-height: 1.6;
           }
         }
@@ -187,9 +190,9 @@
   /* ===== Design Process Section ===== */
   .design-process {
     padding: 40px 0;
-    background: color-mix(in srgb, $yellow-cl 2%, transparent);
+    background: color-mix(in srgb, variables.$yellow-cl 2%, transparent);
     .section-title {
-      @include text(24px, M-SB, normal, $text-cl, null);
+      @include mixins.text(24px, M-SB, normal, variables.$text-cl, null);
       margin-bottom: 28px;
       text-align: left;
     }
@@ -220,24 +223,24 @@
         }
 
         .step-index {
-          @include text(28px, M-SB, normal, $text-cl, null);
+          @include mixins.text(28px, M-SB, normal, variables.$text-cl, null);
           width: 64px;
           height: 64px;
           display: grid;
           place-items: center;
           background: #fff;
-          border: 2px solid $yellow-cl;
+          border: 2px solid variables.$yellow-cl;
           border-radius: 100px;
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
         }
 
         .step-body {
           .step-title {
-            @include text(20px, M-SB, normal, $text-cl, null);
+            @include mixins.text(20px, M-SB, normal, variables.$text-cl, null);
             margin: 2px 0 8px;
           }
           .step-desc {
-            @include text(16px, BE-R, normal, $text-cl, null);
+            @include mixins.text(16px, BE-R, normal, variables.$text-cl, null);
             line-height: 1.5;
             margin-bottom: 8px;
           }
@@ -251,9 +254,9 @@
             padding: 10px 12px;
 
             div {
-              @include text(13px, BE-R, normal, $text-cl, null);
+              @include mixins.text(13px, BE-R, normal, variables.$text-cl, null);
               span {
-                @include text(13px, M-M, normal, #666, null);
+                @include mixins.text(13px, M-M, normal, #666, null);
                 margin-right: 6px;
               }
               b {
@@ -278,7 +281,7 @@
         padding: 16px;
 
         h4 {
-          @include text(16px, M-SB, normal, $text-cl, null);
+          @include mixins.text(16px, M-SB, normal, variables.$text-cl, null);
           margin-bottom: 10px;
         }
         ul {
@@ -286,7 +289,7 @@
           padding-left: 18px;
           li {
             list-style: disc;
-            @include text(14px, BE-R, normal, $text-cl, null);
+            @include mixins.text(14px, BE-R, normal, variables.$text-cl, null);
             line-height: 1.6;
             &:not(:last-child) {
               margin-bottom: 6px;
@@ -304,7 +307,7 @@
       .btn-primary {
         display: inline-block;
         padding: 12px 24px;
-        background-color: $yellow-cl;
+        background-color: variables.$yellow-cl;
         color: #fff;
         border-radius: 4px;
         font-family: "M-SB";
@@ -319,14 +322,14 @@
     }
 
     /* Responsive */
-    @media (max-width: $md-max) {
+    @media (max-width: variables.$md-max) {
       .process-timeline .process-step {
         grid-template-columns: 64px 1fr;
 
         .step-index {
           width: 64px;
           height: 64px;
-          @include text(22px, M-SB, normal, $text-cl, null);
+          @include mixins.text(22px, M-SB, normal, variables.$text-cl, null);
         }
         .step-body .step-meta {
           grid-template-columns: 1fr 1fr;
@@ -337,7 +340,7 @@
       }
     }
 
-    @media (max-width: $sm-max) {
+    @media (max-width: variables.$sm-max) {
       .section-title::before {
         display: none;
       }
@@ -376,13 +379,13 @@
       margin: 0 auto;
 
       .section-title {
-        @include text(28px, M-SB, normal, $text-cl, null);
+        @include mixins.text(28px, M-SB, normal, variables.$text-cl, null);
         margin-bottom: 16px;
         text-align: center;
       }
 
       .form-intro {
-        @include text(16px, BE-R, normal, $text-cl, null);
+        @include mixins.text(16px, BE-R, normal, variables.$text-cl, null);
         margin-bottom: 24px;
         max-width: 700px;
         text-align: center;
@@ -446,7 +449,7 @@
           position: absolute;
           top: 15px;
           left: 15px;
-          @include text(14px, M-M, normal, #888, null);
+          @include mixins.text(14px, M-M, normal, #888, null);
           pointer-events: none;
           transition: all 0.2s ease;
         }
@@ -487,13 +490,13 @@
           }
 
           .checkbox-text {
-            @include text(14px, M-R, normal, #888, null);
+            @include mixins.text(14px, M-R, normal, #888, null);
             display: flex;
             align-items: center;
             gap: 3px;
 
             a {
-              color: $yellow-cl;
+              color: variables.$yellow-cl;
               text-decoration: underline;
               transition: color 0.3s ease;
 
@@ -509,7 +512,7 @@
         display: block;
         width: 100%;
         padding: 14px;
-        background-color: $yellow-cl;
+        background-color: variables.$yellow-cl;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -563,14 +566,14 @@
   }
 
   // Responsive Styles
-  @media (max-width: $lg-max) {
+  @media (max-width: variables.$lg-max) {
     .services-section .services-grid {
       flex-direction: column;
       gap: 30px;
     }
   }
 
-  @media (max-width: $md-max) {
+  @media (max-width: variables.$md-max) {
     .design-intro {
       .page-title {
         font-size: 36px;
@@ -605,7 +608,7 @@
     }
   }
 
-  @media (max-width: $sm-max) {
+  @media (max-width: variables.$sm-max) {
     .banner-section {
       height: 500px;
     }

@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .user-account-page {
   padding: 60px 0;
 
@@ -39,12 +42,12 @@
           box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
           -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
           -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
-          color: $dark-cl;
-          background-color: $white-cl;
+          color: variables.$dark-cl;
+          background-color: variables.$white-cl;
           font-family: "M-SB", sans-serif;
 
           i {
-            color: $dark-cl;
+            color: variables.$dark-cl;
           }
         }
 
@@ -84,11 +87,11 @@
         margin-bottom: 24px;
 
         h2 {
-          @include text(16px, M-B, auto, $dark-cl, null);
+          @include mixins.text(16px, M-B, auto, variables.$dark-cl, null);
         }
 
         &__email {
-          @include text(14px, M-R, auto, $dark-cl, null);
+          @include mixins.text(14px, M-R, auto, variables.$dark-cl, null);
         }
       }
     }
@@ -122,11 +125,11 @@
           border-bottom: 1px solid #eee;
 
           .order-number {
-            @include text(14px, M-R, 16px, $dark-cl, null);
+            @include mixins.text(14px, M-R, 16px, variables.$dark-cl, null);
 
             span {
               margin-right: 15px;
-              @include text(14px, Be-M, 16px, $dark-cl, null);
+              @include mixins.text(14px, Be-M, 16px, variables.$dark-cl, null);
             }
           }
 
@@ -135,7 +138,7 @@
               display: inline-block;
               padding: 6px 15px;
               border-radius: 20px;
-              @include text(13px, Be-M, 15px, #fff, null);
+              @include mixins.text(13px, Be-M, 15px, #fff, null);
               text-transform: capitalize;
               box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
               transition: all 0.3s ease;
@@ -213,7 +216,7 @@
           }
 
           .product-image {
-            @include mid(true);
+            @include mixins.mid(true);
 
             img {
               width: 100%;
@@ -228,17 +231,17 @@
             padding: 15px;
 
             h4 {
-              @include text(16px, Be-M, 19px, $dark-cl, null);
+              @include mixins.text(16px, Be-M, 19px, variables.$dark-cl, null);
               margin-bottom: 10px;
             }
 
             .product-category {
-              @include text(14px, Be-R, 16px, #666, null);
+              @include mixins.text(14px, Be-R, 16px, #666, null);
               margin-bottom: 10px;
             }
 
             .product-price {
-              @include text(15px, Be-M, 18px, $dark-cl, null);
+              @include mixins.text(15px, Be-M, 18px, variables.$dark-cl, null);
               margin-bottom: 10px;
             }
 
@@ -251,7 +254,7 @@
                 display: flex;
                 align-items: center;
                 gap: 5px;
-                @include text(14px, Be-R, 16px, #666, null);
+                @include mixins.text(14px, Be-R, 16px, #666, null);
               }
             }
 
@@ -259,7 +262,7 @@
               margin-top: 15px;
 
               a {
-                @include text(14px, Be-M, 16px, $yellow-cl, null);
+                @include mixins.text(14px, Be-M, 16px, variables.$yellow-cl, null);
                 text-decoration: none;
 
                 &:hover {
@@ -283,7 +286,7 @@
             }
 
             h4 {
-              @include text(16px, Be-M, 19px, $dark-cl, null);
+              @include mixins.text(16px, Be-M, 19px, variables.$dark-cl, null);
               margin-bottom: 10px;
             }
 
@@ -293,12 +296,12 @@
               align-items: center;
 
               .label {
-                @include text(14px, Be-M, 16px, #666, null);
+                @include mixins.text(14px, Be-M, 16px, #666, null);
                 margin-right: 5px;
               }
 
               .value {
-                @include text(14px, Be-R, 16px, $dark-cl, null);
+                @include mixins.text(14px, Be-R, 16px, variables.$dark-cl, null);
                 display: block;
               }
             }
@@ -313,14 +316,14 @@
               button {
                 padding: 8px 15px;
                 border-radius: 4px;
-                @include text(14px, Be-M, 16px, null, null);
+                @include mixins.text(14px, Be-M, 16px, null, null);
                 cursor: pointer;
                 transition: all 0.3s ease;
                 text-align: center;
                 width: 185px;
 
                 &.btn-action-primary {
-                  background-color: $yellow-cl;
+                  background-color: variables.$yellow-cl;
                   color: #fff;
                   border: none;
 
@@ -341,7 +344,7 @@
 
                 &.btn-view-details {
                   background-color: #fff;
-                  color: $dark-cl;
+                  color: variables.$dark-cl;
                   border: none;
 
                   &:hover {
@@ -354,7 +357,7 @@
 
                 &.btn-review {
                   background-color: #fff;
-                  color: $dark-cl;
+                  color: variables.$dark-cl;
                   border: 1px solid #ddd;
 
                   &:hover {
@@ -396,7 +399,7 @@
 
             .order-info {
               .label {
-                @include text(18px, Be-M, auto, $dark-cl, null);
+                @include mixins.text(18px, Be-M, auto, variables.$dark-cl, null);
               }
 
               .value {
@@ -411,7 +414,7 @@
                 display: inline-block;
                 padding: 6px 15px;
                 border-radius: 20px;
-                @include text(13px, Be-M, 15px, #fff, null);
+                @include mixins.text(13px, Be-M, 15px, #fff, null);
                 text-transform: capitalize;
                 box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease;
@@ -488,7 +491,7 @@
             }
 
             .product-image {
-              @include mid(true);
+              @include mixins.mid(true);
 
               img {
                 width: 80%;
@@ -503,17 +506,17 @@
               margin-top: unset;
 
               h4 {
-                @include text(16px, Be-M, 19px, $dark-cl, null);
+                @include mixins.text(16px, Be-M, 19px, variables.$dark-cl, null);
                 margin-bottom: 5px;
               }
 
               .product-category {
-                @include text(14px, Be-R, 16px, #666, null);
+                @include mixins.text(14px, Be-R, 16px, #666, null);
                 margin-bottom: 10px;
               }
 
               .product-price {
-                @include text(15px, Be-M, 18px, $dark-cl, null);
+                @include mixins.text(15px, Be-M, 18px, variables.$dark-cl, null);
                 margin-bottom: 10px;
               }
 
@@ -526,7 +529,7 @@
                   display: flex;
                   align-items: center;
                   gap: 5px;
-                  @include text(14px, Be-R, 16px, #666, null);
+                  @include mixins.text(14px, Be-R, 16px, #666, null);
 
                   .color-dot {
                     display: inline-block;
@@ -537,7 +540,7 @@
                   }
 
                   .value-color {
-                    @include size(16px);
+                    @include mixins.size(16px);
                     border: 1px solid rgb(125, 90, 80);
                     border-radius: 100%;
                     background-color: rgb(125, 90, 80);
@@ -549,7 +552,7 @@
                 margin-top: 15px;
 
                 a {
-                  @include text(14px, Be-M, 16px, $yellow-cl, null);
+                  @include mixins.text(14px, Be-M, 16px, variables.$yellow-cl, null);
                   text-decoration: none;
 
                   &:hover {
@@ -561,18 +564,18 @@
 
             .order-pricing {
               h4 {
-                @include text(16px, Be-M, 19px, $dark-cl, null);
+                @include mixins.text(16px, Be-M, 19px, variables.$dark-cl, null);
               }
 
               .price-info,
               .delivery-info,
               .total-info {
                 .label {
-                  @include text(14px, Be-M, 16px, #666, null);
+                  @include mixins.text(14px, Be-M, 16px, #666, null);
                 }
 
                 .value {
-                  @include text(14px, Be-R, 16px, $dark-cl, null);
+                  @include mixins.text(14px, Be-R, 16px, variables.$dark-cl, null);
                 }
               }
             }
@@ -598,7 +601,7 @@
               }
 
               h4 {
-                @include text(16px, Be-M, 19px, $dark-cl, null);
+                @include mixins.text(16px, Be-M, 19px, variables.$dark-cl, null);
                 margin-bottom: 10px;
               }
 
@@ -606,12 +609,12 @@
                 margin-bottom: 8px;
 
                 .label {
-                  @include text(14px, Be-M, 16px, #666, null);
+                  @include mixins.text(14px, Be-M, 16px, #666, null);
                   margin-right: 5px;
                 }
 
                 .value {
-                  @include text(14px, Be-R, 16px, $dark-cl, null);
+                  @include mixins.text(14px, Be-R, 16px, variables.$dark-cl, null);
                   display: block;
                 }
 
@@ -638,14 +641,14 @@
                 button {
                   padding: 8px 15px;
                   border-radius: 4px;
-                  @include text(14px, Be-M, 16px, null, null);
+                  @include mixins.text(14px, Be-M, 16px, null, null);
                   cursor: pointer;
                   transition: all 0.3s ease;
                   flex: 1;
                   text-align: center;
 
                   &.btn-action-primary {
-                    background-color: $yellow-cl;
+                    background-color: variables.$yellow-cl;
                     color: #fff;
                     border: none;
 
@@ -666,7 +669,7 @@
 
                   &.btn-view-details {
                     background-color: #fff;
-                    color: $dark-cl;
+                    color: variables.$dark-cl;
                     border: 1px solid #ddd;
 
                     &:hover {
@@ -676,7 +679,7 @@
 
                   &.btn-review {
                     background-color: #fff;
-                    color: $dark-cl;
+                    color: variables.$dark-cl;
                     border: 1px solid #ddd;
 
                     &:hover {
@@ -718,12 +721,12 @@
 
               &.btn-outline {
                 background-color: transparent;
-                color: $yellow-cl;
+                color: variables.$yellow-cl;
                 border: 1px solid #f5a623;
 
                 &:hover {
-                  background-color: $yellow-cl;
-                  color: $white-cl;
+                  background-color: variables.$yellow-cl;
+                  color: variables.$white-cl;
                 }
               }
             }
@@ -731,11 +734,11 @@
             a.btn-primary {
               width: 130px;
               padding: 5px 25px;
-              background-color: $white-cl;
-              color: $dark-cl;
+              background-color: variables.$white-cl;
+              color: variables.$dark-cl;
               border-radius: 5px;
               transition: all 0.3s ease;
-              @include text(14px, Be-M, auto, $dark-cl, null);
+              @include mixins.text(14px, Be-M, auto, variables.$dark-cl, null);
 
               &:hover {
                 transition: all 0.3s ease;
@@ -752,11 +755,11 @@
     // Personal Information Section
     .info-section {
       h2 {
-        @include text(24px, Be-M, 25.2px, $dark-cl, null);
+        @include mixins.text(24px, Be-M, 25.2px, variables.$dark-cl, null);
       }
 
       p {
-        @include text(16px, Be-L, auto, $dark-cl, null);
+        @include mixins.text(16px, Be-L, auto, variables.$dark-cl, null);
         margin-bottom: 20px;
       }
 
@@ -777,7 +780,7 @@
         border-bottom: 1px solid #eee;
 
         h3 {
-          @include text(18px, Be-M, 21px, $dark-cl, null);
+          @include mixins.text(18px, Be-M, 21px, variables.$dark-cl, null);
           margin: 0;
         }
       }
@@ -806,12 +809,12 @@
         }
 
         .info-label {
-          @include text(14px, Be-R, 16px, #666, null);
+          @include mixins.text(14px, Be-R, 16px, #666, null);
           margin-bottom: 8px;
         }
 
         .info-value {
-          @include text(16px, Be-M, 19px, $dark-cl, null);
+          @include mixins.text(16px, Be-M, 19px, variables.$dark-cl, null);
           padding: 12px 15px;
           background-color: #f9f9f9;
           border-radius: 4px;
@@ -893,7 +896,7 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 
         h3 {
-          @include text(20px, Be-M, 24px, $dark-cl, null);
+          @include mixins.text(20px, Be-M, 24px, variables.$dark-cl, null);
           margin-top: 0;
           margin-bottom: 20px;
         }
@@ -930,7 +933,7 @@
 
             &:focus {
               outline: none;
-              border-color: $yellow-cl;
+              border-color: variables.$yellow-cl;
             }
           }
           select {
@@ -989,7 +992,7 @@
       }
 
       .password-instruction {
-        @include text(16px, Be-L, 22px, #666, null);
+        @include mixins.text(16px, Be-L, 22px, #666, null);
         margin-bottom: 25px;
       }
 
@@ -1000,7 +1003,7 @@
           margin-bottom: 25px;
 
           .info-label {
-            @include text(14px, Be-R, 16px, #666, null);
+            @include mixins.text(14px, Be-R, 16px, #666, null);
             margin-bottom: 8px;
           }
 
@@ -1021,7 +1024,7 @@
 
             &:focus {
               outline: none;
-              border-color: $yellow-cl;
+              border-color: variables.$yellow-cl;
             }
           }
         }
@@ -1032,7 +1035,7 @@
         text-align: left;
 
         a {
-          @include text(14px, Be-M, 16px, $yellow-cl, null);
+          @include mixins.text(14px, Be-M, 16px, variables.$yellow-cl, null);
           text-decoration: none;
 
           &:hover {
@@ -1156,7 +1159,7 @@
     // Promo Codes Section
     .promo-section {
       h2 {
-        @include text(24px, Be-M, 25.2px, $dark-cl, null);
+        @include mixins.text(24px, Be-M, 25.2px, variables.$dark-cl, null);
         margin-bottom: 10px;
       }
 
@@ -1197,10 +1200,10 @@
           }
 
           &.active {
-            color: $yellow-cl;
+            color: variables.$yellow-cl;
 
             &:after {
-              background-color: $yellow-cl;
+              background-color: variables.$yellow-cl;
             }
           }
 
@@ -1211,7 +1214,7 @@
       }
 
       .promo-description-text {
-        @include text(16px, Be-L, 22px, #666, null);
+        @include mixins.text(16px, Be-L, 22px, #666, null);
         margin-bottom: 25px;
       }
 
@@ -1219,7 +1222,7 @@
         margin-bottom: 20px;
 
         h3 {
-          @include text(18px, Be-M, 21px, $dark-cl, null);
+          @include mixins.text(18px, Be-M, 21px, variables.$dark-cl, null);
           display: flex;
           align-items: center;
 
@@ -1228,7 +1231,7 @@
             display: inline-block;
             width: 4px;
             height: 18px;
-            background-color: $yellow-cl;
+            background-color: variables.$yellow-cl;
             margin-right: 10px;
             border-radius: 2px;
           }
@@ -1265,12 +1268,12 @@
           border-bottom: 1px solid #eee;
 
           .voucher-discount {
-            @include text(18px, Be-B, 21px, $dark-cl, null);
+            @include mixins.text(18px, Be-B, 21px, variables.$dark-cl, null);
             margin-bottom: 5px;
           }
 
           .voucher-type {
-            @include text(14px, Be-M, 16px, #666, null);
+            @include mixins.text(14px, Be-M, 16px, #666, null);
           }
         }
 
@@ -1279,7 +1282,7 @@
           border-bottom: 1px solid #eee;
 
           span {
-            @include text(14px, Be-M, 16px, $dark-cl, null);
+            @include mixins.text(14px, Be-M, 16px, variables.$dark-cl, null);
           }
         }
 
@@ -1293,22 +1296,22 @@
           .flash-icon {
             font-size: 16px;
             margin-right: 8px;
-            color: $yellow-cl;
+            color: variables.$yellow-cl;
           }
 
           .flash-text {
-            @include text(14px, Be-M, 16px, $yellow-cl, null);
+            @include mixins.text(14px, Be-M, 16px, variables.$yellow-cl, null);
             margin-right: 10px;
           }
 
           .flash-time {
-            @include text(13px, Be-R, 15px, #666, null);
+            @include mixins.text(13px, Be-R, 15px, #666, null);
             display: flex;
             align-items: center;
             margin-left: auto;
 
             .time-value {
-              @include text(13px, Be-M, 15px, $dark-cl, null);
+              @include mixins.text(13px, Be-M, 15px, variables.$dark-cl, null);
               background-color: #fff;
               padding: 2px 4px;
               border-radius: 2px;
@@ -1354,7 +1357,7 @@
               position: relative;
               padding-left: 10px;
               margin-bottom: 8px;
-              @include text(13px, Be-R, 18px, #666, null);
+              @include mixins.text(13px, Be-R, 18px, #666, null);
 
               &:before {
                 content: "•";
@@ -1379,14 +1382,14 @@
             flex: 1;
             padding: 10px 0;
             border-radius: 4px;
-            @include text(14px, Be-M, 16px, null, null);
+            @include mixins.text(14px, Be-M, 16px, null, null);
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
 
             &.btn-copy {
               background-color: #f8f9fa;
-              color: $dark-cl;
+              color: variables.$dark-cl;
               border: 1px solid #ddd;
               display: flex;
               align-items: center;
@@ -1399,7 +1402,7 @@
             }
 
             &.btn-apply {
-              background-color: $yellow-cl;
+              background-color: variables.$yellow-cl;
               color: #fff;
 
               &:hover {
@@ -1417,7 +1420,7 @@
       padding: 40px 0;
 
       p {
-        @include text(16px, Be-M, 22px, #666, null);
+        @include mixins.text(16px, Be-M, 22px, #666, null);
         margin-bottom: 20px;
       }
 
@@ -1513,7 +1516,7 @@
     // Order Management Section
     .orders-management-section {
       h2 {
-        @include text(24px, Be-M, 25.2px, $dark-cl, null);
+        @include mixins.text(24px, Be-M, 25.2px, variables.$dark-cl, null);
         margin-bottom: 20px;
         border-bottom: 1px solid #eee;
         padding-bottom: 10px;
@@ -1556,10 +1559,10 @@
           }
 
           &.active {
-            color: $yellow-cl;
+            color: variables.$yellow-cl;
 
             &:after {
-              background-color: $yellow-cl;
+              background-color: variables.$yellow-cl;
             }
           }
 
@@ -1596,11 +1599,11 @@
           border-bottom: 1px solid #eee;
 
           .order-number {
-            @include text(14px, M-R, 16px, $dark-cl, null);
+            @include mixins.text(14px, M-R, 16px, variables.$dark-cl, null);
 
             span {
               margin-right: 15px;
-              @include text(14px, Be-M, 16px, $dark-cl, null);
+              @include mixins.text(14px, Be-M, 16px, variables.$dark-cl, null);
             }
           }
 
@@ -1609,7 +1612,7 @@
               display: inline-block;
               padding: 6px 15px;
               border-radius: 20px;
-              @include text(13px, Be-M, 15px, #fff, null);
+              @include mixins.text(13px, Be-M, 15px, #fff, null);
               text-transform: capitalize;
               box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
               transition: all 0.3s ease;
@@ -1683,7 +1686,7 @@
           }
 
           .product-image {
-            @include mid(true);
+            @include mixins.mid(true);
 
             img {
               width: 100%;
@@ -1698,17 +1701,17 @@
             padding: 15px;
 
             h4 {
-              @include text(16px, Be-M, 19px, $dark-cl, null);
+              @include mixins.text(16px, Be-M, 19px, variables.$dark-cl, null);
               margin-bottom: 10px;
             }
 
             .product-category {
-              @include text(14px, Be-R, 16px, #666, null);
+              @include mixins.text(14px, Be-R, 16px, #666, null);
               margin-bottom: 10px;
             }
 
             .product-price {
-              @include text(15px, Be-M, 18px, $dark-cl, null);
+              @include mixins.text(15px, Be-M, 18px, variables.$dark-cl, null);
               margin-bottom: 10px;
             }
 
@@ -1721,7 +1724,7 @@
                 display: flex;
                 align-items: center;
                 gap: 5px;
-                @include text(14px, Be-R, 16px, #666, null);
+                @include mixins.text(14px, Be-R, 16px, #666, null);
               }
             }
 
@@ -1729,7 +1732,7 @@
               margin-top: 15px;
 
               a {
-                @include text(14px, Be-M, 16px, $yellow-cl, null);
+                @include mixins.text(14px, Be-M, 16px, variables.$yellow-cl, null);
                 text-decoration: none;
 
                 &:hover {
@@ -1753,7 +1756,7 @@
             }
 
             h4 {
-              @include text(16px, Be-M, 19px, $dark-cl, null);
+              @include mixins.text(16px, Be-M, 19px, variables.$dark-cl, null);
               margin-bottom: 10px;
             }
 
@@ -1763,12 +1766,12 @@
               align-items: center;
 
               .label {
-                @include text(14px, Be-M, 16px, #666, null);
+                @include mixins.text(14px, Be-M, 16px, #666, null);
                 margin-right: 5px;
               }
 
               .value {
-                @include text(14px, Be-R, 16px, $dark-cl, null);
+                @include mixins.text(14px, Be-R, 16px, variables.$dark-cl, null);
                 display: block;
               }
             }
@@ -1801,14 +1804,14 @@
               button {
                 padding: 8px 15px;
                 border-radius: 4px;
-                @include text(14px, Be-M, 16px, null, null);
+                @include mixins.text(14px, Be-M, 16px, null, null);
                 cursor: pointer;
                 transition: all 0.3s ease;
                 text-align: center;
                 width: 50%;
 
                 &.btn-action-primary {
-                  background-color: $yellow-cl;
+                  background-color: variables.$yellow-cl;
                   color: #fff;
                   border: none;
 
@@ -1829,7 +1832,7 @@
 
                 &.btn-review {
                   background-color: #fff;
-                  color: $dark-cl;
+                  color: variables.$dark-cl;
                   border: 1px solid #ddd;
 
                   &:hover {
@@ -1840,14 +1843,14 @@
 
               a.btn-view-details {
                 background-color: #fff;
-                color: $dark-cl;
+                color: variables.$dark-cl;
                 border: none;
                 display: block;
                 width: 50%;
                 text-align: center;
                 padding: 8px 15px;
                 border-radius: 4px;
-                @include text(14px, Be-M, 16px, null, null);
+                @include mixins.text(14px, Be-M, 16px, null, null);
                 cursor: pointer;
                 transition: all 0.3s ease;
                 box-shadow: 0px 0px 8px 0px rgba(252, 252, 252, 0.1);

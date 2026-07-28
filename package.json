@@ -31,6 +31,10 @@
     "preview": "vite preview",
     "qa:spa-routing": "node scripts/qa-spa-routing-contract.js",
     "qa:about-page": "node scripts/qa-about-page-contract.js",
-    "qa:public-asset-paths": "node scripts/qa-public-asset-paths.js"
+    "qa:public-asset-paths": "node scripts/qa-public-asset-paths.js",
+    "qa:banner-stability": "node scripts/qa-banner-stability-contract.js",
+    "qa:product-filter-history": "node scripts/qa-product-filter-history-contract.js",
+    "qa:home-product-state": "node scripts/qa-home-product-state-contract.js",
+    "qa:sass-modules": "node scripts/qa-sass-module-contract.js"
   }
 }

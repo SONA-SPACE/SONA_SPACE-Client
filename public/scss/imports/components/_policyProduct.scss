@@ -1,3 +1,5 @@
+@use "../core/mixins";
+
 /* box-policy */
 .box-policy {
   padding: 50px 0;
@@ -59,7 +61,7 @@
   }
 }
 
-@include md {
+@include mixins.md {
   .box-policy{
     .box-policy-1{
         height: 100%;
@@ -84,7 +86,7 @@
   }
 }
 
-@include sm {
+@include mixins.sm {
   .box-policy{
     display: grid;
     grid-template-columns: repeat(2, 1fr);

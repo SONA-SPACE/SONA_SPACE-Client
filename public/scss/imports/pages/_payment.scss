@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .bill-payment {
   margin-top: 80px;
 }
@@ -352,7 +355,7 @@
           .apply-btn {
             height: 40px;
             padding: 0 15px;
-            background-color: $yellow-cl;
+            background-color: variables.$yellow-cl;
             color: #fff;
             border: none;
             border-radius: 0 4px 4px 0;
@@ -394,7 +397,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: $yellow-cl;
+      background-color: variables.$yellow-cl;
       border: none;
       border-radius: 4px;
       color: #fff;
@@ -474,7 +477,7 @@
   }
 }
 
-@include sm {
+@include mixins.sm {
   .Pay-billment {
     .pay-info {
       grid-template-columns: 1fr;
@@ -494,7 +497,7 @@
   }
 }
 
-@include xs {
+@include mixins.xs {
   .Pay-billment {
     .pay-info {
       grid-template-columns: 1fr;
@@ -514,7 +517,7 @@
   }
 }
 
-@include xxs {
+@include mixins.xxs {
   .Pay-billment {
     .pay-info {
       grid-template-columns: 1fr;
@@ -566,7 +569,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
   .edit-addr-btn:focus-visible {
-    outline: 2px solid $yellow-cl;
+    outline: 2px solid variables.$yellow-cl;
     outline-offset: 2px;
   }
 }
@@ -620,7 +623,7 @@
       color: #374151;
     }
     .aem-close:focus-visible {
-      outline: 2px solid $yellow-cl;
+      outline: 2px solid variables.$yellow-cl;
       outline-offset: 2px;
     }
   }
@@ -660,7 +663,7 @@
     }
     input[type="text"]:focus-visible,
     select:focus-visible {
-      outline: 2px solid $yellow-cl;
+      outline: 2px solid variables.$yellow-cl;
       outline-offset: 2px;
       border-color: #999;
     }
@@ -700,7 +703,7 @@
     }
     .btn-secondary:focus-visible,
     .btn-primary:focus-visible {
-      outline: 2px solid $yellow-cl;
+      outline: 2px solid variables.$yellow-cl;
       outline-offset: 2px;
     }
   }

@@ -1,11 +1,14 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .about-page {
-  background: $white-cl;
-  color: $dark-cl;
+  background: variables.$white-cl;
+  color: variables.$dark-cl;
   overflow: hidden;
 
   .about-eyebrow {
     margin: 0;
-    color: $text-gray;
+    color: variables.$text-gray;
     font-family: "M-SB", sans-serif;
     font-size: 11px;
     letter-spacing: 0.16em;
@@ -16,7 +19,7 @@
   h2,
   h3 {
     margin-top: 0;
-    color: $dark-cl;
+    color: variables.$dark-cl;
     font-family: "M-SB", sans-serif;
     font-weight: normal;
   }
@@ -26,7 +29,7 @@
     width: 46px;
     height: 3px;
     margin: 30px 0;
-    background: $yellow-cl;
+    background: variables.$yellow-cl;
   }
 
   .about-button,
@@ -46,7 +49,7 @@
     font-family: "Be-M", sans-serif;
     font-size: 14px;
     line-height: 1.4;
-    transition: background-color $t, border-color $t, color $t;
+    transition: background-color variables.$t, border-color variables.$t, color variables.$t;
 
     svg {
       width: 20px;
@@ -64,8 +67,8 @@
     }
 
     &--primary {
-      background: $yellow-cl;
-      color: $white-cl;
+      background: variables.$yellow-cl;
+      color: variables.$white-cl;
 
       &:hover:not(:disabled) {
         background: #d98f09;
@@ -74,7 +77,7 @@
   }
 
   .about-hero {
-    background: $snow-white-cl;
+    background: variables.$snow-white-cl;
 
     &__inner {
       display: grid;
@@ -101,7 +104,7 @@
     &__description {
       max-width: 365px;
       margin-bottom: 36px;
-      color: $text-gray;
+      color: variables.$text-gray;
       font-family: "Be-R", sans-serif;
       font-size: 16px;
       line-height: 1.75;
@@ -126,7 +129,7 @@
   }
 
   .about-process {
-    border-bottom: 1px solid $gray-cl-2;
+    border-bottom: 1px solid variables.$gray-cl-2;
 
     &__grid,
     .about-projects__grid {
@@ -151,7 +154,7 @@
     &__item {
       min-height: 190px;
       padding: 0 34px;
-      border-left: 1px solid $gray-cl-2;
+      border-left: 1px solid variables.$gray-cl-2;
 
       &:first-child {
         padding-left: 0;
@@ -161,7 +164,7 @@
       > p:last-child {
         max-width: 220px;
         margin-bottom: 0;
-        color: $text-gray;
+        color: variables.$text-gray;
         font-family: "Be-R", sans-serif;
         font-size: 14px;
         line-height: 1.6;
@@ -181,9 +184,9 @@
       width: 62px;
       height: 62px;
       margin-bottom: 18px;
-      border: 1px solid $yellow-cl;
+      border: 1px solid variables.$yellow-cl;
       border-radius: 50%;
-      color: $yellow-cl;
+      color: variables.$yellow-cl;
 
       svg {
         width: 30px;
@@ -227,7 +230,7 @@
     display: inline-flex;
     align-items: center;
     gap: 13px;
-    color: $yellow-cl;
+    color: variables.$yellow-cl;
     font-family: "M-SB", sans-serif;
     font-size: 14px;
 
@@ -239,7 +242,7 @@
       stroke-linecap: round;
       stroke-linejoin: round;
       stroke-width: 1.5;
-      transition: transform $t;
+      transition: transform variables.$t;
     }
 
     &:hover svg {
@@ -249,7 +252,7 @@
 
   .about-project-card {
     display: block;
-    color: $dark-cl;
+    color: variables.$dark-cl;
 
     &__image {
       display: block;
@@ -261,7 +264,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform $t;
+        transition: transform variables.$t;
       }
     }
 
@@ -278,7 +281,7 @@
         width: 22px;
         height: 22px;
         fill: none;
-        stroke: $yellow-cl;
+        stroke: variables.$yellow-cl;
         stroke-linecap: round;
         stroke-linejoin: round;
         stroke-width: 1.5;
@@ -292,8 +295,8 @@
 
   .about-contact {
     padding: 88px 0;
-    background: $snow-white-cl;
-    border-top: 1px solid $gray-cl-2;
+    background: variables.$snow-white-cl;
+    border-top: 1px solid variables.$gray-cl-2;
 
     &__inner {
       display: grid;
@@ -316,7 +319,7 @@
 
       > p:last-of-type {
         max-width: 430px;
-        color: $text-gray;
+        color: variables.$text-gray;
         font-family: "Be-R", sans-serif;
         font-size: 16px;
         line-height: 1.7;
@@ -335,8 +338,8 @@
 
     &__form {
       padding: 38px;
-      background: $white-cl;
-      border: 1px solid $gray-cl-2;
+      background: variables.$white-cl;
+      border: 1px solid variables.$gray-cl-2;
     }
 
     &__form-row {
@@ -346,7 +349,7 @@
     }
   }
 
-  @include minW($sm-min) {
+  @include mixins.minW(variables.$sm-min) {
     .about-contact__intro {
       position: sticky;
       top: calc(var(--height-header) + 24px);
@@ -359,7 +362,7 @@
     label {
       display: block;
       margin-bottom: 8px;
-      color: $dark-cl;
+      color: variables.$dark-cl;
       font-family: "M-SB", sans-serif;
       font-size: 14px;
     }
@@ -368,17 +371,17 @@
     textarea {
       box-sizing: border-box;
       width: 100%;
-      border: 1px solid $gray-cl-1;
+      border: 1px solid variables.$gray-cl-1;
       border-radius: 0;
       padding: 13px 14px;
-      color: $text-cl;
+      color: variables.$text-cl;
       font-family: "Be-R", sans-serif;
       font-size: 15px;
       line-height: 1.5;
-      transition: border-color $t;
+      transition: border-color variables.$t;
 
       &:focus {
-        border-color: $dark-cl;
+        border-color: variables.$dark-cl;
         outline: 0;
       }
     }
@@ -394,7 +397,7 @@
     align-items: flex-start;
     gap: 10px;
     margin: 0 0 20px;
-    color: $text-gray;
+    color: variables.$text-gray;
     font-family: "Be-R", sans-serif;
     font-size: 13px;
     line-height: 1.6;
@@ -402,24 +405,24 @@
     input {
       flex: 0 0 auto;
       margin-top: 4px;
-      accent-color: $yellow-cl;
+      accent-color: variables.$yellow-cl;
     }
 
     a {
-      color: $dark-cl;
+      color: variables.$dark-cl;
       text-decoration: underline;
     }
   }
 
   .about-form-error {
     margin: 6px 0 0;
-    color: $error-cl;
+    color: variables.$error-cl;
     font-family: "Be-R", sans-serif;
     font-size: 13px;
     line-height: 1.4;
   }
 
-  @include sm {
+  @include mixins.sm {
     .about-hero__copy {
       padding-right: 34px;
     }
@@ -438,7 +441,7 @@
     }
   }
 
-  @include xs {
+  @include mixins.xs {
     .about-hero__inner,
     .about-contact__inner {
       display: block;
@@ -484,7 +487,7 @@
       min-height: auto;
       margin-top: 30px;
       padding: 28px 0 0;
-      border-top: 1px solid $gray-cl-2;
+      border-top: 1px solid variables.$gray-cl-2;
       border-left: 0;
     }
 

@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .homepage {
     // Product Recommendations
     .product-recommendations {
@@ -6,7 +9,7 @@
         }
 
         .section-description {
-            @include text(16px, Be-R, 24px, $text-cl, null);
+            @include mixins.text(16px, Be-R, 24px, variables.$text-cl, null);
             text-align: center;
             margin-bottom: 24px;
         }
@@ -50,15 +53,15 @@
                     row-gap: 18px;
 
                     h3 {
-                        @include text(20px, M-SB, 22px, $white-cl, null);
+                        @include mixins.text(20px, M-SB, 22px, variables.$white-cl, null);
                     }
 
                     .btn {
                         padding: 12px 20px;
-                        @include text(16px, Be-M, normal, $black-cl, null);
+                        @include mixins.text(16px, Be-M, normal, variables.$black-cl, null);
                         transition: all 0.3s ease;
                         display: inline-block;
-                        background-color: $white-cl;
+                        background-color: variables.$white-cl;
                         display: flex;
                         align-items: center;
                         column-gap: 8px;
@@ -67,20 +70,20 @@
                         outline: none;
 
                         i {
-                            color: $black-cl;
+                            color: variables.$black-cl;
                             transition: all 0.3s ease;
 
                             svg {
-                                @include size(16px, 16px);
+                                @include mixins.size(16px, 16px);
                             }
                         }
 
                         &:hover {
-                            background-color: $yellow-cl;
-                            color: $white-cl;
+                            background-color: variables.$yellow-cl;
+                            color: variables.$white-cl;
 
                             i {
-                                color: $white-cl;
+                                color: variables.$white-cl;
                             }
                         }
                     }
@@ -104,7 +107,7 @@
     }
 }
 
-@include xs {
+@include mixins.xs {
     .homepage {
         .product-recommendations {
             .recommendation-grid {

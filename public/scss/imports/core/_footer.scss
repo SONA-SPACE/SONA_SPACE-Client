@@ -1,3 +1,6 @@
+@use "mixins";
+@use "variables";
+
 .footer {
     background-color: #FCFCFC;
     color: #fff;
@@ -28,13 +31,13 @@
                         flex: 1;
 
                         h3 {
-                            @include text(26px, Be-SB, auto, $dark-cl, null);
+                            @include mixins.text(26px, Be-SB, auto, variables.$dark-cl, null);
                             margin-bottom: 12px;
                         }
 
                         p {
                             margin: unset;
-                            @include text(16px, Be-L, auto, $dark-cl, null);
+                            @include mixins.text(16px, Be-L, auto, variables.$dark-cl, null);
                             text-align: left;
                         }
                     }
@@ -53,7 +56,7 @@
 
                 .tip-item {
                     h3 {
-                        @include text(18px, Be-L, auto, $dark-cl, null);
+                        @include mixins.text(18px, Be-L, auto, variables.$dark-cl, null);
                     }
                 }
             }
@@ -68,7 +71,7 @@
 
         .footer-column {
             h3 {
-                @include text(14px, Be-L, auto, $dark-cl, null);
+                @include mixins.text(14px, Be-L, auto, variables.$dark-cl, null);
                 margin-bottom: 20px;
             }
 
@@ -82,7 +85,7 @@
 
                     a,
                     p {
-                        @include text(14px, Be-L, auto, $dark-cl, null);
+                        @include mixins.text(14px, Be-L, auto, variables.$dark-cl, null);
                         transition: color 0.3s ease;
 
 
@@ -120,7 +123,7 @@
             .btn {
                 padding: 10px 50px;
                 border-radius: 8px;
-                @include text(14px, Be-M, auto, $dark-cl, null);
+                @include mixins.text(14px, Be-M, auto, variables.$dark-cl, null);
                 transition: all 0.3s ease;
                 display: inline;
                 box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
@@ -128,16 +131,16 @@
                 -moz-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
 
                 &.btn-primary {
-                    background-color: $white-cl;
-                    color: $dark-cl;
+                    background-color: variables.$white-cl;
+                    color: variables.$dark-cl;
                     box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
                     -webkit-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
                     -moz-box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
-                    border: 1px solid $yellow-cl;
+                    border: 1px solid variables.$yellow-cl;
 
                     &:hover {
-                        background-color: $yellow-cl;
-                        color: $white-cl;
+                        background-color: variables.$yellow-cl;
+                        color: variables.$white-cl;
                     }
                 }
             }
@@ -152,13 +155,13 @@
         border-top: 1px solid rgba(255, 255, 255, 0.1);
 
         p {
-            @include text(14px, Be-L, auto, $dark-cl, null);
+            @include mixins.text(14px, Be-L, auto, variables.$dark-cl, null);
 
             a {
-                @include text(14px, Be-L, auto, $dark-cl, null);
+                @include mixins.text(14px, Be-L, auto, variables.$dark-cl, null);
                 text-decoration: none;
                 transition: color 0.3s ease;
-                @include hover-line-animation($dark-cl, 1px, 0.3s);
+                @include mixins.hover-line-animation(variables.$dark-cl, 1px, 0.3s);
             }
         }
 
@@ -175,14 +178,14 @@
                 column-gap: 8px;
 
                 span {
-                    @include text(14px, Be-M, auto, $dark-cl, null);
+                    @include mixins.text(14px, Be-M, auto, variables.$dark-cl, null);
                 }
             }
         }
     }
 }
 
-@include lg {
+@include mixins.lg {
     .footer {
         .footer-column {
             &:last-child {
@@ -194,7 +197,7 @@
     }
 }
 
-@include sm {
+@include mixins.sm {
     .footer {
         .design-tips {
             .tips-grid {
@@ -243,7 +246,7 @@
     }
 }
 
-@include xs {
+@include mixins.xs {
     .footer {
         .design-tips {
             .tips-grid {

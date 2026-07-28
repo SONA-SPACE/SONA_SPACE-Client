@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .contact-design-page {
   padding-bottom: 60px;
   padding-top: 130px;
@@ -28,7 +31,7 @@
     }
 
     .section-description {
-      @include text(16px, Be-R, 24px, $text-cl, null);
+      @include mixins.text(16px, Be-R, 24px, variables.$text-cl, null);
       text-align: center;
       margin-bottom: 24px;
     }
@@ -272,7 +275,7 @@
         }
 
         .checkbox-text {
-          @include text(14px, M-R, normal, #888, null);
+          @include mixins.text(14px, M-R, normal, #888, null);
           display: flex;
           align-items: center;
           gap: 3px;

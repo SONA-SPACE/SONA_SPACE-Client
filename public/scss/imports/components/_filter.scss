@@ -1,3 +1,5 @@
+@use "../core/variables";
+
 .filter-row {
   display: flex;
   justify-content: space-between;
@@ -58,6 +60,8 @@
         font-size: 14px;
         user-select: none;
         box-sizing: border-box;
+        color: #333;
+        text-align: left;
 
         .label {
           flex: 1;
@@ -131,6 +135,10 @@
         }
 
         .dropdown-item {
+          width: 100%;
+          border: 0;
+          background: transparent;
+          text-align: left;
           padding: 8px 12px;
           cursor: pointer;
           font-family: 'M-R';
@@ -212,6 +220,8 @@
         font-family: 'M-R';
         font-size: 14px;
         box-sizing: border-box;
+        color: #333;
+        text-align: left;
     
         img {
           width: 16px;
@@ -270,6 +280,10 @@
         }
     
         .dropdown-item {
+          width: 100%;
+          border: 0;
+          background: transparent;
+          text-align: left;
           padding: 8px 12px;
           cursor: pointer;
           font-family: 'M-R';
@@ -292,7 +306,7 @@
 }
 
 // Responsive
-@media (max-width: $sm-max) {
+@media (max-width: variables.$sm-max) {
   .filter-row {
     flex-direction: column;
     align-items: flex-start;

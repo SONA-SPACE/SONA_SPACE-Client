@@ -1,3 +1,5 @@
+@use "../core/variables";
+
 // :root {
 //     --gap: 20px;
 //     --body16-fs: 16px;
@@ -23,17 +25,17 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba($black-cl, 0.6);
+    background-color: rgba(variables.$black-cl, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 
     .popup-container {
-        background-color: $white-cl;
+        background-color: variables.$white-cl;
         padding: 0;
         border-radius: 8px;
-        box-shadow: 0 4px 15px rgba($black-cl, 0.2);
+        box-shadow: 0 4px 15px rgba(variables.$black-cl, 0.2);
         aspect-ratio: 2 / 1; // đúng tỷ lệ 1000:500
         width: 90vw;
         max-width: 1300px;
@@ -41,7 +43,7 @@
         min-width: 300px;
         position: relative;
         text-align: center;
-        animation: fadeInScale $t ease-out forwards;
+        animation: fadeInScale variables.$t ease-out forwards;
         overflow: hidden;
         display: flex;
         justify-content: center;
@@ -75,8 +77,8 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: rgba($black-cl, 0.5);
-            color: $white-cl;
+            background-color: rgba(variables.$black-cl, 0.5);
+            color: variables.$white-cl;
             border-radius: 50%;
             width: 30px;
             height: 30px;
@@ -86,14 +88,14 @@
             font-size: 20px;
             cursor: pointer;
             border: none;
-            transition: background-color $t ease;
+            transition: background-color variables.$t ease;
 
 
         }
 
         .no-image-placeholder {
             padding: var(--gap);
-            color: $text-cl;
+            color: variables.$text-cl;
             font-size: var(--body16-fs);
             display: flex;
             justify-content: center;
@@ -117,7 +119,7 @@
             display: inline-block !important;
             width: 10px;
             height: 10px;
-            background-color: rgba($white-cl, 0.7);
+            background-color: rgba(variables.$white-cl, 0.7);
             border-radius: 50%;
             margin: 0 5px;
             cursor: pointer;
@@ -126,7 +128,7 @@
         }
 
         .swiper-pagination-bullet-active {
-            background-color: $gray-cl-5 !important;
+            background-color: variables.$gray-cl-5 !important;
             width: 12px;
             height: 12px;
         }
@@ -137,7 +139,7 @@
     }
 
     .swiper-scrollbar {
-        background: rgba($black-cl, 0.2) !important;
+        background: rgba(variables.$black-cl, 0.2) !important;
         height: 8px !important;
         position: absolute !important;
         bottom: 10px !important;
@@ -149,7 +151,7 @@
     }
 
     .swiper-scrollbar-drag {
-        background: $dark-cl !important;
+        background: variables.$dark-cl !important;
         border-radius: 4px !important;
     }
 

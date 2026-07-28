@@ -1,3 +1,6 @@
+@use "../core/mixins";
+@use "../core/variables";
+
 .rooms-page {
 
   // Banner Section
@@ -25,7 +28,7 @@
     overflow: visible;
 
     .section-title {
-      @include text(24px, M-SB, normal, $text-cl, null);
+      @include mixins.text(24px, M-SB, normal, variables.$text-cl, null);
       margin-bottom: 30px;
       text-align: left;
     }
@@ -37,7 +40,7 @@
     margin-bottom: 44px;
 
     .section-title {
-      @include text(24px, M-SB, normal, $text-cl, null);
+      @include mixins.text(24px, M-SB, normal, variables.$text-cl, null);
       margin-bottom: 30px;
       text-align: left;
     }

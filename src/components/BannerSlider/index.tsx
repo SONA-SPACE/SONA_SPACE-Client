@@ -72,7 +72,7 @@ const pageBannerFallbacks: Record<string, BannerFallbackConfig> = {
   },
 };
 
-const fallbackBannerImage = "/images/default-banner.jpg";
+const fallbackBannerImage = "/images/hero-banner.png";
 
 const BannerSlider: React.FC<BannerSliderProps> = ({
   className = "",
@@ -133,11 +133,11 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
           <SkeletonBlock className="banner-image" height="100%" />
           <div className="banner-content">
             <div className="container">
-              <div className="banner-text">
-                <SkeletonBlock width="120px" height={16} />
-                <SkeletonBlock width="58%" height={58} />
-                <SkeletonBlock width="42%" height={18} />
-                <SkeletonBlock width="220px" height={56} />
+              <div className="banner-text banner-text--skeleton">
+                <SkeletonBlock className="banner-skeleton__subtitle" />
+                <SkeletonBlock className="banner-skeleton__title" />
+                <SkeletonBlock className="banner-skeleton__description" />
+                <SkeletonBlock className="banner-skeleton__button" />
               </div>
             </div>
           </div>
@@ -216,14 +216,19 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
         loop={banners.length > 1}
         className="banner-swiper"
       >
-        {banners.map((banner) => {
+        {banners.map((banner, index) => {
           const bannerLink = getBannerLink(banner);
 
           return (
             <SwiperSlide key={banner.id}>
               <div className="banner-slide">
                 <div className="banner-image">
-                  <img src={banner.image} alt={banner.title} loading="lazy" />
+                  <img
+                    src={banner.image}
+                    alt={banner.title}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                  />
                 </div>
                 <div className="banner-content">
                   <div className="container">
