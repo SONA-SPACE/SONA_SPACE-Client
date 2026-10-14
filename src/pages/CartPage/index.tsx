@@ -337,9 +337,9 @@ const CartPage: React.FC = () => {
               </div>
             ) : null}
 
-            {isCartLoading ? (
-              <PageSectionSkeleton variant="cart-list" count={3} />
-            ) : !getAuthToken() ? (
+            {/* A guest is known at render time: show the sign-in prompt straight away instead of
+                flashing the list skeleton first */}
+            {!getAuthToken() ? (
               <EmptyState
                 title="Đăng nhập để xem giỏ hàng"
                 message="Giỏ hàng được lưu theo tài khoản, để bạn tiếp tục mua sắm trên mọi thiết bị."
@@ -348,6 +348,8 @@ const CartPage: React.FC = () => {
                 secondaryActionLabel="Tiếp tục mua sắm"
                 secondaryActionTo="/san-pham"
               />
+            ) : isCartLoading ? (
+              <PageSectionSkeleton variant="cart-list" count={3} />
             ) : cartError ? (
               <RetryState
                 message={cartError}

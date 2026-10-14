@@ -41,6 +41,11 @@
 // everywhere else.
 // =========================================================================================
 .header {
+  // The header keeps a wider frame than the page content (up to 1464px, small gutters) so
+  // logo, menu and actions never crowd; the mega menu and search panels inherit it
+  --container-content: 1464px;
+  --container-gutter: clamp(20px, 3vw, 48px);
+
   position: fixed;
   top: 0;
   left: 0;
@@ -132,6 +137,7 @@
     padding: 8px 0;
     @include mixins.text(16px, "Be-M", 1.4, variables.$white-cl, null);
     letter-spacing: 0.01em;
+    white-space: nowrap;
     text-decoration: none;
     transition: color var(--dur-base) var(--ease-out);
 
@@ -643,6 +649,18 @@
 // ---------------------------------------------------------------------------------------
 // Responsive
 // ---------------------------------------------------------------------------------------
+// Logo + full menu + actions need about 1,161px, or 1,105px with this tighter spacing; the
+// header frame is 1,128px wide at 1200px, so narrow desktops use the tighter spacing
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .header .header-wrapper {
+    gap: 16px;
+  }
+
+  .main-nav__list {
+    gap: 22px;
+  }
+}
+
 @include mixins.md {
   .main-nav,
   .header-actions-buttons {

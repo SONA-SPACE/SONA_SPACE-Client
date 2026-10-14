@@ -45,42 +45,16 @@ body {
     }
   }
 
+  // One fluid container instead of stepped max-widths: the side gutter grows with the
+  // viewport and the content never gets wider than --container-content. The old 1464px step
+  // at 1536px left 36px margins at 1536 and stretched every section on wide screens.
   .container {
     width: 100%;
-    padding-right: calc(var(--gap) / 2);
-    padding-left: calc(var(--gap) / 2);
+    max-width: calc(var(--container-content) + 2 * var(--container-gutter));
+    padding-right: var(--container-gutter);
+    padding-left: var(--container-gutter);
     margin-right: auto;
     margin-left: auto;
-  }
-
-  @media (min-width: variables.$xxs-min) {
-    .container {
-      max-width: 540px;
-    }
-  }
-
-  @media (min-width: variables.$xs-min) {
-    .container {
-      max-width: 720px;
-    }
-  }
-
-  @media (min-width: variables.$sm-min) {
-    .container {
-      max-width: 960px;
-    }
-  }
-
-  @media (min-width: variables.$md-min) {
-    .container {
-      max-width: 1200px;
-    }
-  }
-
-  @media (min-width: variables.$lg-min) {
-    .container {
-      max-width: variables.$container-width;
-    }
   }
 
   .mainwrapper {

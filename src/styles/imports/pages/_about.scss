@@ -77,7 +77,7 @@
     &__inner {
       display: grid;
       grid-template-columns: minmax(300px, 0.85fr) minmax(0, 1.15fr);
-      min-height: 600px;
+      min-height: 520px;
     }
 
     &__copy {
@@ -92,7 +92,7 @@
     h1 {
       max-width: 430px;
       margin-bottom: 4px;
-      font-size: clamp(4rem, 5.1vw, 7.2rem);
+      font-size: clamp(3.6rem, 3.8vw, 5.2rem);
       letter-spacing: -0.045em;
       line-height: 1.02;
     }
@@ -108,7 +108,7 @@
 
     &__image-wrap,
     &__image-wrap img {
-      min-height: 600px;
+      min-height: 520px;
     }
 
     &__image-wrap img {
@@ -121,7 +121,7 @@
 
   .about-process,
   .about-projects {
-    padding: 88px 0;
+    padding: 64px 0;
   }
 
   .about-process {
@@ -137,7 +137,7 @@
     h2,
     .about-projects h2 {
       margin-bottom: 0;
-      font-size: clamp(2.2rem, 2.6vw, 3.4rem);
+      font-size: clamp(2.4rem, 2.1vw, 3rem);
       letter-spacing: -0.035em;
       line-height: 1.15;
     }
@@ -206,7 +206,7 @@
 
     h2 {
       margin-bottom: 26px;
-      font-size: clamp(2.2rem, 2.6vw, 3.4rem);
+      font-size: clamp(2.4rem, 2.1vw, 3rem);
       letter-spacing: -0.035em;
       line-height: 1.15;
     }
@@ -300,7 +300,7 @@
   }
 
   .about-contact {
-    padding: 88px 0;
+    padding: 64px 0;
     background: variables.$snow-white-cl;
     border-top: 1px solid variables.$gray-cl-2;
 
@@ -313,13 +313,13 @@
 
     &__intro {
       position: relative;
-      min-height: 470px;
+      min-height: 420px;
       padding: 36px 0;
 
       h2 {
         max-width: 520px;
         margin: 12px 0 18px;
-        font-size: clamp(2.8rem, 3.5vw, 4.8rem);
+        font-size: clamp(2.6rem, 2.6vw, 3.6rem);
         letter-spacing: -0.04em;
         line-height: 1.1;
       }

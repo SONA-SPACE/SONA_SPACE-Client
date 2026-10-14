@@ -6,20 +6,14 @@ interface SeemoreProps {
 
 const Seemore: React.FC<SeemoreProps> = ({ onClick }) => {
   return (
-    <div
-      className="box-seemore"
-      onClick={onClick}
-      style={{ cursor: "pointer" }}
-    >
-      <div className="container">
-        <p style={{ textAlign: "center", margin: "0" }}>Xem thêm sản phẩm</p>
-        <div className="arow-seemore">
-          <img src="/images/products/arow.svg" alt="arrow" />
-          <img src="/images/products/arow.svg" alt="arrow" />
-          
-        </div>
-      </div>
-    </div>
+    // A real button: it already sits inside the page container, so no second .container here
+    <button type="button" className="box-seemore" onClick={onClick}>
+      <span className="box-seemore__label">Xem thêm sản phẩm</span>
+      <span className="arow-seemore" aria-hidden="true">
+        <img src="/images/products/arow.svg" alt="" />
+        <img src="/images/products/arow.svg" alt="" />
+      </span>
+    </button>
   );
 };
 

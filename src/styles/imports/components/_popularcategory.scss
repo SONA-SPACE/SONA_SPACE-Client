@@ -21,12 +21,12 @@ section p {
 
   .category-of-products-s1 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    height: 400px;
+    height: 360px;
   }
 
   .category-of-products-s2 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    height: 360px;
+    height: 300px;
     margin-top: 20px;
   }
 

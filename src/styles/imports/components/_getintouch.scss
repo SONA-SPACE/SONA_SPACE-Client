@@ -5,7 +5,7 @@
   &__title {
     margin: 0 0 24px;
     text-align: left;
-    @include mixins.text(clamp(24px, 2.6vw, 34px), "M-SB", 1.25, variables.$dark-cl, null);
+    @include mixins.text(clamp(24px, 2.1vw, 30px), "M-SB", 1.25, variables.$dark-cl, null);
   }
 
   &__box {

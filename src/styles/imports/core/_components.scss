@@ -147,8 +147,9 @@ article {
 //         margin-top: 94px;
 //     }
 // }
+// Section spacing (the class name is historical; the value follows --section-gap)
 .mt-94 {
-    margin-top: 94px;
+    margin-top: var(--section-gap);
 }
 
 //Custome Component [Title & Description]
@@ -210,7 +211,7 @@ section {
 
     &__title {
         margin: 0;
-        @include mixins.text(clamp(24px, 2.6vw, 34px), "M-SB", 1.25, variables.$dark-cl, null);
+        @include mixins.text(clamp(24px, 2.1vw, 30px), "M-SB", 1.25, variables.$dark-cl, null);
         letter-spacing: -0.01em;
         text-wrap: balance;
     }

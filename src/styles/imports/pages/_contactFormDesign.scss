@@ -20,7 +20,7 @@
   }
 
   h2 {
-    font-size: clamp(2.6rem, 2.4vw, 3.4rem);
+    font-size: clamp(2.4rem, 2.1vw, 3rem);
     line-height: 1.25;
     letter-spacing: -0.02em;
   }
@@ -94,7 +94,7 @@
 
 // Hero: copy beside the design-collage photo, both inside the page container
 .design-hero {
-  padding: 56px 0 64px;
+  padding: 48px 0 56px;
 
   &__inner {
     display: grid;
@@ -111,7 +111,7 @@
 
     h1 {
       max-width: 560px;
-      font-size: clamp(3.4rem, 3.4vw, 4.8rem);
+      font-size: clamp(3rem, 3vw, 4rem);
       line-height: 1.15;
       letter-spacing: -0.02em;
     }
@@ -159,7 +159,7 @@
 }
 
 .design-services {
-  padding: 32px 0 88px;
+  padding: 24px 0 64px;
 
   &__grid {
     display: grid;
@@ -213,7 +213,7 @@
 }
 
 .design-process {
-  padding: 80px 0;
+  padding: 64px 0;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   background: variables.$snow-white-cl;
@@ -273,7 +273,7 @@
 }
 
 .design-terms {
-  padding: 64px 0 88px;
+  padding: 48px 0 64px;
 
   &__grid {
     display: grid;
@@ -301,7 +301,7 @@
 
 // Request form on a black band
 .design-cta {
-  padding: 80px 0;
+  padding: 64px 0;
   background: #0b0b0b;
   scroll-margin-top: var(--height-header);
 

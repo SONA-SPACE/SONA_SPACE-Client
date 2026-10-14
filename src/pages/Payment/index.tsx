@@ -649,9 +649,8 @@ const Payment: React.FC = () => {
 
         <div className="Pay-billment">
           <div className="container">
-            {isCartLoading ? (
-              <PageSectionSkeleton variant="cart-list" count={3} />
-            ) : !getAuthToken() ? (
+            {/* A guest is known at render time: no skeleton flash before the sign-in prompt */}
+            {!getAuthToken() ? (
               <EmptyState
                 title="Đăng nhập để thanh toán"
                 message="Vui lòng đăng nhập để xem giỏ hàng và hoàn tất đơn hàng của bạn."
@@ -660,6 +659,8 @@ const Payment: React.FC = () => {
                 secondaryActionLabel="Quay lại giỏ hàng"
                 secondaryActionTo="/gio-hang"
               />
+            ) : isCartLoading ? (
+              <PageSectionSkeleton variant="cart-list" count={3} />
             ) : cartLoadError ? (
               <RetryState
                 message={cartLoadError}

@@ -61,7 +61,7 @@
     
     .not-found-image {
       margin: 0 auto;
-      max-width: 100%;
+      max-width: min(100%, 520px);
       
       img {
         max-width: 100%;

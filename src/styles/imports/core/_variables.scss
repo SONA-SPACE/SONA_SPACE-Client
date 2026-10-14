@@ -1,7 +1,6 @@
 //======================================================BOXED LAYOUT=======================================================
 
 $container-max-width: 100%;
-$container-width: 1464px; // tùy thuộc vào container của bản thiết kế // $container-width = container (đo từ bản thiết kế) + 30px
 
 /*GRID - media queries breakpoints*/
 $xxs-min: 640px; // CÓ THỂ TÙY CHỈNH
@@ -88,7 +87,12 @@ $banner-height: 50dvh;
 
     // Genaral Variable
 
-    --gap: 30px; // gap này sử dụng cho gap cột & padding của container, container-fluid
+    --gap: 30px; // gap này sử dụng cho gap cột & padding của container-fluid
+    // Page container (core/_layouts.scss): content width cap and a gutter that scales with the viewport
+    --container-content: 1200px;
+    --container-gutter: clamp(20px, 6vw, 96px);
+    // Vertical rhythm between page sections, sized for the 1200px content width
+    --section-gap: clamp(48px, 5vw, 72px);
 
     --height-header: 80px;
     --height-button: 56px;
