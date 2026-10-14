@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import { BannerSection } from "../../components/BannerSection";
+import PageHero from "../../components/PageHero";
 import { useRegister } from "../../hooks/useRegister";
 import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 
@@ -138,12 +136,11 @@ const SignUp: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <BannerSection title="Đăng Ký Tài Khoản" height="50dvh" />
+      <PageHero title="Đăng Ký Tài Khoản" breadcrumbs={[{ label: "Trang chủ", to: "/" }, { label: "Đăng Ký Tài Khoản" }]} />
       <div className="signup-page">
         <div className="container">
           <div className="signup-content">
-            <h1>Đăng Ký Tài Khoản</h1>
+            <h2>Đăng Ký Tài Khoản</h2>
             <p className="signup-description">
               Đăng ký thành viên để nhận thêm nhiều ưu đãi hấp dẫn
             </p>
@@ -388,7 +385,6 @@ const SignUp: React.FC = () => {
           </div>
         </div>
       )}
-      <Footer />
     </>
   );
 };

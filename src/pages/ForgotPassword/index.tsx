@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { ToastContainer, toast } from 'react-toastify';
 import { convertToAdminApiUrl } from "../../utils/url";
 
@@ -221,7 +219,6 @@ const ForgotPassword: React.FC = () => {
 
   return (
     <>
-      <Header />
       <div className="forgot-password-page">
         <div className="container">
           <div className="forgot-password-content">
@@ -341,7 +338,6 @@ const ForgotPassword: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
       <ToastContainer position="top-right"
         autoClose={1000}
         style={{ marginTop: "100px" }}

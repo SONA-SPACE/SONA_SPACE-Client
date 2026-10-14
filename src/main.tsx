@@ -10,10 +10,10 @@ const PopupAd = lazy(() => import("./components/PopupAd/index.tsx"));
 createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
     <StrictMode>
+      <App />
       <Suspense fallback={null}>
         <ChatBot />
       </Suspense>
-      <App />
       <Suspense fallback={null}>
         <PopupAd />
       </Suspense>

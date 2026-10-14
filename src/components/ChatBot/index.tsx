@@ -381,12 +381,15 @@ export default function ChatBot() {
                   <button
                         className={`chat-bubble ${open ? "hidden" : ""}`}
                         onClick={() => setOpen(true)}
+                        aria-label="Mở trợ lý chat"
+                        aria-expanded={open}
                   >
                         <img src={botAvatar} alt="Bot" />
                   </button>
 
                   <div
                         className={`chat-popup ${!open ? "hidden" : ""} ${isDesktop && minimized ? "minimized" : ""}`}
+                        inert={!open}
                         style={isDesktop && minimized ? { height: "60px", overflow: "hidden" } : {}}
                         title={!(isDesktop && minimized) ? "Chat sẽ tự đóng khi bạn scroll hoặc click ra ngoài" : ""}
                   >

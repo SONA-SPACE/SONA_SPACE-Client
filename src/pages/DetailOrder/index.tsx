@@ -1,8 +1,6 @@
 import React, { Suspense, lazy, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import axios from "axios";
 import { returnOrder } from "../../services/ordersService";
 import { cancelOrder } from "../../services/userServices";
@@ -808,13 +806,11 @@ const formatPrice1 = (value: number | string): string => {
   if (isOrderLoading) {
     return (
       <>
-        <Header />
-        <main className="detail-order-page">
+        <div className="detail-order-page">
           <div className="container">
             <PageSectionSkeleton variant="cart-list" count={2} />
           </div>
-        </main>
-        <Footer />
+        </div>
       </>
     );
   }
@@ -822,8 +818,7 @@ const formatPrice1 = (value: number | string): string => {
   if (!order || orderLoadError) {
     return (
       <>
-        <Header />
-        <main className="detail-order-page">
+        <div className="detail-order-page">
           <div className="container">
             <RetryState
               message={orderLoadError || "Không tìm thấy thông tin đơn hàng."}
@@ -832,15 +827,13 @@ const formatPrice1 = (value: number | string): string => {
               secondaryActionTo="/tai-khoan/don-hang"
             />
           </div>
-        </main>
-        <Footer />
+        </div>
       </>
     );
   }
 
   return (
     <>
-      <Header />
 
       <section className="detail-order-page">
         <div className="container">
@@ -1228,7 +1221,6 @@ const formatPrice1 = (value: number | string): string => {
         </div>
       </section>
 
-      <Footer />
 
       {/* Modal trả hàng */}
       {showReturnModal && (

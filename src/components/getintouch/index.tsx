@@ -38,10 +38,12 @@ const GetInTouch = () => {
   return (
     <section className="get-in-touch">
       <div className="container">
-        <h3 className="get-in-touch__title">Liên hệ với chúng tôi</h3>
+        <h2 className="get-in-touch__title" data-reveal>
+          Liên hệ với chúng tôi
+        </h2>
 
         <div className="get-in-touch__box">
-          <div className="get-in-touch__intro">
+          <div className="get-in-touch__intro" data-reveal>
             <p className="get-in-touch__description">
               Bạn đang tìm kiếm nội thất thiết kế mang dấu ấn Việt? Đội ngũ chăm
               sóc khách hàng của chúng tôi luôn sẵn sàng giải đáp mọi thắc mắc –
@@ -50,48 +52,30 @@ const GetInTouch = () => {
             </p>
           </div>
 
-          <div className="get-in-touch__options">
-            {accordionData.map((item, index) => (
-              <div
-                key={index}
-                className={`get-in-touch__option ${openIndex === index ? "active" : ""
-                  }`}
-                onClick={() => handleToggle(index)}
-              >
-                <div className="get-in-touch__header">
-                  <span className="get-in-touch__label">{item.label}</span>
-                  <i
-                    className={`get-in-touch__icon ${openIndex === index ? "rotate" : ""
-                      }`}
+          <div className="get-in-touch__options" data-reveal>
+            {accordionData.map((item, index) => {
+              const open = openIndex === index;
+              const panelId = `get-in-touch-panel-${index}`;
+              return (
+                <div key={item.label} className={`get-in-touch__option${open ? " active" : ""}`}>
+                  <button
+                    type="button"
+                    className="get-in-touch__header"
+                    aria-expanded={open}
+                    aria-controls={panelId}
+                    onClick={() => handleToggle(index)}
                   >
-                    <svg
-                      width="15"
-                      height="8"
-                      viewBox="0 0 15 8"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M1 1L8 8L15 1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
+                    <span className="get-in-touch__label">{item.label}</span>
+                    <svg className="get-in-touch__icon" viewBox="0 0 15 8" fill="none" aria-hidden="true">
+                      <path d="M1 1L7.5 7L14 1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                  </i>
+                  </button>
+                  <div className="get-in-touch__content-wrapper" id={panelId} role="region" aria-hidden={!open}>
+                    <div className="get-in-touch__content" dangerouslySetInnerHTML={{ __html: item.content }} />
+                  </div>
                 </div>
-                <div
-                  className={`get-in-touch__content-wrapper ${openIndex === index ? "expanded" : "collapsed"
-                    }`}
-                >
-                  <div
-                    className="get-in-touch__content"
-                    dangerouslySetInnerHTML={{ __html: item.content }}
-                  ></div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

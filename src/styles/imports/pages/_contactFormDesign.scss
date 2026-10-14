@@ -1,0 +1,560 @@
+@use "../core/mixins";
+@use "../core/variables";
+
+// Design service landing (src/pages/ContactFormDesign): split hero, services, process timeline,
+// terms, optional project showcase, and the request form.
+.design-service-page {
+  padding-top: var(--height-header);
+  color: variables.$dark-cl;
+  background: variables.$white-cl;
+  overflow: clip;
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+    color: variables.$dark-cl;
+    font-family: "M-SB", sans-serif;
+    font-weight: normal;
+    text-wrap: balance;
+  }
+
+  h2 {
+    font-size: clamp(2.6rem, 2.4vw, 3.4rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .design-eyebrow {
+    margin-bottom: 12px;
+    @include mixins.text(12px, "Be-M", 1.4, variables.$yellow-cl, uppercase);
+    letter-spacing: 0.22em;
+  }
+
+  .design-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 50px;
+    padding: 0 24px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-decoration: none;
+    @include mixins.text(15px, "M-SB", 1.2, variables.$dark-cl, null);
+    transition: background-color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.6;
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+
+    &:hover svg {
+      transform: translateX(3px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid variables.$dark-cl;
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      cursor: wait;
+      opacity: 0.7;
+    }
+
+    &--primary {
+      background: variables.$yellow-cl;
+
+      &:hover:not(:disabled) {
+        background: #dc951c;
+      }
+    }
+
+    &--ghost {
+      border-color: rgba(0, 0, 0, 0.18);
+      background: transparent;
+
+      &:hover {
+        border-color: variables.$yellow-cl;
+      }
+    }
+  }
+}
+
+// Hero: copy beside the design-collage photo, both inside the page container
+.design-hero {
+  padding: 56px 0 64px;
+
+  &__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 56px;
+    align-items: center;
+  }
+
+  &__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+
+    h1 {
+      max-width: 560px;
+      font-size: clamp(3.4rem, 3.4vw, 4.8rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  &__lead {
+    max-width: 480px;
+    @include mixins.text(17px, "Be-R", 1.7, variables.$gray-cl-5, null);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 44px;
+    margin: 12px 0 0;
+
+    > div {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    dd {
+      margin: 0;
+      @include mixins.text(30px, "M-SB", 1.2, variables.$dark-cl, null);
+    }
+
+    dt {
+      @include mixins.text(13px, "Be-R", 1.5, variables.$gray-cl-5, null);
+    }
+  }
+
+  // The collage carries its own white gutters and rounded panels, so it is shown whole
+  &__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+  }
+}
+
+.design-services {
+  padding: 32px 0 88px;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 32px;
+  }
+}
+
+.design-service-card {
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
+  background: variables.$white-cl;
+  transition: box-shadow var(--dur-slow) var(--ease-out);
+
+  &:hover {
+    box-shadow: var(--shadow-sm);
+  }
+
+  // The icons are JPGs on white, so the band stays white
+  &__icon {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    padding: 0 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    img {
+      display: block;
+      width: 64px;
+      height: 64px;
+      margin: 0;
+      object-fit: contain;
+    }
+  }
+
+  &__body {
+    display: grid;
+    gap: 8px;
+    padding: 20px 24px 26px;
+
+    h3 {
+      @include mixins.text(17px, "Be-B", 1.4, variables.$dark-cl, null);
+    }
+
+    p {
+      @include mixins.text(14px, "Be-R", 1.65, variables.$gray-cl-5, null);
+    }
+  }
+}
+
+.design-process {
+  padding: 80px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: variables.$snow-white-cl;
+  // The hero's "Xem quy trình" link lands here; keep the heading clear of the fixed header
+  scroll-margin-top: var(--height-header);
+
+  &__list {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 36px 0 0;
+    padding: 0;
+    list-style: none;
+
+    // The line behind the step dots
+    &::before {
+      content: "";
+      position: absolute;
+      top: 22px;
+      left: 22px;
+      right: 22px;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.14);
+    }
+  }
+
+  &__step {
+    position: relative;
+    padding-right: 24px;
+
+    h3 {
+      margin: 18px 0 6px;
+      @include mixins.text(16px, "Be-B", 1.4, variables.$dark-cl, null);
+    }
+
+    p {
+      @include mixins.text(14px, "Be-R", 1.65, variables.$gray-cl-5, null);
+    }
+
+    &:first-child .design-process__dot {
+      border-color: variables.$yellow-cl;
+      background: variables.$yellow-cl;
+    }
+  }
+
+  &__dot {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    border-radius: 50%;
+    background: variables.$white-cl;
+    @include mixins.text(13px, "M-SB", 1, variables.$dark-cl, null);
+  }
+}
+
+.design-terms {
+  padding: 64px 0 88px;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+.design-term {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
+
+  h3 {
+    @include mixins.text(18px, "Be-B", 1.4, variables.$dark-cl, null);
+  }
+
+  p {
+    @include mixins.text(15px, "Be-R", 1.7, variables.$gray-cl-5, null);
+  }
+}
+
+// Request form on a black band
+.design-cta {
+  padding: 80px 0;
+  background: #0b0b0b;
+  scroll-margin-top: var(--height-header);
+
+  &__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 56px;
+    align-items: start;
+  }
+
+  &__intro {
+    h2 {
+      color: variables.$white-cl;
+    }
+
+    p:last-child {
+      margin-top: 14px;
+      @include mixins.text(16px, "Be-R", 1.7, rgba(255, 255, 255, 0.7), null);
+    }
+  }
+}
+
+.design-form {
+  display: grid;
+  gap: 20px;
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  background: variables.$white-cl;
+
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  &__field {
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    > label,
+    > legend {
+      padding: 0;
+      @include mixins.text(13px, "Be-M", 1.4, #555, null);
+    }
+
+    // A legend is not a grid item; give it the label's gap by hand
+    > legend {
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid rgba(0, 0, 0, 0.16);
+      border-radius: var(--radius-sm);
+      background: variables.$white-cl;
+      @include mixins.text(15px, "Be-R", 1.5, variables.$text-cl, null);
+      transition: border-color var(--dur-base) var(--ease-out);
+
+      &:focus {
+        border-color: variables.$dark-cl;
+        outline: 0;
+      }
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+  }
+
+  &__custom {
+    margin-top: 4px;
+  }
+
+  &__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    @include mixins.text(13px, "Be-R", 1.6, variables.$gray-cl-5, null);
+
+    input {
+      flex: none;
+      margin-top: 3px;
+      accent-color: variables.$yellow-cl;
+    }
+
+    a {
+      color: variables.$dark-cl;
+      text-decoration: underline;
+    }
+  }
+
+  &__error {
+    @include mixins.text(13px, "Be-R", 1.4, variables.$error-cl, null);
+  }
+
+  > .design-button {
+    justify-self: start;
+  }
+}
+
+// Radio options drawn as chips; the input stays in the tab order for the keyboard
+.design-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.design-chip {
+  position: relative;
+  cursor: pointer;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    border-radius: var(--radius-pill);
+    @include mixins.text(13px, "Be-M", 1.3, variables.$dark-cl, null);
+    transition: border-color var(--dur-base) var(--ease-out), background-color var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out);
+  }
+
+  &:hover span {
+    border-color: variables.$yellow-cl;
+  }
+
+  input:checked + span {
+    border-color: variables.$dark-cl;
+    background: variables.$dark-cl;
+    color: variables.$white-cl;
+  }
+
+  input:focus-visible + span {
+    outline: 2px solid variables.$yellow-cl;
+    outline-offset: 2px;
+  }
+}
+
+@include mixins.md {
+  .design-process__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 32px;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+@include mixins.sm {
+  .design-hero {
+    padding: 40px 0 48px;
+
+    &__inner {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+
+  .design-services__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .design-cta__inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+@include mixins.xs {
+  .design-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+
+    dd {
+      font-size: 24px;
+    }
+  }
+
+  .design-services {
+    padding: 16px 0 56px;
+  }
+
+  .design-process,
+  .design-cta {
+    padding: 56px 0;
+  }
+
+  .design-terms {
+    padding: 48px 0 56px;
+
+    &__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .design-process__list {
+    grid-template-columns: 1fr;
+    row-gap: 24px;
+  }
+
+  .design-process__step {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    column-gap: 16px;
+    padding-right: 0;
+
+    .design-process__dot {
+      grid-row: span 2;
+    }
+
+    h3 {
+      margin-top: 10px;
+    }
+  }
+
+  .design-form {
+    padding: 24px 18px;
+
+    &__row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .design-term {
+    padding: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .design-service-page .design-button svg,
+  .design-chip span,
+  .design-service-card {
+    transition: none;
+  }
+}

@@ -1,58 +1,49 @@
+// Hero banner, editorial-caption layout: the photo carries the banner and a single underlined
+// caption at the bottom left names it and links on. "full" is the home hero, "compact" heads
+// the other listing pages.
 .hero-banner {
-  height: 100dvh;
-  overflow: hidden;
-  position: relative;
-  margin-top: unset;
+  --banner-height: 100svh;
+  --banner-min-height: 600px;
+  --banner-edge: clamp(28px, 6vh, 56px);
 
-  &.loading,
-  &.error {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  position: relative;
+  height: var(--banner-height);
+  min-height: var(--banner-min-height);
+  max-height: 1080px;
+  overflow: hidden;
+  background: #111;
+  color: #fff;
+
+  &--compact {
+    --banner-height: 68svh;
+    --banner-min-height: 480px;
+
+    max-height: 720px;
   }
 
-  .loading-placeholder,
-  .error-placeholder {
-    text-align: center;
-    color: #666;
-
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #3498db;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
-    }
+  // Loading keeps the hero dark so the glass header above it stays legible.
+  &.loading {
+    background: linear-gradient(135deg, #1c1c1c 0%, #0b0b0b 100%);
   }
 
   .error-notice {
     position: absolute;
-    top: 20px;
     left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 77, 79, 0.9);
-    color: white;
+    top: calc(var(--height-header) + 16px);
+    z-index: 4;
+    margin: 0;
     padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 14px;
-    z-index: 20;
-    backdrop-filter: blur(10px);
+    border-radius: var(--radius-pill);
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-family: "Be-R", system-ui, sans-serif;
+    font-size: 13px;
+    transform: translateX(-50%);
   }
 
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  .banner-swiper {
+  .banner-swiper,
+  .banner-static {
     width: 100%;
     height: 100%;
 
@@ -69,318 +60,250 @@
     overflow: hidden;
 
     .banner-image {
-      width: 100%;
-      height: 100%;
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       z-index: 1;
 
       img {
+        display: block;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 8s ease-out;
+        transform: scale(1.06);
+        transition: transform 7s cubic-bezier(0.25, 0.1, 0.25, 1);
       }
     }
 
+    // Only a soft shade along the bottom, under the caption and the controls
     .banner-content {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: 2;
       display: flex;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.3);
+      align-items: flex-end;
+      padding-bottom: var(--banner-edge);
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0) 60%);
 
       .container {
         width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
-
-      .banner-text {
-        color: white;
-
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 16px;
-
-        &.banner-text--skeleton {
-          display: grid;
-          justify-items: start;
-          width: 100%;
-        }
-
-        .banner-skeleton__subtitle {
-          width: min(120px, 100%);
-          height: 23px;
-          margin-bottom: 12px;
-        }
-
-        .banner-skeleton__title {
-          width: min(760px, 100%);
-          height: clamp(76px, 6vw, 92px);
-          margin-bottom: 20px;
-        }
-
-        .banner-skeleton__description {
-          width: min(500px, 100%);
-          height: 58px;
-          margin-bottom: 30px;
-        }
-
-        .banner-skeleton__button {
-          width: min(275px, 100%);
-          height: 58px;
-        }
-
-        .banner-subtitle {
-          font-size: 16px;
-          font-weight: 400;
-          text-transform: uppercase;
-          letter-spacing: 2px;
-          margin-bottom: 12px;
-          opacity: 0.9;
-        }
-
-        .banner-title {
-          font-family: M-EB;
-          font-size: clamp(32px, 5vw, 64px);
-          font-weight: 700;
-          line-height: 1.2;
-          margin-bottom: 20px;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .banner-description {
-          font-size: 18px;
-          line-height: 1.6;
-          margin-bottom: 30px;
-          opacity: 0.95;
-          max-width: 500px;
-        }
-
-        .banner-button {
-          font-family: M-SB;
-          display: inline-flex;
-          align-items: center;
-          gap: 12px;
-          padding: 16px 32px;
-          background-color: #f5a623;
-          color: white;
-          text-decoration: none;
-          font-weight: 600;
-          font-size: 16px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-
-          i {
-            transition: transform 0.3s ease;
-          }
-
-          &:hover {
-            background-color: #e8941e;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(245, 166, 35, 0.3);
-
-            i {
-              transform: translateX(4px);
-            }
-          }
-
-          &:focus-visible {
-            outline: 3px solid white;
-            outline-offset: 4px;
-          }
-        }
-      }
-    }
-
-    &:hover {
-      .banner-image img {
-        transform: scale(1.05);
       }
     }
   }
 
-  // Navigation Arrows
-  .banner-nav-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    display: flex;
+  // Slow Ken Burns settle on the slide that is showing
+  .swiper-slide-active > .banner-slide .banner-image img {
+    transform: scale(1);
+  }
+
+  .banner-caption {
+    display: inline-grid;
+    gap: 12px;
+    max-width: min(560px, 100% - 160px);
+    color: #fff;
+    text-decoration: none;
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 6px;
+      border-radius: var(--radius-xs);
+    }
+  }
+
+  .banner-subtitle {
+    margin: 0;
+    color: #f0a00a;
+    font-family: "Be-M", system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+  }
+
+  .banner-title {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    gap: 12px;
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+    color: #fff;
+    font-family: "Be-R", system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.45;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+    transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
 
-    i {
-      color: white;
-      font-size: 18px;
-      transition: transform 0.3s ease;
-    }
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-50%) scale(1.1);
-
-      i {
-        transform: scale(1.2);
-      }
-    }
-
-    &.banner-slider-prev {
-      left: 30px;
-    }
-
-    &.banner-slider-next {
-      right: 30px;
+    .banner-arrow-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      transition: transform var(--dur-base) var(--ease-out);
     }
   }
 
-  // Pagination
-  .banner-slider-pagination {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    display: flex;
+  .banner-caption:hover .banner-title {
+    border-color: #f0a00a;
+    color: #f0a00a;
+
+    .banner-arrow-icon {
+      transform: translateX(4px);
+    }
+  }
+
+  // Loading placeholder in the caption's shape (class names are pinned by qa-banner-stability)
+  .banner-text--skeleton {
+    display: grid;
+    justify-items: start;
     gap: 12px;
 
-    .banner-bullet {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.5);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
+    .state-skeleton-block {
+      background: rgba(255, 255, 255, 0.12);
+    }
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.8);
-        transform: scale(1.2);
-      }
+    .banner-skeleton__subtitle {
+      width: 110px;
+      height: 14px;
+    }
 
-      &.banner-bullet-active {
-        background: #f5a623;
-        border-color: rgba(255, 255, 255, 0.5);
-        transform: scale(1.3);
-      }
+    .banner-skeleton__title {
+      width: min(420px, 70vw);
+      height: 28px;
+    }
+
+    .banner-skeleton__description,
+    .banner-skeleton__button {
+      display: none;
+    }
+  }
+
+  // Slide controls along the bottom right: arrows above the counter
+  .banner-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: var(--banner-edge);
+    z-index: 3;
+    pointer-events: none;
+
+    &__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 14px;
+    }
+
+    &__counter {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: rgba(255, 255, 255, 0.75);
+      font-family: "M-SB", system-ui, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+
+    &__current {
+      color: #fff;
+    }
+
+    &__track {
+      position: relative;
+      width: 90px;
+      height: 2px;
+      overflow: hidden;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    &__progress {
+      position: absolute;
+      inset: 0;
+      background: #f0a00a;
+      transform: scaleX(var(--banner-progress, 0));
+      transform-origin: left center;
+    }
+
+    &__buttons {
+      display: flex;
+      gap: 10px;
+      pointer-events: auto;
+    }
+  }
+
+  .banner-nav-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: var(--radius-pill);
+    background: rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out);
+
+    .banner-arrow-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .banner-arrow-icon--left {
+      transform: scaleX(-1);
+    }
+
+    &:hover {
+      border-color: #f0a00a;
+      background: #f0a00a;
+      color: #221d00;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
     }
   }
 }
 
-// Responsive Design
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .hero-banner {
-    height: 60dvh;
+    --banner-height: 78svh;
+    --banner-min-height: 480px;
+    --banner-edge: 24px;
 
-    .banner-slide {
-      .banner-content {
-        .banner-text {
-          padding: 0 20px;
-          text-align: center;
+    &--compact {
+      --banner-height: 56svh;
+      --banner-min-height: 380px;
+    }
 
-          &.banner-text--skeleton {
-            justify-items: center;
-          }
+    // The caption sits above the control row
+    .banner-slide .banner-content {
+      padding-bottom: 84px;
+    }
 
-          .banner-skeleton__title {
-            width: min(620px, 92%);
-            height: clamp(58px, 14vw, 96px);
-          }
+    .banner-caption {
+      max-width: 100%;
+    }
 
-          .banner-skeleton__description {
-            width: min(500px, 88%);
-            height: 52px;
-            margin-bottom: 24px;
-          }
+    .banner-title {
+      font-size: 17px;
+    }
 
-          .banner-skeleton__button {
-            width: min(235px, 72%);
-            height: 50px;
-          }
-
-          .banner-title {
-            font-size: clamp(24px, 8vw, 40px);
-            margin-bottom: 16px;
-          }
-
-          .banner-description {
-            font-size: 16px;
-            margin-bottom: 24px;
-          }
-
-          .banner-button {
-            padding: 14px 28px;
-            font-size: 14px;
-          }
-        }
-      }
+    .banner-controls__inner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .banner-nav-arrow {
       width: 40px;
       height: 40px;
-
-      &.banner-slider-prev {
-        left: 15px;
-      }
-
-      &.banner-slider-next {
-        right: 15px;
-      }
-
-      i {
-        font-size: 14px;
-      }
-    }
-
-    .banner-slider-pagination {
-      bottom: 20px;
-
-      .banner-bullet {
-        width: 10px;
-        height: 10px;
-      }
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-banner {
-    height: 50dvh;
-
-    .banner-content {
-      .container {
-        height: calc(100% - 80px) !important;
-        align-content: center;
-      }
-
-      .banner-text {
-        padding: 8px !important;
-      }
-    }
-
-    .banner-nav-arrow {
-      display: none; // Hide arrows on very small screens
     }
   }
 }
@@ -388,18 +311,19 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-banner {
     .banner-slide {
-      .banner-image img,
-      &:hover .banner-image img {
+      .banner-image img {
         transition: none;
         transform: none;
       }
     }
 
-    .banner-button,
-    .banner-button i,
-    .banner-nav-arrow,
-    .banner-nav-arrow i,
-    .banner-bullet {
+    .swiper-slide-active > .banner-slide .banner-image img {
+      transform: none;
+    }
+
+    .banner-title,
+    .banner-title .banner-arrow-icon,
+    .banner-nav-arrow {
       transition: none;
     }
   }

@@ -1,12 +1,15 @@
-import '../public/scss/style.scss'
-import '../public/fonts/stylesheet.css'
+import './styles/style.scss'
+import './styles/fonts.css'
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import { AuthProvider } from './contexts/AuthContext'
 import ScrollToTop from './components/ScrollTop/ScrollToTop'
+import SiteLayout from './layouts/SiteLayout'
+import MotionProvider from './motion/MotionProvider'
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import RouteFallback from './layouts/RouteFallback'
 
 const ProductPage = lazy(() => import('./pages/ProductPage'))
 const ProductOfCategory = lazy(() => import('./pages/ProductOfCategory'))
@@ -32,33 +35,15 @@ const NewsDetail = lazy(() => import('./pages/NewsDetail'))
 const NotFoundPage = lazy(() => import('./pages/404'))
 const PaymentResult = lazy(() => import('./pages/PaymentResult'))
 const EmailVerified = lazy(() => import('./pages/EmailVerified'))
-const TestPage = lazy(() => import('./pages/TestPage'))
-
-function RouteFallback() {
-  return (
-    <div
-      style={{
-        minHeight: '40vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: 'SVN-Gilroy, sans-serif',
-        fontSize: '16px',
-        color: '#1f1f1f',
-      }}
-    >
-      Đang tải nội dung...
-    </div>
-  )
-}
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
-        <Suspense fallback={<RouteFallback />}>
-          <Routes>
+        <MotionProvider />
+        <Routes>
+          <Route element={<SiteLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/san-pham" element={<ProductPage />} />
             <Route path="/danh-muc/:slug" element={<ProductOfCategory />} />
@@ -84,16 +69,22 @@ function App() {
             <Route path="/chinh-sach-bao-mat" element={<Policy />} />
             <Route path="/tin-tuc" element={<News />} />
             <Route path="/tin-tuc/:slug" element={<NewsDetail />} />
-            <Route path="/test" element={<TestPage />} />
             <Route path="/xac-thuc-email" element={<EmailVerified />} />
-            <Route path="/thanh-toan-result" element={<PaymentResult />} />
             <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Suspense>
+          </Route>
+          <Route
+            path="/thanh-toan-result"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <PaymentResult />
+              </Suspense>
+            }
+          />
+        </Routes>
         <ToastContainer
           position="top-right"
           autoClose={1000}
-          style={{ marginTop: "100px" }}
+          style={{ marginTop: "var(--height-header)", zIndex: "var(--z-toast)" }}
         />
       </BrowserRouter>
     </AuthProvider>

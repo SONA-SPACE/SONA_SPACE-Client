@@ -1,8 +1,6 @@
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import { Link, Links, useNavigate, useLocation } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import BannerSlider from "../../components/BannerSlider";
+import PageHero from "../../components/PageHero";
 import axios from "axios";
 import { cancelOrder } from "../../services/userServices";
 import { getOrderItems } from "../../api/order";
@@ -146,12 +144,12 @@ const User: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Mock data for user information with default values
+  // Filled from the API; starts empty so no placeholder identity is ever shown or saved
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: "Nguyễn Văn A",
-    email: "example@gmail.com",
-    phone: "0987654321",
-    address: ["123 Đường ABC, Phường XYZ, Quận 1, TP.HCM"],
+    name: "",
+    email: "",
+    phone: "",
+    address: [],
   });
 
   // State để theo dõi khi nào cần tải lại dữ liệu người dùng
@@ -1038,10 +1036,34 @@ const User: React.FC = () => {
     }
   };
 
+  const accountHero = (
+    <PageHero
+      title="Tài khoản của bạn"
+      breadcrumbs={[{ label: "Trang chủ", to: "/" }, { label: "Tài khoản" }]}
+    />
+  );
+
+  if (!getAuthToken()) {
+    return (
+      <>
+        {accountHero}
+        <div className="account-guest">
+          <EmptyState
+            title="Đăng nhập để xem tài khoản"
+            message="Theo dõi đơn hàng, quản lý địa chỉ và mã giảm giá sau khi đăng nhập."
+            actionLabel="Đăng nhập"
+            actionTo="/dang-nhap"
+            secondaryActionLabel="Tạo tài khoản"
+            secondaryActionTo="/dang-ky"
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
-      <Header />
-      <BannerSlider page="tai-khoan" />
+      {accountHero}
       <div className="user-account-page">
         <div className="container">
           <div className="account-wrapper">
@@ -1955,7 +1977,6 @@ const User: React.FC = () => {
 
         {/* Design Services Showcase */}
       </div>
-      <Footer />
 
       {/* Modal hủy đơn hàng */}
       {showCancelModal && (

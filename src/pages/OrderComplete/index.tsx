@@ -1,10 +1,10 @@
   import React, { useEffect, useState } from "react";
   import { Link, useParams } from "react-router-dom";
   import { getOrderByHash } from "../../services/ordersCompleteService";
-  import Footer from "../../components/Footer";
   import { createOrderService } from "../../services/ordersService"; // ADD
 
   import { clearCartServiceid } from "../../services/cartService";
+  import { EmptyState, SkeletonBlock } from "../../components/StateFeedback";
   interface OrderSummaryProps {
     orderId: string;
     orderDate: string;
@@ -15,6 +15,7 @@
   const OrderComplete: React.FC = () => {
     const { orderHash } = useParams(); // assuming route: /dat-hang-thanh-cong/:orderId
     const [orderSummary, setOrderSummary] = useState<OrderSummaryProps | null>(null);
+    const [orderMissing, setOrderMissing] = useState(false);
 
     useEffect(() => {
       const saveOrderIfNeeded = async () => {
@@ -29,7 +30,7 @@
           if (!data?.order_id || data.order_id !== momoOrderHash) return;
 
           const res = await getOrderByHash(data.order_id);
-          if (res.success && res.order) {
+          if (res?.success && res.order) {
             // console.log("Đơn đã tồn tại. Không cần tạo lại.");
             return;
           }
@@ -58,17 +59,22 @@
 
     useEffect(() => {
       const fetchOrder = async () => {
-        if (!orderHash) return;
-        const res = await getOrderByHash(orderHash);
+        if (!orderHash) {
+          setOrderMissing(true);
+          return;
+        }
+        const res = await getOrderByHash(orderHash).catch(() => null);
         // console.log("Order data:", res);
         // console.log("Order hash:", orderHash);
-        if (res.success && res.order) {
+        if (res?.success && res.order) {
           setOrderSummary({ 
             orderId: res.order.order_hash,
             orderDate: new Date(res.order.created_at).toLocaleString(),
             itemCount: res.order.total_quantity,
             total: res.order.order_total_final,
           });
+        } else {
+          setOrderMissing(true);
         }
       };
 
@@ -114,7 +120,28 @@
     const formatPrice = (price: number): string => {
       return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     };
-    if (!orderSummary) return <p>Đang tải thông tin đơn hàng...</p>;
+    if (orderMissing) {
+      return (
+        <div className="order-complete-state">
+          <EmptyState
+            title="Không tìm thấy đơn hàng"
+            message="Liên kết đơn hàng không hợp lệ hoặc đã hết hạn. Bạn có thể xem lại đơn trong tài khoản."
+            actionLabel="Xem đơn hàng của tôi"
+            actionTo="/tai-khoan/don-hang"
+            secondaryActionLabel="Tiếp tục mua sắm"
+            secondaryActionTo="/san-pham"
+          />
+        </div>
+      );
+    }
+
+    if (!orderSummary) {
+      return (
+        <div className="order-complete-state" role="status" aria-label="Đang tải thông tin đơn hàng">
+          <SkeletonBlock width="min(480px, 100%)" height={220} />
+        </div>
+      );
+    }
 
     return (
       <>
@@ -181,7 +208,6 @@
           </div>
         </div>
 
-        <Footer />
       </>
     );
   };

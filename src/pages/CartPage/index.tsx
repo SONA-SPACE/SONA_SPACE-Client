@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import { useNavigate } from "react-router-dom";
 import GetInTouch from "../../components/getintouch";
 import PolicyProduct from "../../components/Policy";
 import { toast } from "react-toastify";
@@ -12,7 +10,7 @@ import {
   updateCartQuantityService,
 } from "../../services/cartService";
 import { validateCouponService } from "../../services/conpcodeService";
-import BannerSlider from "../../components/BannerSlider";
+import PageHero from "../../components/PageHero";
 import { getAuthToken } from "../../services/loginService";
 import {
   EmptyState,
@@ -307,24 +305,16 @@ const CartPage: React.FC = () => {
 
   return (
     <>
-      <Header />
       <div className="cart-page">
-        <BannerSlider page="gio-hang" />
-
-        <div className="breadcrumb-container">
-          <div className="container">
-            <div className="breadcrumb">
-              <Link to="/">Trang chủ</Link>
-              <span>/</span>
-              <span className="active">Giỏ hàng</span>
-            </div>
-          </div>
-        </div>
+        <PageHero
+          title="Giỏ hàng của bạn"
+          breadcrumbs={[{ label: "Trang chủ", to: "/" }, { label: "Giỏ hàng" }]}
+        />
 
         <section className="cart-content mt-94">
           <div className="container">
             <div className="page-title">
-              <h1>Giỏ hàng</h1>
+              <h2>Giỏ hàng</h2>
               <p className="items-count">{cartItems.length} sản phẩm</p>
             </div>
 
@@ -349,6 +339,15 @@ const CartPage: React.FC = () => {
 
             {isCartLoading ? (
               <PageSectionSkeleton variant="cart-list" count={3} />
+            ) : !getAuthToken() ? (
+              <EmptyState
+                title="Đăng nhập để xem giỏ hàng"
+                message="Giỏ hàng được lưu theo tài khoản, để bạn tiếp tục mua sắm trên mọi thiết bị."
+                actionLabel="Đăng nhập"
+                actionTo="/dang-nhap"
+                secondaryActionLabel="Tiếp tục mua sắm"
+                secondaryActionTo="/san-pham"
+              />
             ) : cartError ? (
               <RetryState
                 message={cartError}
@@ -621,7 +620,6 @@ const CartPage: React.FC = () => {
           </div>
         </div>
       )}
-      <Footer />
     </>
   );
 };

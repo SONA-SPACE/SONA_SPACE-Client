@@ -1,0 +1,1000 @@
+@use "mixins";
+@use "variables";
+
+// Shared look for image cards inside the header panels (mega menu, search, mobile rails)
+@mixin header-media-card($media) {
+  display: block;
+  text-decoration: none;
+
+  #{$media} {
+    display: block;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: variables.$gray-cl-3;
+    box-shadow: var(--shadow-xs);
+    transition: box-shadow var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--dur-image) var(--ease-out);
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover #{$media} {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+
+      img {
+        transform: scale(1.06);
+      }
+    }
+  }
+}
+
+// =========================================================================================
+// Header shell: black glass over a registered hero (keeps nav text off the photo), solid black
+// everywhere else.
+// =========================================================================================
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-header);
+  color: variables.$white-cl;
+  isolation: isolate;
+
+  // Two stacked surfaces so the switch can fade (a gradient cannot transition to a colour).
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  // Over the banner: the original SONA black glass
+  &::before {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  // Light pages and after scrolling past the banner: solid black
+  &::after {
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 0;
+  }
+
+  &--solid::after {
+    opacity: 1;
+  }
+
+  &--animated::after {
+    transition: opacity var(--dur-slow) var(--ease-out);
+  }
+
+  .header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: var(--height-header);
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+
+    img {
+      display: block;
+      width: 100px;
+      height: 27px;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------
+// Desktop navigation + mega menus
+// ---------------------------------------------------------------------------------------
+.main-nav {
+  height: 100%;
+
+  &__list {
+    display: flex;
+    align-items: stretch;
+    gap: 32px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+  }
+
+  &__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 0;
+    @include mixins.text(16px, "Be-M", 1.4, variables.$white-cl, null);
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    transition: color var(--dur-base) var(--ease-out);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      border-radius: 2px;
+      background: variables.$yellow-cl;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform var(--dur-slow) var(--ease-out);
+    }
+
+    &.active {
+      color: variables.$yellow-cl;
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid variables.$yellow-cl;
+      outline-offset: 4px;
+      border-radius: var(--radius-xs);
+    }
+  }
+
+  &__chevron {
+    width: 12px;
+    height: 12px;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  // Hover previews the underline in white; only the current page is yellow.
+  &__item:hover &__link:not(.active)::after,
+  &__item:focus-within &__link:not(.active)::after {
+    background: rgba(255, 255, 255, 0.85);
+    transform: scaleX(1);
+  }
+
+  &__item.has-menu:hover &__chevron,
+  &__item.has-menu:focus-within &__chevron {
+    transform: rotate(180deg);
+  }
+}
+
+.mega-menu {
+  position: fixed;
+  top: var(--height-header);
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+  background: variables.$white-cl;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-xl);
+  color: variables.$dark-cl;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out),
+    visibility 0s linear var(--dur-base);
+
+  .main-nav__item:hover > &,
+  .main-nav__item:focus-within > & {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+
+  .main-nav--suppressed .main-nav__item > & {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  &__inner {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 40px;
+    padding-top: 32px;
+    padding-bottom: 40px;
+  }
+
+  &__list {
+    max-height: 50dvh;
+    margin: 0;
+    padding: 0 24px 0 0;
+    overflow-y: auto;
+    list-style: none;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+
+    a {
+      display: block;
+      padding: 10px 0;
+      @include mixins.text(16px, "Be-R", 1.4, variables.$dark-cl, null);
+      text-decoration: none;
+      transition: color var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+
+      &:hover,
+      &:focus-visible {
+        color: variables.$yellow-cl;
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  &__title {
+    margin: 0 0 20px;
+    @include mixins.text(20px, "M-SB", 1.3, variables.$dark-cl, null);
+    text-align: left;
+  }
+
+  &__status {
+    margin: 0;
+    padding: 10px 0;
+    @include mixins.text(15px, "Be-R", 1.4, variables.$text-gray, null);
+    text-align: left;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 28px 20px;
+  }
+
+  &__card {
+    @include header-media-card(".mega-menu__media");
+  }
+
+  &__label {
+    display: block;
+    margin-top: 12px;
+    @include mixins.text(15px, "Be-M", 1.4, variables.$dark-cl, null);
+    transition: color var(--dur-base) var(--ease-out);
+  }
+
+  &__card:hover &__label {
+    color: variables.$yellow-cl;
+  }
+}
+
+// ---------------------------------------------------------------------------------------
+// Action icons, badges, auth buttons
+// ---------------------------------------------------------------------------------------
+.header-actions {
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  &-icons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+  }
+
+  .notifycation-container,
+  .cart-container,
+  .header-search {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .btn-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+
+    img {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    &:active {
+      transform: scale(0.94);
+    }
+
+    &:focus-visible {
+      outline: 2px solid variables.$yellow-cl;
+      outline-offset: 2px;
+    }
+  }
+
+  &-separator {
+    display: block;
+    width: 1px;
+    height: 20px;
+    margin: 0 16px;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  &-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 18px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      @include mixins.text(15px, "Be-M", 1, variables.$white-cl, null);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out),
+        color var(--dur-base) var(--ease-out);
+
+      &:focus-visible {
+        outline: 2px solid variables.$yellow-cl;
+        outline-offset: 2px;
+      }
+    }
+
+    .sign-up:hover {
+      color: variables.$yellow-cl;
+    }
+
+    .sign-in {
+      border-color: variables.$yellow-cl;
+
+      &:hover {
+        background: variables.$yellow-cl;
+        color: variables.$dark-cl;
+      }
+    }
+  }
+}
+
+.header-badge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: variables.$yellow-cl;
+  box-shadow: 0 0 0 2px variables.$black-cl;
+  @include mixins.text(11px, "M-SB", 18px, variables.$dark-cl, null);
+  text-align: center;
+  pointer-events: none;
+}
+
+.header-hamburger {
+  display: none;
+}
+
+// ---------------------------------------------------------------------------------------
+// Account dropdown
+// ---------------------------------------------------------------------------------------
+.account-menu {
+  position: relative;
+
+  &__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 4px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    @include mixins.text(16px, "Be-M", 1, variables.$white-cl, null);
+    transition: color var(--dur-base) var(--ease-out);
+
+    &:hover {
+      color: variables.$yellow-cl;
+    }
+
+    &:focus-visible {
+      outline: 2px solid variables.$yellow-cl;
+      outline-offset: 2px;
+      border-radius: var(--radius-xs);
+    }
+  }
+
+  &__chevron {
+    width: 12px;
+    height: 12px;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  &.is-open &__chevron {
+    transform: rotate(180deg);
+  }
+
+  &__list {
+    position: absolute;
+    top: calc(100% + 14px);
+    right: 0;
+    z-index: var(--z-dropdown);
+    min-width: 236px;
+    margin: 0;
+    padding: 8px;
+    list-style: none;
+    border-radius: var(--radius-md);
+    background: variables.$white-cl;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out),
+      visibility 0s linear var(--dur-base);
+
+    a,
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+      @include mixins.text(15px, "Be-R", 1.4, variables.$dark-cl, null);
+      transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+
+      &:hover,
+      &:focus-visible {
+        background: rgba(240, 160, 10, 0.1);
+        outline: none;
+      }
+    }
+  }
+
+  &.is-open &__list {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+
+  &__logout {
+    margin-top: 4px;
+    color: variables.$error-cl !important;
+  }
+}
+
+// ---------------------------------------------------------------------------------------
+// Search panel
+// ---------------------------------------------------------------------------------------
+.header-search {
+  &.is-open .search-btn {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  &__panel {
+    position: fixed;
+    top: var(--height-header);
+    left: 0;
+    right: 0;
+    z-index: var(--z-dropdown);
+    max-height: calc(100dvh - var(--height-header));
+    overflow-y: auto;
+    padding: 28px 0 40px;
+    background: variables.$white-cl;
+    box-shadow: var(--shadow-xl);
+    color: variables.$dark-cl;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out),
+      visibility 0s linear var(--dur-base);
+  }
+
+  &.is-open &__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+
+  &__field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding: 0 4px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+    transition: border-color var(--dur-base) var(--ease-out);
+
+    &:focus-within {
+      border-color: variables.$yellow-cl;
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+      opacity: 0.6;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+      @include mixins.text(20px, "M-SB", 1.4, variables.$dark-cl, null);
+
+      &::placeholder {
+        color: variables.$text-gray;
+      }
+    }
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 40px;
+  }
+
+  &__heading {
+    margin: 0 0 16px;
+    @include mixins.text(16px, "M-SB", 1.4, variables.$dark-cl, null);
+    text-align: left;
+  }
+
+  &__main &__heading:not(:first-child) {
+    margin-top: 28px;
+  }
+
+  &__status {
+    margin: 0;
+    @include mixins.text(15px, "Be-R", 1.4, variables.$text-gray, null);
+    text-align: left;
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    a,
+    button {
+      display: block;
+      width: 100%;
+      padding: 8px 0;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+      @include mixins.text(15px, "Be-M", 1.4, variables.$gray-cl-5, null);
+      transition: color var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+
+      &:hover,
+      &:focus-visible {
+        color: variables.$yellow-cl;
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 24px 20px;
+  }
+
+  &__card {
+    text-align: left;
+    @include header-media-card(".header-search__media");
+  }
+
+  &__name {
+    display: block;
+    margin-top: 10px;
+    @include mixins.text(15px, "Be-M", 1.4, variables.$dark-cl, null);
+    transition: color var(--dur-base) var(--ease-out);
+  }
+
+  &__card:hover &__name {
+    color: variables.$yellow-cl;
+  }
+
+  &__price {
+    display: block;
+    margin-top: 2px;
+    @include mixins.text(14px, "M-SB", 1.4, variables.$dark-cl, null);
+  }
+}
+
+// ---------------------------------------------------------------------------------------
+// Responsive
+// ---------------------------------------------------------------------------------------
+@include mixins.md {
+  .main-nav,
+  .header-actions-buttons {
+    display: none;
+  }
+
+  .header-actions {
+    position: relative;
+
+    &-separator {
+      margin: 0 8px;
+    }
+  }
+
+  .header-hamburger {
+    display: block;
+  }
+
+  .header-search__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    > :nth-child(n + 5) {
+      display: none;
+    }
+  }
+}
+
+@include mixins.sm {
+  .header-search__body {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .header-search__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    > :nth-child(n + 4) {
+      display: none;
+    }
+  }
+}
+
+@include mixins.xs {
+  .header .header-wrapper {
+    gap: 8px;
+  }
+
+  .header-actions-icons {
+    gap: 0;
+  }
+
+  .header-actions-separator {
+    display: none;
+  }
+
+  .header-search__panel {
+    padding-top: 20px;
+  }
+
+  .header-search__field input {
+    font-size: 17px;
+  }
+
+  .header-search__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 12px;
+
+    > :nth-child(n + 4) {
+      display: block;
+    }
+  }
+}
+
+// =========================================================================================
+// Mobile drawer
+// =========================================================================================
+body.mobile-menu-open {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-drawer);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-slow) var(--ease-out), visibility 0s linear var(--dur-slow);
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(380px, 88vw);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: variables.$white-cl;
+  box-shadow: var(--shadow-xl);
+  transform: translateX(-100%);
+  transition: transform var(--dur-slow) var(--ease-out);
+
+  .mobile-menu-overlay.show & {
+    transform: translateX(0);
+  }
+
+  &__header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+    padding: 0 8px 0 20px;
+    background: #0b0b0b;
+  }
+
+  // Drawn at its design size from the 331x90 source, never at a fractional scale
+  &__logo {
+    width: 100px;
+    height: 27px;
+  }
+
+  &__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: variables.$white-cl;
+    cursor: pointer;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    &:focus-visible {
+      outline: 2px solid variables.$yellow-cl;
+      outline-offset: 2px;
+    }
+  }
+
+  &__nav ul {
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    a {
+      position: relative;
+      display: block;
+      padding: 14px 20px;
+      @include mixins.text(17px, "Be-M", 1.4, variables.$dark-cl, null);
+      text-decoration: none;
+      transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 10px;
+        bottom: 10px;
+        width: 3px;
+        border-radius: 0 3px 3px 0;
+        background: variables.$yellow-cl;
+        transform: scaleY(0);
+        transition: transform var(--dur-base) var(--ease-out);
+      }
+
+      &:hover,
+      &:focus-visible {
+        background: rgba(240, 160, 10, 0.08);
+        outline: none;
+      }
+
+      &.active {
+        color: variables.$yellow-cl;
+
+        &::before {
+          transform: scaleY(1);
+        }
+      }
+    }
+  }
+
+  &__section {
+    padding: 20px 0 4px;
+  }
+
+  &__heading {
+    margin: 0 20px 12px;
+    @include mixins.text(15px, "Be-B", 1.4, variables.$dark-cl, null);
+    text-align: left;
+  }
+
+  &__rail {
+    display: flex;
+    gap: 12px;
+    padding: 0 20px 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 20px;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__tile {
+    flex: 0 0 128px;
+    scroll-snap-align: start;
+    text-align: left;
+    @include header-media-card(".mobile-menu__tile-media");
+  }
+
+  &__tile-label {
+    display: block;
+    margin-top: 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    @include mixins.text(13px, "Be-M", 1.4, variables.$dark-cl, null);
+  }
+
+  &__account {
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    background: variables.$snow-white-cl;
+  }
+
+  &__greeting {
+    margin: 0 0 4px;
+    @include mixins.text(16px, "Be-B", 1.4, variables.$dark-cl, null);
+    text-align: left;
+  }
+
+  &__email {
+    margin: 0 0 16px;
+    @include mixins.text(13px, "Be-R", 1.5, variables.$text-gray, null);
+    text-align: left;
+  }
+
+  &__actions,
+  &__auth {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  &__action,
+  &__signin,
+  &__signup,
+  &__logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+
+    &:focus-visible {
+      outline: 2px solid variables.$yellow-cl;
+      outline-offset: 2px;
+    }
+  }
+
+  &__action,
+  &__signup {
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    background: variables.$white-cl;
+    @include mixins.text(14px, "Be-M", 1.2, variables.$dark-cl, null);
+
+    &:hover {
+      border-color: variables.$yellow-cl;
+    }
+  }
+
+  &__signin {
+    border: 1px solid variables.$yellow-cl;
+    background: variables.$yellow-cl;
+    @include mixins.text(14px, "Be-M", 1.2, variables.$dark-cl, null);
+
+    &:hover {
+      background: #dc951c;
+    }
+  }
+
+  &__logout {
+    width: 100%;
+    margin-top: 8px;
+    border: 1px solid rgba(216, 59, 1, 0.25);
+    background: rgba(216, 59, 1, 0.06);
+    @include mixins.text(14px, "Be-M", 1.2, variables.$error-cl, null);
+  }
+}
+
+// =========================================================================================
+// Legacy helpers still used outside the header (order detail, account, cancel modal)
+// =========================================================================================
+.product-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  position: relative;
+}
+
+.product-image {
+  height: 150px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.product-title {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.product-price {
+  color: #e53935;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 4px;
+}

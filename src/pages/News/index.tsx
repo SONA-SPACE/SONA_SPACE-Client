@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import BannerSlider from "../../components/BannerSlider";
 import NewsCategories from "../../components/CategoryNews";
 import PolicyProduct from "../../components/Policy";
@@ -85,15 +83,19 @@ const News: React.FC<NewsProps> = ({ limit }) => {
     return (
       <div className="news-grid">
         {news.map((newsItem) => (
-          <div className="news-item" key={newsItem.news_id}>
+          <article className="news-item" key={newsItem.news_id} data-reveal>
             <Link to={`/tin-tuc/${newsItem.news_slug}`}>
-              <img
-                src={newsItem.news_image || "/fallback-image.jpg"}
-                alt={newsItem.news_title}
-              />
+              <span className="news-item__media">
+                <img
+                  src={newsItem.news_image || "/images/hero-banner.png"}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
               <h3>{newsItem.news_title}</h3>
             </Link>
-          </div>
+          </article>
         ))}
       </div>
     );
@@ -101,7 +103,6 @@ const News: React.FC<NewsProps> = ({ limit }) => {
 
   return (
     <>
-      <Header />
 
       <div className="news-page">
         <BannerSlider page="tin-tuc" />
@@ -130,7 +131,6 @@ const News: React.FC<NewsProps> = ({ limit }) => {
           <PolicyProduct />
         </section>
 
-        <Footer />
       </div>
     </>
   );

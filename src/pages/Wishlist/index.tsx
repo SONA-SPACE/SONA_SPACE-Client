@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import ProductComponent from "../../components/Product";
 import { isAuthenticated as hasAuthSession } from "../../services/loginService";
 import { loadWishlistService } from "../../services/wishlistService";
@@ -48,7 +46,6 @@ const Wishlist: React.FC = () => {
 
   return (
     <>
-      <Header />
       <div className="wishlist-pages">
         {/* Breadcrumb */}
         <div className="breadcrumb-container">
@@ -130,7 +127,6 @@ const Wishlist: React.FC = () => {
       <section className="policy-product mt-94">
         <PolicyProduct />
       </section>
-      <Footer />
     </>
   );
 };

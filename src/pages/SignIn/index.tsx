@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import { BannerSection } from "../../components/BannerSection";
+import PageHero from "../../components/PageHero";
 import { useLogin } from "../../hooks/useLogin";
 import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 import "./styles.css";
@@ -29,12 +27,11 @@ const SignIn: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <BannerSection title={"Đăng Nhập"} height="50dvh" />
+      <PageHero title="Đăng Nhập" breadcrumbs={[{ label: "Trang chủ", to: "/" }, { label: "Đăng Nhập" }]} />
       <div className="signin-page">
         <div className="container">
           <div className="signin-content">
-            <h1>Đăng Nhập</h1>
+            <h2>Đăng Nhập</h2>
             <p className="signin-description">Chào mừng bạn trở lại!</p>
 
             {success && (
@@ -132,7 +129,6 @@ const SignIn: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

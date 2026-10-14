@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import MediaTile from "../MediaTile";
+import { SkeletonBlock } from "../StateFeedback";
 import { getFeaturedCategories, formatCategoryForDisplay } from "../../services/categoryService";
 import type { Category } from "../../types";
 
@@ -30,103 +31,35 @@ export const PopularCategory = () => {
     loadCategories();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="popular-category-loading">
-        <div className="loading-spinner"></div>
-        <p>Đang tải danh mục sản phẩm...</p>
-      </div>
-    );
-  }
-
-  // Chia danh mục thành 2 nhóm: 2 danh mục đầu và các danh mục còn lại
-  const topCategories = categories.slice(0, 2);
-  const remainingCategories = categories.slice(2);
+  const tiles = categories.map(formatCategoryForDisplay);
+  const tile = (category: (typeof tiles)[number]) => (
+    <MediaTile key={category.id} to={`/danh-muc/${category.slug}`} image={category.image} title={category.name} />
+  );
 
   return (
     <section className="PopularCategory-full">
       <div className="container">
         <div className="category-of-products">
           <div className="category-of-products-s1">
-            <div className="products-s1-frame-1">
-              <div className="frame-1-text">
-                <a className="frame-1-text1">Các danh mục sản phẩm phổ biến nhất</a>
-                <a className="frame-1-text2">
-                  Khám phá những danh mục sản phẩm được ưa chuộng và lựa chọn nhiều nhất hiện nay
-                </a>
-              </div>
+            <div className="popular-intro" data-reveal>
+              <p className="popular-intro__eyebrow">Danh mục</p>
+              <h2 className="popular-intro__title">Các danh mục sản phẩm phổ biến nhất</h2>
+              <p className="popular-intro__text">
+                Khám phá những danh mục sản phẩm được ưa chuộng và lựa chọn nhiều nhất hiện nay
+              </p>
             </div>
-
-            {topCategories.map((category) => {
-              const formattedCategory = formatCategoryForDisplay(category);
-              return (
-                <div className="products-s1-frame-2" key={formattedCategory.id}>
-                  <img 
-                    src={formattedCategory.image} 
-                    alt={formattedCategory.name}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.onerror = null;
-                      target.src = "/images/placeholder.jpg";
-                    }}
-                  />
-                  <div className="frame-2-t">
-                    <h3>{formattedCategory.name}</h3>
-                    <Link className="btn btn-primary" to={`/danh-muc/${formattedCategory.slug}`}>
-                      Xem Sản Phẩm
-                      <i className="icon">
-                        <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M13.9128 4L9.8048 1M13.9128 4L9.8048 7M13.9128 4H1.12402"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </i>
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
+            {loading
+              ? [0, 1].map((key) => <SkeletonBlock key={key} className="popular-skeleton" height="100%" />)
+              : tiles.slice(0, 2).map(tile)}
           </div>
-
-          <div className="category-of-products-s2">
-            {remainingCategories.map((category) => {
-              const formattedCategory = formatCategoryForDisplay(category);
-              return (
-                <div className="products-s2-frame-1" key={formattedCategory.id}>
-                  <img 
-                    src={formattedCategory.image} 
-                    alt={formattedCategory.name}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.onerror = null;
-                      target.src = "/images/placeholder.jpg";
-                    }}
-                  />
-                  <div className="frame-2-t">
-                    <h3>{formattedCategory.name}</h3>
-                    <Link className="btn btn-cate" to={`/danh-muc/${formattedCategory.slug}`}>
-                      Xem Sản Phẩm
-                      <i className="icon">
-                        <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M13.9128 4L9.8048 1M13.9128 4L9.8048 7M13.9128 4H1.12402"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </i>
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          {(loading || tiles.length > 2) && (
+            <div className="category-of-products-s2">
+              {loading
+                ? [0, 1, 2, 3].map((key) => <SkeletonBlock key={key} className="popular-skeleton" height="100%" />)
+                : tiles.slice(2).map(tile)}
+            </div>
+          )}
+          {error && !loading && <p className="popular-error" role="status">{error}</p>}
         </div>
       </div>
     </section>

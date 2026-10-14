@@ -1,0 +1,81 @@
+@use "variables";
+
+// Scroll reveal (driven by src/motion/MotionProvider.tsx). The hidden state only exists once
+// GSAP has loaded, so content is never stuck invisible when scripts fail or motion is reduced.
+.motion-ready [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  // GSAP drives transform/opacity frame by frame here; a component's own CSS transition on
+  // those properties would chase every frame and stutter. It applies again once revealed.
+  transition: none !important;
+}
+
+// Frame for data-parallax images: the image is oversized so its drift never exposes an edge.
+.parallax-frame {
+  overflow: hidden;
+
+  > [data-parallax] {
+    display: block;
+    width: 100%;
+    // Oversized just enough to cover a +/-3% drift (data-parallax="3")
+    height: 108%;
+    margin-top: -4%;
+    object-fit: cover;
+    will-change: transform;
+  }
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: calc(var(--z-toast) + 1);
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: #0b0b0b;
+  color: variables.$white-cl;
+  font-family: "Be-M", system-ui, sans-serif;
+  font-size: 15px;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-160%);
+  transition: transform var(--dur-base) var(--ease-out);
+
+  &:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid variables.$yellow-cl;
+    outline-offset: 2px;
+  }
+}
+
+.site-main {
+  // Contain page top margins (e.g. .product-details { margin-top: 80px }). Without this they
+  // collapse through <main> onto <body>, and swapping the route fallback for the page shifts
+  // the whole document.
+  display: flow-root;
+  // The footer is mounted on every route, so while a page shows its short loading state the
+  // footer would sit in view and then be pushed away. One viewport of main keeps it below.
+  min-height: 100svh;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.route-fallback {
+  min-height: 40vh;
+  padding-top: var(--height-header);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Be-R", system-ui, sans-serif;
+  font-size: 16px;
+  color: variables.$text-cl;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-frame > [data-parallax] {
+    height: 100%;
+    margin-top: 0;
+    will-change: auto;
+  }
+}

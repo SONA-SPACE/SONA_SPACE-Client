@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import type { ContactForm as ContactFormData } from "../../types";
 import {
   sendContactFormService,
@@ -126,13 +124,12 @@ const ContactForm: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <main className="about-page">
+      <div className="about-page">
         <section className="about-hero" aria-labelledby="about-hero-title">
           <div className="container about-hero__inner">
             <div className="about-hero__copy">
+              <p className="about-eyebrow">VỀ SONA SPACE</p>
               <h1 id="about-hero-title">Không gian có chủ đích</h1>
-              <span className="about-rule" aria-hidden="true" />
               <p className="about-hero__description">
                 Chúng tôi thiết kế nội thất dựa trên thói quen sống, cảm xúc và lý tưởng
                 thẩm mỹ của bạn. Mỗi không gian là một sự phản chiếu riêng biệt và bền vững.
@@ -155,7 +152,7 @@ const ContactForm: React.FC = () => {
             <h2 id="about-process-title">Quy trình làm việc</h2>
             <div className="about-process__items">
               {process.map((item) => (
-                <article className="about-process__item" key={item.number}>
+                <article className="about-process__item" key={item.number} data-reveal>
                   <p className="about-process__number">{item.number}</p>
                   <div className="about-process__icon"><ProcessIcon type={item.icon} /></div>
                   <h3>{item.title}</h3>
@@ -176,7 +173,7 @@ const ContactForm: React.FC = () => {
             </div>
             <div className="about-projects__list">
               {projects.map((project) => (
-                <Link className="about-project-card" to="/khong-gian" key={project.title}>
+                <Link className="about-project-card" to="/khong-gian" key={project.title} data-reveal>
                   <span className="about-project-card__image">
                     <img src={project.image} alt={project.alt} loading="lazy" />
                   </span>
@@ -206,7 +203,7 @@ const ContactForm: React.FC = () => {
               />
             </div>
 
-            <form className="about-contact__form" onSubmit={handleSubmit} noValidate>
+            <form className="about-contact__form" onSubmit={handleSubmit} noValidate data-reveal>
               <div className="about-form-field">
                 <label htmlFor="fullName">Họ và tên</label>
                 <input id="fullName" name="fullName" type="text" value={formData.fullName} onChange={handleChange} />
@@ -243,8 +240,7 @@ const ContactForm: React.FC = () => {
             </form>
           </div>
         </section>
-      </main>
-      <Footer />
+      </div>
     </>
   );
 };

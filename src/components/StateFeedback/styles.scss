@@ -44,7 +44,11 @@
 }
 
 .state-page-skeleton--detail {
-	padding: 48px 0 32px;
+	// Mirror the loaded page: clear the fixed header and hold a full viewport, so the footer
+	// never flashes into view and gets pushed out when the product arrives.
+	margin-top: var(--height-header);
+	min-height: calc(100svh - var(--height-header));
+	padding: 104px 0 32px;
 }
 
 .state-detail-skeleton {

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import { useParams } from "react-router-dom";
 import RoomSlider from "../../components/RoomSlider";
 import Filter from "../../components/filter";
 import ProductComponent from "../../components/Product";
@@ -11,6 +9,7 @@ import {
 } from "../../services/roomService";
 import type { Room, Product } from "../../types";
 import Seemore from "../../components/seemore";
+import PageHero from "../../components/PageHero";
 
 const PAGE_SIZE = 8;
 
@@ -194,33 +193,16 @@ const RoomDetail: React.FC = () => {
 
   return (
     <>
-      <Header />
       <div className="room-detail-page">
-        {/* Banner Section */}
-        <div className="room-banner">
-          <div className="container-fluid">
-            <div className="banner-image">
-              <img src={room?.room_banner} alt={room?.room_name} />
-              <div className="banner-text">
-                <h1>{room?.room_name}</h1>
-                <p>{room?.room_description}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Breadcrumb */}
-        <div className="breadcrumb-container">
-          <div className="container">
-            <div className="breadcrumb">
-              <Link to="/">Trang chủ</Link>
-              <span>/</span>
-              <Link to="/khong-gian">Không gian</Link>
-              <span>/</span>
-              <span className="active">{room?.room_name}</span>
-            </div>
-          </div>
-        </div>
+        <PageHero
+          title={room?.room_name ?? ""}
+          image={room?.room_banner || undefined}
+          breadcrumbs={[
+            { label: "Trang chủ", to: "/" },
+            { label: "Không gian", to: "/khong-gian" },
+            { label: room?.room_name ?? "" },
+          ]}
+        />
 
         {/* Product Section */}
         <section className="product-section mt-94">
@@ -311,7 +293,6 @@ const RoomDetail: React.FC = () => {
           </div>
         </section>
       </div>
-      <Footer />
     </>
   );
 };

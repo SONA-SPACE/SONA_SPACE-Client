@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import NewsCategories from "../../components/CategoryNews";
 import RecentPosts from "../../components/RecentPosts";
 import {
@@ -53,7 +51,6 @@ const NewsDetail: React.FC = () => {
   if (isLoading) {
     return (
       <>
-        <Header />
         <div className="news-detail-page">
           <div className="container">
             <div className="news-detail-wrapper">
@@ -75,7 +72,6 @@ const NewsDetail: React.FC = () => {
             </div>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
@@ -83,7 +79,6 @@ const NewsDetail: React.FC = () => {
   if (error) {
     return (
       <>
-        <Header />
         <div className="news-detail-page">
           <div className="container">
             <RetryState
@@ -95,7 +90,6 @@ const NewsDetail: React.FC = () => {
             />
           </div>
         </div>
-        <Footer />
       </>
     );
   }
@@ -103,7 +97,6 @@ const NewsDetail: React.FC = () => {
   if (!newsDetailItem) {
     return (
       <>
-        <Header />
         <div className="news-detail-page">
           <div className="container">
             <EmptyState
@@ -116,14 +109,12 @@ const NewsDetail: React.FC = () => {
             />
           </div>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <Header />
       <div className="news-detail-page">
         <div className="container">
           <div className="news-detail-wrapper">
@@ -159,7 +150,6 @@ const NewsDetail: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

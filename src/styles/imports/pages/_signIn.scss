@@ -1,0 +1,247 @@
+@use "../core/variables";
+
+.signin-page {
+  padding: 60px 0;
+
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  .signin-content {
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
+
+    h2 {
+      font-family: "M-B", sans-serif;
+      font-size: 3.2rem;
+      color: #000000;
+      margin-bottom: 15px;
+    }
+
+    .signin-description {
+      font-family: "BE-R", sans-serif;
+      font-size: 1.6rem;
+      color: #8c8a8a;
+      margin-bottom: 30px;
+    }
+  }
+
+  .signin-form {
+    margin-bottom: 30px;
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: "Be-R", sans-serif;
+        font-size: 1.6rem;
+        color: #000000;
+        transition: border-color 0.3s ease;
+
+        &::placeholder {
+          color: #999;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #999;
+        }
+        &.error {
+          border-color: #ff3b30;
+        }
+      }
+      .error-message {
+        color: #ff3b30;
+        font-size: 1.6rem;
+        margin-top: 5px;
+        font-family: "Be-R", sans-serif;
+      }
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        input[type="checkbox"] {
+          margin: 0;
+        }
+
+        label {
+          font-family: "Be-R";
+          font-size: 1.6rem;
+          color: #092c4c;
+        }
+      }
+
+      .forgot-password {
+        a {
+          font-size: 1.6rem;
+          font-family: "Be-R";
+
+          color: #092c4c;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    .signin-btn {
+      display: inline-block;
+      width: 100%; /* Chiều rộng 100% của container cha */
+      max-width: 561px;
+      padding: 12px 24px;
+      background-color: #f5a623;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-family: "Be-B", sans-serif;
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-align: center;
+
+      &:hover {
+        background-color: #dc951c;
+      }
+    }
+  }
+
+  .social-signin {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+
+    .divider {
+      position: relative;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #092c4c;
+      font-family: "M-SB", sans-serif;
+      font-size: 16px;
+      &:before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 0; /* đổi height thành 0 vì dùng border */
+        border-bottom: 1px dashed #8c8a8a; /* nét đứt ngang */
+
+        z-index: 1;
+      }
+
+      span {
+        display: inline-block;
+        padding: 0 15px;
+        background-color: #fff;
+        position: relative;
+        z-index: 2;
+        font-size: 14px;
+        color: #999;
+      }
+    }
+
+    .google-signin-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 230px;
+      padding: 12px 24px;
+      background-color: #fff;
+      color: #333;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: "M-R", sans-serif;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      img {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+      }
+
+      &:hover {
+        background-color: #f8f8f8;
+      }
+    }
+  }
+
+  .signup-link {
+    p {
+      font-family: "Be-R", sans-serif;
+      font-size: 1.6rem;
+      color: #092c4c;
+
+      a {
+        color: #092c4c;
+        text-decoration: underline;
+
+        &:hover {
+          color: variables.$yellow-cl;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  // // Responsive styles
+  // @media (max-width: 768px) {
+  //   padding: 40px 0;
+
+  //   .signin-content {
+  //     h1 {
+  //       font-size: 24px;
+  //     }
+
+  //     .signin-description {
+  //       font-size: 15px;
+  //     }
+  //   }
+  // }
+
+  // @media (max-width: 576px) {
+  //   padding: 30px 0;
+
+  //   .signin-content {
+  //     h1 {
+  //       font-size: 22px;
+  //     }
+  //   }
+
+  //   .signin-form {
+  //     .form-options {
+  //       flex-direction: column;
+  //       align-items: flex-start;
+  //       gap: 10px;
+  //     }
+  //   }
+
+  //   .design-services {
+  //     margin-top: 50px;
+  //   }
+  // }
+}

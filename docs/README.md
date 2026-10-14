@@ -31,6 +31,8 @@
   - performance, accessibility, regression và release readiness.
 - `docs/sprints/sprint-05-staging-spa-404-hardening.md`
   - staging SPA fallback, Vercel rewrite, base path, and deep-link 404 verification.
+- `docs/sprints/sprint-06-ui-modernization-motion-depth.md`
+  - elevation/radius/motion tokens, header states, banner timeline, card hover, scroll reveal.
 
 ## 3. Source of Truth cần đối chiếu
 

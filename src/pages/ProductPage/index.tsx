@@ -4,8 +4,6 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 // Component
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import Filter from "../../components/filter";
 import ProductComponent from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
@@ -139,7 +137,6 @@ const ProductPage: React.FC = () => {
 
   return (
     <>
-      <Header />
       <BannerSlider page="san-pham" />
       <div className="breadcrumb-container">
         <div className="container">
@@ -209,7 +206,6 @@ const ProductPage: React.FC = () => {
       <section className="get-in-touch mt-94">
         <GetInTouch />
       </section>
-      <Footer />
       <ToastContainer
         position="top-right"
         autoClose={3000}

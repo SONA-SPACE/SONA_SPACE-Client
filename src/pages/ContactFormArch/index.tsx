@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { toast } from "react-toastify";
 
 interface FormData {
@@ -160,7 +158,6 @@ const ContactFormArch: React.FC = () => {
 
   return (
     <>
-      <Header />
       <div className="architect-resume-page">
         {/* Introduction Section */}
         <section className="intro-section">
@@ -190,7 +187,7 @@ const ContactFormArch: React.FC = () => {
             <h2 className="section-title">Experience</h2>
             
             {experiences.map((exp, index) => (
-              <div className="experience-item" key={index}>
+              <div className="experience-item" data-reveal key={index}>
                 <div className="experience-header">
                   <div className="position-company">
                     <h3>{exp.position}</h3>
@@ -215,7 +212,7 @@ const ContactFormArch: React.FC = () => {
             
             <div className="skills-grid">
               {skills.map((skillCategory, index) => (
-                <div className="skill-category" key={index}>
+                <div className="skill-category" data-reveal key={index}>
                   <h3>{skillCategory.category}</h3>
                   <ul>
                     {skillCategory.items.map((item, i) => (
@@ -235,7 +232,7 @@ const ContactFormArch: React.FC = () => {
             
             <div className="communication-grid">
               {skills[2].items.map((item, index) => (
-                <div className="communication-item" key={index}>
+                <div className="communication-item" data-reveal key={index}>
                   <h4>• {item}</h4>
                 </div>
               ))}
@@ -263,7 +260,7 @@ const ContactFormArch: React.FC = () => {
             
             <div className="recommendations-grid">
               {recommendations.map((rec, index) => (
-                <div className="recommendation-item" key={index}>
+                <div className="recommendation-item" data-reveal key={index}>
                   <p className="quote">"{rec.text}"</p>
                   <p className="author">{rec.author}</p>
                   {rec.position && <p className="position">{rec.position}</p>}
@@ -379,7 +376,6 @@ const ContactFormArch: React.FC = () => {
           </div>
         </section>
       </div>
-      <Footer />
     </>
   );
 };

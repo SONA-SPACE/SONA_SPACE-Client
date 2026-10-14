@@ -1,0 +1,35 @@
+@use "../core/mixins";
+
+.homepage {
+    // Room tiles: one large tile on the left, two stacked on the right
+    .recommendation-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(260px, 1fr));
+        gap: 20px;
+        min-height: 640px;
+
+        .media-tile--large {
+            grid-row: 1 / span 2;
+        }
+    }
+}
+
+@include mixins.sm {
+    .homepage .recommendation-grid {
+        min-height: 560px;
+    }
+}
+
+@include mixins.xs {
+    .homepage .recommendation-grid {
+        grid-template-rows: 300px 220px;
+        gap: 12px;
+        min-height: 0;
+
+        .media-tile--large {
+            grid-column: 1 / span 2;
+            grid-row: auto;
+        }
+    }
+}

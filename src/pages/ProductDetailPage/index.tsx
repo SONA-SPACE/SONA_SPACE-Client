@@ -11,8 +11,6 @@ import {
 import { toast } from "react-toastify";
 
 // import components
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import PolicyProduct from "../../components/Policy";
 import Comment from "../../components/Comment";
 import type { MiniCartHandle } from "../../components/MiniCart";
@@ -358,9 +356,7 @@ const ProductDetailPage: React.FC = () => {
   if (isLoadingProduct) {
     return (
       <>
-        <Header />
         <PageSectionSkeleton variant="product-detail" />
-        <Footer />
       </>
     );
   }
@@ -368,14 +364,12 @@ const ProductDetailPage: React.FC = () => {
   if (productError) {
     return (
       <>
-        <Header />
         <RetryState
           message={productError}
           onRetry={() => setProductReloadToken((current) => current + 1)}
           secondaryActionLabel="Xem sản phẩm khác"
           secondaryActionTo="/san-pham"
         />
-        <Footer />
       </>
     );
   }
@@ -383,20 +377,17 @@ const ProductDetailPage: React.FC = () => {
   if (!product) {
     return (
       <>
-        <Header />
         <EmptyState
           title="Không tìm thấy sản phẩm"
           message="Sản phẩm này có thể đã ngừng bán hoặc đường dẫn không còn hợp lệ."
           actionLabel="Xem sản phẩm khác"
           actionTo="/san-pham"
         />
-        <Footer />
       </>
     );
   }
   return (
     <>
-      <Header />
       <div className="product-details">
         <div className="breadcrumb-container">
           <div className="container">
@@ -468,7 +459,7 @@ const ProductDetailPage: React.FC = () => {
 
               <div className="detail-content">
                 <div className="content-name">
-                  <h3>{product.name}</h3>
+                  <h1>{product.name}</h1>
                 </div>
                 <div className="content-description">
                   <span>
@@ -732,7 +723,6 @@ const ProductDetailPage: React.FC = () => {
 
       </div>
 
-      <Footer />
 
 
     </>

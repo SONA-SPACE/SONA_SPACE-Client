@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const scssRoot = path.resolve(__dirname, "..", "public", "scss");
+const scssRoot = path.resolve(__dirname, "..", "src", "styles");
 
 function collectScssFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {

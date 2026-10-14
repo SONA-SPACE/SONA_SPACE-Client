@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Product as ProductType } from "../../types";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import PopularCategory from "../../components/PopularCategory";
 import InteriorDesign from "../../components/interiorDesign";
 import ProductSlider from "../../components/ProductSlider";
@@ -49,7 +47,6 @@ const Rooms: React.FC = () => {
   }, []);
   return (
     <>
-      <Header />
       <div className="rooms-page">
 
         {/* Banner */}
@@ -69,7 +66,7 @@ const Rooms: React.FC = () => {
         {/* Room Categories */}
         <section className="room-categories mt-94">
           <div className="container">
-            <h1 className="section-title">Khám phá thêm các căn phòng</h1>
+            <h2 className="section-title">Khám phá thêm các căn phòng</h2>
             <CategorySlider />
           </div>
         </section>
@@ -111,7 +108,6 @@ const Rooms: React.FC = () => {
         <InteriorDesign />
 
       </div>
-      <Footer />
     </>
   );
 };

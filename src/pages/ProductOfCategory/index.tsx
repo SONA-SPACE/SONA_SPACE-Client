@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import {
-  Link,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import Filter from "../../components/filter";
 import Seemore from "../../components/seemore";
 import CategorySlider from "../../components/CategorySlider";
@@ -17,6 +14,7 @@ import {
 } from "../../services/categoryService";
 import type { Category, Product } from "../../types";
 import { formatProductForDisplay } from "../../services/productService";
+import PageHero from "../../components/PageHero";
 
 const PAGE_SIZE = 8;
 
@@ -178,34 +176,16 @@ const ProductOfCategory = () => {
 
   return (
     <>
-      <Header />
       <div className="product-of-category">
-        {/* Banner Section */}
-        <div className="category-banner">
-          <div className="container-fluid">
-            <div className="banner-image">
-              <img
-                src={category?.category_banner}
-                alt="Sản phẩm trong danh mục Ghế - Các loại ghế hiện đại"
-              />
-              <div className="banner-content">
-                <h1>{category?.category_name}</h1>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="breadcrumb-container">
-          <div className="container">
-            <div className="breadcrumb">
-              <Link to="/">Trang chủ</Link>
-              <span>/</span>
-              <Link to="/san-pham">Sản phẩm</Link>
-              <span>/</span>
-              <span className="active">{category?.category_name}</span>
-            </div>
-          </div>
-        </div>
+        <PageHero
+          title={category?.category_name ?? ""}
+          image={category?.category_banner || undefined}
+          breadcrumbs={[
+            { label: "Trang chủ", to: "/" },
+            { label: "Sản phẩm", to: "/san-pham" },
+            { label: category?.category_name ?? "" },
+          ]}
+        />
 
         <section className="product-listing">
           <Filter
@@ -245,7 +225,6 @@ const ProductOfCategory = () => {
           </div>
         </section>
       </div>
-      <Footer />
     </>
   );
 };

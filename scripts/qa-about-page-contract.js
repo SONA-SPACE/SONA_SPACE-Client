@@ -3,8 +3,12 @@ const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
 const page = fs.readFileSync(path.join(root, "src/pages/ContactForm/index.tsx"), "utf8");
-const style = fs.readFileSync(path.join(root, "public/scss/imports/pages/_about.scss"), "utf8");
-const globalStyle = fs.readFileSync(path.join(root, "public/scss/style.scss"), "utf8");
+const app = fs.readFileSync(path.join(root, "src/App.tsx"), "utf8");
+const layout = fs.readFileSync(path.join(root, "src/layouts/SiteLayout.tsx"), "utf8");
+// The about route must sit inside the shared SiteLayout route, which owns header, footer and <main>
+const layoutRoutes = app.slice(app.indexOf("<Route element={<SiteLayout />}>"), app.indexOf("</Route>", app.indexOf("<Route element={<SiteLayout />}>")));
+const style = fs.readFileSync(path.join(root, "src/styles/imports/pages/_about.scss"), "utf8");
+const globalStyle = fs.readFileSync(path.join(root, "src/styles/style.scss"), "utf8");
 
 const requiredAssets = [
   "/images/about/about-hero-living-room.png",
@@ -15,8 +19,14 @@ const requiredAssets = [
 ];
 
 const assertions = [
-  [page.includes("<main className=\"about-page\">") , "page renders an about main"],
-  [page.includes("<Header />") && page.includes("<Footer />"), "existing shell remains mounted"],
+  [page.includes("<div className=\"about-page\">") && !page.includes("<main"), "page renders an about root inside the layout's <main>"],
+  [
+    layout.includes("<Header />") &&
+      layout.includes("<Footer />") &&
+      layout.includes("<main") &&
+      layoutRoutes.includes('<Route path="/lien-he" element={<ContactForm />} />'),
+    "existing shell remains mounted through SiteLayout",
+  ],
   [page.includes("sendContactFormService") && page.includes("validateContactForm"), "existing contact service and validation are retained"],
   [page.includes("<form") && page.includes("onSubmit={handleSubmit}"), "contact form remains submit-capable"],
   [

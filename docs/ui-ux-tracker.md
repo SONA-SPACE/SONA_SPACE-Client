@@ -12,6 +12,7 @@
   - `docs/sprints/sprint-02-loading-skeleton-empty-error-state.md`
   - `docs/sprints/sprint-03-commerce-account-content-ux-hardening.md`
   - `docs/sprints/sprint-04-performance-accessibility-release-readiness.md`
+  - `docs/sprints/sprint-06-ui-modernization-motion-depth.md`
   - `../../SONA_SPACE-Server/docs/migration-tracker.md`
   - `../../SONA_SPACE-Server/docs/db-contract-postgres.md`
 
@@ -32,6 +33,7 @@
 | Sprint 3 | Commerce, account, content UX hardening | checkout/account/wishlist/banner UX nhất quán | `In Progress` |
 | Sprint 4 | Performance, accessibility, release readiness | code split, smoke checklist, release baseline | `In Progress` |
 | Sprint 5 | Staging SPA 404 hardening | Vercel SPA fallback, base-path contract, deep-link verification | `Done` |
+| Sprint 6 | UI modernization: depth, hover, motion | elevation/radius/motion tokens, header states, banner timeline, card hover, scroll reveal | `In Progress` |
 
 ## 3. Sprint Checklist
 

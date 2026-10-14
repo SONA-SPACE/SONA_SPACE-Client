@@ -97,16 +97,14 @@ export default function CategorySlider() {
             style={{ paddingBottom: 48 }}
         >
             {categories.map((category: Category) => (
-                <SwiperSlide
-                    style={{ width: 300 }}
-                    key={category.category_id}>
+                <SwiperSlide key={category.category_id}>
                     <div
                         key={category.category_id}
                         className={`category-item`}
                     >
                         <Link to={`/danh-muc/${category.slug}`} className="category-link">
                             <div className="category-image">
-                                <img src={category.category_image} alt={category.category_name} />
+                                <img src={category.category_image} alt="" loading="lazy" decoding="async" />
                             </div>
                             <h3 className="category-name">{category.category_name}</h3>
                         </Link>
