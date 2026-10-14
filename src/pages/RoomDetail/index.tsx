@@ -10,6 +10,8 @@ import {
 import type { Room, Product } from "../../types";
 import Seemore from "../../components/seemore";
 import PageHero from "../../components/PageHero";
+import ListingPageSkeleton from "../../components/ListingPageSkeleton";
+import { RetryState } from "../../components/StateFeedback";
 
 const PAGE_SIZE = 8;
 
@@ -176,11 +178,23 @@ const RoomDetail: React.FC = () => {
   }, [slug]);
 
   if (loading && page === 1) {
-    return <div>Loading...</div>;
+    return <ListingPageSkeleton pageClassName="room-detail-page" sectionClassName="product-section mt-94" />;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="room-detail-page">
+        <PageHero title="Không gian" />
+        <div className="container">
+          <RetryState
+            message={error}
+            onRetry={() => window.location.reload()}
+            secondaryActionLabel="Xem các không gian khác"
+            secondaryActionTo="/khong-gian"
+          />
+        </div>
+      </div>
+    );
   }
 
   const handleSeeMore = () => {

@@ -268,64 +268,9 @@
     }
 }
 
-/* Style cho trạng thái loading */
-.loading-state {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-
-    p {
-        @include mixins.text(16px, M-R, auto, #666, null);
-        position: relative;
-        padding-left: 30px;
-
-        &:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            border: 2px solid variables.$yellow-cl;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-    }
-}
-
-/* Style cho trạng thái error */
-.error-state {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-
-    p {
-        @include mixins.text(16px, M-R, auto, #ff4d4f, null);
-        position: relative;
-        padding-left: 30px;
-
-        &:before {
-            content: '!';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            background-color: #ff4d4f;
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 20px;
-            font-weight: bold;
-        }
-    }
-}
-
+// .loading-state and .error-state used to be styled here globally (fixed 200px height, centred);
+// the sidebar never used them and they squeezed the account page's skeleton over its heading.
+// The spinner keyframes stay because other spinners reference the name.
 @keyframes spin {
     0% {
         transform: translateY(-50%) rotate(0deg);

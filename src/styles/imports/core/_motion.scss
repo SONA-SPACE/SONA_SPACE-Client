@@ -62,14 +62,43 @@
 }
 
 .route-fallback {
-  min-height: 40vh;
+  position: relative;
+  min-height: 100svh;
   padding-top: var(--height-header);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Be-R", system-ui, sans-serif;
-  font-size: 16px;
-  color: variables.$text-cl;
+
+  // Pages that open with a banner or hero draw it from the top, under the fixed header
+  &:not(.route-fallback--plain) {
+    padding-top: 0;
+  }
+
+  &__bar {
+    position: fixed;
+    top: var(--height-header);
+    left: 0;
+    z-index: var(--z-header);
+    width: 40%;
+    height: 2px;
+    background: variables.$yellow-cl;
+    animation: route-fallback-progress 1.2s var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes route-fallback-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-fallback__bar {
+    width: 100%;
+    animation: none;
+    opacity: 0.6;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

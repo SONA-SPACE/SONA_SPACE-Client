@@ -1,15 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <!-- SVG nếu muốn (modern browsers) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0b0b" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <title>SONA SPACE</title>
+    <script>
+      // Which top area a route starts with, so the first paint (before React runs) already has
+      // the dark header and the dark hero the page will show. RouteFallback reuses this function.
+      // Keep in step with the pages: BannerSlider (full on "/", compact on the listing roots),
+      // PageHero pages, and the full-screen order-complete page.
+      window.__sonaShellKind = function (pathname) {
+        var path = pathname.replace(/\/+$/, "") || "/";
+        if (path === "/") return "banner-full";
+        if (/^\/(san-pham|khong-gian|tin-tuc)$/.test(path)) return "banner-compact";
+        if (/^\/dat-hang-thanh-cong\//.test(path)) return "order";
+        if (/^\/(danh-muc|khong-gian)\/[^/]+$/.test(path)) return "page-hero";
+        if (/^\/(gio-hang|dang-nhap|dang-ky|tai-khoan)(\/|$)/.test(path)) return "page-hero";
+        return "plain";
+      };
+      document.documentElement.setAttribute("data-shell", window.__sonaShellKind(location.pathname));
+    </script>
+    <style>
+      /* Boot shell: painted until React replaces #root. Heights match BannerSlider, PageHero
+         and the order-complete screen; colours match their loading states. */
+      html,
+      body {
+        margin: 0;
+        background: #fff;
+      }
+      .boot-shell__header {
+        position: fixed;
+        inset: 0 0 auto;
+        height: 80px;
+        background: #0b0b0b;
+      }
+      .boot-shell__hero {
+        display: none;
+        background: linear-gradient(135deg, #1c1c1c 0%, #0b0b0b 100%);
+      }
+      [data-shell="banner-full"] .boot-shell__hero {
+        display: block;
+        height: 100svh;
+        min-height: 600px;
+        max-height: 1080px;
+      }
+      [data-shell="banner-compact"] .boot-shell__hero {
+        display: block;
+        height: 68svh;
+        min-height: 480px;
+        max-height: 720px;
+      }
+      [data-shell="page-hero"] .boot-shell__hero {
+        display: block;
+        height: clamp(300px, 42svh, 420px);
+      }
+      [data-shell="order"] .boot-shell__hero {
+        display: block;
+        height: 100dvh;
+        background: #283833;
+      }
+      @media (max-width: 767px) {
+        [data-shell="banner-full"] .boot-shell__hero {
+          height: 78svh;
+          min-height: 480px;
+        }
+        [data-shell="banner-compact"] .boot-shell__hero {
+          height: 56svh;
+          min-height: 380px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot-shell" aria-hidden="true">
+        <div class="boot-shell__header"></div>
+        <div class="boot-shell__hero"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

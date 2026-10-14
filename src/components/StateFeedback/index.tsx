@@ -12,15 +12,18 @@ type SkeletonBlockProps = {
   className?: string;
   width?: string | number;
   height?: string | number;
+  /** "dark" for placeholders drawn on a dark surface (banners, page heroes) */
+  tone?: "light" | "dark";
 };
 
 export const SkeletonBlock: React.FC<SkeletonBlockProps> = ({
   className = "",
   width,
   height,
+  tone = "light",
 }) => (
   <span
-    className={`state-skeleton-block ${className}`.trim()}
+    className={`state-skeleton-block${tone === "dark" ? " state-skeleton-block--dark" : ""} ${className}`.trim()}
     style={{ width, height }}
     aria-hidden="true"
   />
@@ -41,14 +44,23 @@ export const SkeletonText: React.FC<{
   </div>
 );
 
+// Placeholder for components/Product: it reuses the product-tile frame (border, radius,
+// square media, body padding) so the grid keeps its size when the real cards arrive
 export const SkeletonCard: React.FC<{ className?: string }> = ({
   className = "",
 }) => (
-  <div className={`state-skeleton-card ${className}`.trim()} aria-hidden="true">
-    <SkeletonBlock className="state-skeleton-card__image" />
-    <div className="state-skeleton-card__body">
-      <SkeletonText lines={2} />
-      <SkeletonBlock width="45%" height={18} />
+  <div className={`product-tile product-tile--skeleton ${className}`.trim()} aria-hidden="true">
+    <div className="product-tile__media">
+      <SkeletonBlock className="product-tile__skeleton-fill" />
+    </div>
+    <div className="product-tile__body">
+      <SkeletonBlock className="product-tile__skeleton-line" width="34%" height={12} />
+      <SkeletonBlock className="product-tile__skeleton-line" width="80%" height={18} />
+      <span className="product-tile__skeleton-swatches">
+        <SkeletonBlock width={16} height={16} />
+        <SkeletonBlock width={16} height={16} />
+      </span>
+      <SkeletonBlock className="product-tile__skeleton-line" width="48%" height={20} />
     </div>
   </div>
 );
@@ -65,24 +77,29 @@ export const PageSectionSkeleton: React.FC<{
         aria-label="Đang tải nội dung"
       >
         <div className="container">
+          {/* Mirrors ProductDetailPage: one large image over a row of two, then the info
+              column (name, category, price, rating, stock, views, colours, quantity, button) */}
           <div className="state-detail-skeleton">
             <div className="state-detail-skeleton__gallery">
               <SkeletonBlock className="state-detail-skeleton__hero" />
               <div className="state-detail-skeleton__thumbs">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <SkeletonBlock key={index} />
-                ))}
+                <SkeletonBlock />
+                <SkeletonBlock />
               </div>
             </div>
             <div className="state-detail-skeleton__content">
-              <SkeletonBlock width="70%" height={34} />
-              <SkeletonBlock width="42%" height={18} />
-              <SkeletonBlock width="34%" height={28} />
-              <SkeletonText lines={4} />
-              <div className="state-detail-skeleton__actions">
-                <SkeletonBlock height={48} />
-                <SkeletonBlock height={48} />
+              <SkeletonBlock width="62%" height={26} />
+              <SkeletonBlock width="24%" height={16} />
+              <SkeletonBlock width="40%" height={26} />
+              <SkeletonBlock width="48%" height={18} />
+              <SkeletonBlock width="36%" height={14} />
+              <SkeletonBlock width="56%" height={14} />
+              <div className="state-detail-skeleton__swatches">
+                <SkeletonBlock width={26} height={26} />
+                <SkeletonBlock width={26} height={26} />
               </div>
+              <SkeletonBlock width={120} height={40} />
+              <SkeletonBlock width={200} height={48} />
             </div>
           </div>
         </div>

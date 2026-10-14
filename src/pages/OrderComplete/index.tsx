@@ -135,17 +135,14 @@
       );
     }
 
-    if (!orderSummary) {
-      return (
-        <div className="order-complete-state" role="status" aria-label="Đang tải thông tin đơn hàng">
-          <SkeletonBlock width="min(480px, 100%)" height={220} />
-        </div>
-      );
-    }
+    // The thank-you screen is static; while the order loads only its values are placeholders,
+    // so the layout does not change when the summary arrives
+    const summaryValue = (value: string | number | undefined, width: number) =>
+      orderSummary ? value : <SkeletonBlock width={width} height={18} />;
 
     return (
       <>
-        <div className="order-Complete-context">
+        <div className="order-Complete-context" aria-busy={!orderSummary}>
           <div className="order-Complete-text1">
             <img src="/images/Order-Completed/sonaspace.png" alt="" />
           </div>
@@ -174,24 +171,32 @@
                 <h4>Tóm tắt đơn hàng</h4>
                 <div className="complete-right-bill-voucher">
                   <span className="voucher1">Mã đơn hàng</span>
-                  <span className="voucher2">{orderSummary.orderId}</span>
+                  <span className="voucher2">{summaryValue(orderSummary?.orderId, 110)}</span>
                 </div>
                 <div className="complete-right-bill-shipping">
                   <span className="shipping1">Thời gian thanh toán</span>
-                  <span className="shipping2">{orderSummary.orderDate}</span>
+                  <span className="shipping2">{summaryValue(orderSummary?.orderDate, 140)}</span>
                 </div>
                 <div className="complete-right-bill-discount">
                   <span className="discount1">Sản phẩm đã mua</span>
-                  <span className="discount2">{orderSummary.itemCount} sản phẩm</span>
+                  <span className="discount2">
+                    {summaryValue(orderSummary ? `${orderSummary.itemCount} sản phẩm` : undefined, 90)}
+                  </span>
                 </div>
                 <div className="complete-right-bill-total">
                   <span className="total1">Tổng giá</span>
-                  <span className="stotal2">{formatPrice(orderSummary.total)} đ</span>
+                  <span className="stotal2">
+                    {summaryValue(orderSummary ? `${formatPrice(orderSummary.total)} đ` : undefined, 120)}
+                  </span>
                 </div>
                 <div className="complete-right-bill-button">
-                  <Link to={`/chi-tiet-don-hang/${orderSummary.orderId}`}>
-                    <button className="cart-button">Xem chi tiết đơn hàng</button>
-                  </Link>
+                  {orderSummary ? (
+                    <Link to={`/chi-tiet-don-hang/${orderSummary.orderId}`}>
+                      <button className="cart-button">Xem chi tiết đơn hàng</button>
+                    </Link>
+                  ) : (
+                    <SkeletonBlock width="100%" height={48} />
+                  )}
                 </div>
               </div>
             </div>

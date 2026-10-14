@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Navigate,
   useNavigate,
   useParams,
   useSearchParams,
@@ -15,6 +16,7 @@ import {
 import type { Category, Product } from "../../types";
 import { formatProductForDisplay } from "../../services/productService";
 import PageHero from "../../components/PageHero";
+import ListingPageSkeleton from "../../components/ListingPageSkeleton";
 
 const PAGE_SIZE = 8;
 
@@ -137,7 +139,8 @@ const ProductOfCategory = () => {
         const categoryData = await fetchCategoryBySlug(slug);
         setCategory(categoryData);
         if (!categoryData) {
-          navigate("/not-found");
+          navigate("/not-found", { replace: true });
+          return;
         }
 
         // 2. Gọi API /products/test theo categorySlug, lấy nhiều sản phẩm
@@ -164,11 +167,12 @@ const ProductOfCategory = () => {
   }, [slug]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <ListingPageSkeleton pageClassName="product-of-category" sectionClassName="product-listing" />;
   }
 
+  // Navigating during render is not allowed; render the redirect instead
   if (error) {
-    navigate("/not-found");
+    return <Navigate to="/not-found" replace />;
   }
 
   const shouldShowSeeMore =

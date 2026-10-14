@@ -191,6 +191,52 @@ Hero image check: `connect_02.jpg` (the mockup's choice) is a 2880px upscale of 
 
 Verification (2026-10-14, final tree): `npm run build` passed (pre-existing `vendor-antd` 599 kB warning); `qa:spa-routing`, `qa:about-page` (19), `qa:public-asset-paths`, `qa:banner-stability` (6), `qa:product-filter-history` (7), `qa:home-product-state` (5), `qa:sass-modules` (3) passed; 39-pair audit max CLS 0.015 with no overflow, h1 or reveal findings; both new pages screenshotted at 1440 and 1920 (DPR 1.5), 768 and 390 (DPR 2); the design form's empty-submit errors and chip selection were exercised in the browser.
 
+### Revision 3 - container width (2026-10-14)
+
+Owner: the page container felt too large. Measured: 1200px up to 1535px, then a jump to 1464px (36px margins at 1536, every section 1464px wide on 1920 screens); `/san-pham` nested a second `.container` in "Xem thêm".
+
+| Change | Where |
+|---|---|
+| One fluid container: content capped at 1200px, gutter `clamp(20px, 6vw, 96px)` (77px at 1280, 120px at 1440, 360px at 1920) | `core/_layouts.scss`, `--container-content`, `--container-gutter` in `core/_variables.scss` |
+| Header keeps a wider frame (up to 1464px, gutter `clamp(20px, 3vw, 48px)`) at the owner's request; menu text never wraps, tighter menu spacing at 1200-1439px | `core/_header.scss` |
+| Section rhythm `--section-gap: clamp(48px, 5vw, 72px)` replaces the fixed 94px | `.mt-94`, `_detailOrder.scss`, `_product.scss` |
+| Smaller type and blocks: section titles max 30px (was 34), page hero titles max 42px (was 52), home recommendation grid 540px (was 640), popular category rows 360/300px (was 400/360), contact page h1 52px (was 72) and 64px section padding (was 88), design service page 64px padding and 40px h1 | component and page styles |
+| "Xem thêm sản phẩm" is a real button without a nested container | `components/seemore` |
+| Order complete screen scales on phones (it overflowed 333px at 390) | `_orderComplete.scss` |
+| Layout shift fixes found by the audit: rooms slider reserves its size while loading; guests see the sign-in prompt on cart and payment without a skeleton flash; rooms slider debug panel off | `RoomSlider`, `CartPage`, `Payment` |
+
+Verification (2026-10-14, final tree): `npm run build`; 7 QA contracts; 39-pair audit max CLS 0.005 with no overflow, h1 or reveal findings; container edges measured at 390-2560 (header, main and footer share one content edge, no nested containers); header menu single-line from 1200px; order complete page no overflow at 390/1280/1440.
+
+### Revision 4 - loading skeletons (2026-10-14)
+
+Captured every data page with the backend held (loading) and released (loaded) at 1440 and 390.
+
+| Found | Fix |
+|---|---|
+| Product grid skeleton: 4 columns at 1024 (real 3), 1 column at 390 (real 2), cards 60px shorter | `SkeletonCard` reuses the `product-tile` frame; grid uses the real 4/3/2 breakpoints and gaps (now within 4-7px of real cards) |
+| `/danh-muc/:slug`, `/khong-gian/:slug` blank while loading (`<div>Loading...</div>` under the fixed header); category page called `navigate()` during render; room page printed `Error: ...` | `ListingPageSkeleton` (PageHero `loading` + filter bar + grid with the real wrappers); `<Navigate>` for a missing category; `RetryState` for room errors |
+| Product detail skeleton: wrong column split, 4 square thumbnails stacked 1,690px tall on phones | Same 720/480 split, 72:55 hero, a two-image row, info column lines for rating, stock, colours, quantity, button |
+| Account page skeleton drawn over the "Xin chào" heading | Global `.loading-state` / `.error-state` (fixed 200px, centred) from `_wishListSideBar.scss` removed; the sidebar never used them |
+| Order complete: a small light box, then a full dark screen | The static thank-you screen renders at once; only the order values and button are placeholders |
+| Banner skeleton light grey under the black glass header | Dark skeleton tone (`SkeletonBlock tone="dark"`), also used by the PageHero placeholder |
+| Rooms page "Đang tải sản phẩm..." text; route chunk fallback text | Product grid skeleton; a thin yellow progress bar under the header |
+| Cool blue-grey shimmer | Warm neutrals from the palette |
+
+Verification (final tree): `npm run build`; 7 QA contracts; 39-pair audit max CLS 0.005; loading/loaded captures for 12 data pages at 1440 and 390; card shape probe at 1440/1024/390.
+
+### Revision 5 - reload flash (2026-10-14)
+
+Owner: heavy flash on reload. Reproduced with a CDP screencast of each reload, measuring frame brightness.
+
+| Found | Fix |
+|---|---|
+| White screen for ~370ms between the old page and the dark banner (body white until React mounts) | Boot shell in `index.html`: dark header bar and a dark hero sized per route (`window.__sonaShellKind`), painted before any script runs |
+| Lazy pages showed a light fallback before their dark banner | `RouteFallback` draws the same banner, PageHero or order screen for the route |
+| Banner images are original Cloudinary PNGs (4.16 MB, 3.3 s) and painted in strips | `utils/image.ts` asks Cloudinary for `f_auto,q_auto,c_limit,w_*` with a `srcSet` (1920px: 173 KB WebP); banner and PageHero images fade in only after decoding (`data-loaded`) |
+| Full-screen shimmer on the banner placeholder read as a grey pulse | No shimmer on the full-size placeholder; the caption lines keep it |
+
+Measured after (1440 and 390, brightness of the hero area per frame): home 78 -> 20 -> 78, `/san-pham` 110 -> 19 -> 109 with no light frame in between; PageHero pages never reach white. `npm run build`, 7 QA contracts, 39-pair audit max CLS 0.005.
+
 ### Order of work after the choice
 
 1. D1 + H1 + logo (header and every surface that uses the dark tone).

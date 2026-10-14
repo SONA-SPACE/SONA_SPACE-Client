@@ -4,10 +4,17 @@
 	overflow: hidden;
 
 	border-radius: 8px;
-	background: linear-gradient(90deg, #eef0f3 25%, #f8f9fa 50%, #eef0f3 75%);
+	// Warm neutrals from the palette ($gray-cl-3 family) rather than a cool blue-grey
+	background: linear-gradient(90deg, #efeee9 25%, #f7f6f2 50%, #efeee9 75%);
 	background-size: 200% 100%;
 
 	animation: state-skeleton-shimmer 1.5s linear infinite;
+}
+
+// On dark surfaces (banner, page hero, order-complete screen)
+.state-skeleton-block--dark {
+	background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 25%, rgba(255, 255, 255, 0.16) 50%, rgba(255, 255, 255, 0.08) 75%);
+	background-size: 200% 100%;
 }
 
 .state-skeleton-text {
@@ -20,26 +27,38 @@
 	height: 14px;
 }
 
-.state-skeleton-card {
-	display: grid;
-	gap: 16px;
-	width: 100%;
+// Product card placeholder: the frame comes from .product-tile (_listproduct12.scss); each
+// line sits in a slot as tall as the real text line so the card height matches
+.product-tile--skeleton {
+	pointer-events: none;
+
+	.product-tile__skeleton-fill {
+		width: 100%;
+		height: 100%;
+		border-radius: 0;
+	}
+
+	.product-tile__skeleton-line {
+		min-height: 0;
+		margin: 4px 0;
+	}
+
+	.product-tile__skeleton-swatches {
+		display: flex;
+		gap: 6px;
+
+		.state-skeleton-block {
+			min-height: 0;
+			border-radius: 50%;
+		}
+	}
 }
 
-.state-skeleton-card__image {
-	aspect-ratio: 1 / 1;
-	width: 100%;
-}
-
-.state-skeleton-card__body {
-	display: grid;
-	gap: 14px;
-}
-
+// Same columns and gaps as .section-box-products .box-products-container
 .state-page-skeleton--grid {
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
-	gap: 28px;
+	gap: 28px 24px;
 	width: 100%;
 }
 
@@ -48,13 +67,13 @@
 	// never flashes into view and gets pushed out when the product arrives.
 	margin-top: var(--height-header);
 	min-height: calc(100svh - var(--height-header));
-	padding: 104px 0 32px;
+	padding: 100px 0 32px;
 }
 
+// Columns match ProductDetailPage: 720px gallery | 480px info with 60px side padding
 .state-detail-skeleton {
 	display: grid;
-	grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-	gap: 42px;
+	grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
 }
 
 .state-detail-skeleton__gallery,
@@ -64,26 +83,38 @@
 	align-content: start;
 }
 
+.state-detail-skeleton__gallery {
+	gap: 30px;
+}
+
+.state-detail-skeleton__content {
+	gap: 22px;
+	padding: 0 60px;
+}
+
 .state-detail-skeleton__hero {
-	aspect-ratio: 4 / 3;
+	aspect-ratio: 72 / 55;
 	width: 100%;
 }
 
 .state-detail-skeleton__thumbs {
 	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-	gap: 14px;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 30px;
 
 	.state-skeleton-block {
-		aspect-ratio: 1 / 1;
+		height: clamp(150px, 16vw, 230px);
 	}
 }
 
-.state-detail-skeleton__actions {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 12px;
-	margin-top: 8px;
+.state-detail-skeleton__swatches {
+	display: flex;
+	gap: 10px;
+
+	.state-skeleton-block {
+		min-height: 0;
+		border-radius: 50%;
+	}
 }
 
 .state-page-skeleton--list {
@@ -229,23 +260,35 @@
 	}
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1199px) {
+	.state-page-skeleton--grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 991px) {
 	.state-page-skeleton--grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 20px 16px;
 	}
 
 	.state-detail-skeleton {
 		grid-template-columns: 1fr;
+		gap: 30px;
+	}
+
+	.state-detail-skeleton__content {
+		padding: 20px 0;
+	}
+}
+
+@media (max-width: 767px) {
+	.state-page-skeleton--grid {
+		gap: 16px 12px;
 	}
 }
 
 @media (max-width: 576px) {
-	.state-page-skeleton--grid {
-		grid-template-columns: 1fr;
-	}
-
-	.state-detail-skeleton__actions,
-	.state-detail-skeleton__thumbs,
 	.state-list-skeleton {
 		grid-template-columns: 1fr;
 	}

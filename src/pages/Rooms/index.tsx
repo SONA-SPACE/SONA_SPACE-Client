@@ -9,6 +9,7 @@ import Product from "../../components/Product";
 import BannerSlider from "../../components/BannerSlider";
 import { getNewestProducts } from "../../api/product";
 import { formatProductForDisplay } from "../../services/productService";
+import { InlineErrorState, PageSectionSkeleton } from "../../components/StateFeedback";
 
 const Rooms: React.FC = () => {
   // Lấy danh sách sản phẩm mới nhất khi component mount
@@ -76,8 +77,8 @@ const Rooms: React.FC = () => {
           <div className="container">
             <div className="section-box-products">
               <h5>Sản Phẩm Mới</h5>
-              {loading && <div className="loading-indicator">Đang tải sản phẩm...</div>}
-              {error && <div className="error-message">{error}</div>}
+              {loading && <PageSectionSkeleton count={8} />}
+              {error && <InlineErrorState message={error} />}
               <div className="box-products-container">
                 {newestProducts.map((product) => (
                   <Product

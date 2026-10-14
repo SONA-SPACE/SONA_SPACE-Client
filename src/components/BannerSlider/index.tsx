@@ -7,10 +7,16 @@ import { getBannersByPage, type Banner } from "../../api/banner";
 import { useRegisterHeaderHero } from "../../hooks/useHeaderHero";
 import { loadMotion, prefersReducedMotion } from "../../motion/gsap";
 import { SkeletonBlock } from "../StateFeedback";
+import { optimizedImageSrcSet, optimizedImageUrl } from "../../utils/image";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "./styles.scss";
+
+// An image already in the cache can finish before React attaches onLoad
+const markLoadedIfComplete = (image: HTMLImageElement | null) => {
+  if (image?.complete && image.naturalWidth > 0) image.setAttribute("data-loaded", "");
+};
 
 interface BannerSliderProps {
   className?: string;
@@ -74,15 +80,23 @@ function SlideBody({ slide, isFirst }: { slide: SlideContent; isFirst: boolean }
   return (
     <div className="banner-slide">
       <div className="banner-image">
+        {/* Optimised Cloudinary sizes; the image fades in only once fully decoded (data-loaded),
+            so a large file is never painted half-way over the dark backdrop */}
         <img
-          src={slide.image}
+          src={optimizedImageUrl(slide.image, 1920)}
+          srcSet={optimizedImageSrcSet(slide.image)}
+          sizes="100vw"
           alt={slide.imageAlt}
           loading={isFirst ? "eager" : "lazy"}
           fetchPriority={isFirst ? "high" : "auto"}
           decoding="async"
+          ref={markLoadedIfComplete}
+          onLoad={(event) => event.currentTarget.setAttribute("data-loaded", "")}
           onError={(event) => {
             const image = event.currentTarget;
+            image.removeAttribute("srcset");
             if (!image.src.endsWith(fallbackBannerImage)) image.src = fallbackBannerImage;
+            else image.setAttribute("data-loaded", "");
           }}
         />
       </div>
@@ -197,14 +211,14 @@ const BannerSlider: React.FC<BannerSliderProps> = ({ className = "", page = "hom
     return (
       <section ref={sectionRef} className={`${sectionClassName} loading`} aria-busy="true">
         <div className="banner-slide">
-          <SkeletonBlock className="banner-image" height="100%" />
+          <SkeletonBlock tone="dark" className="banner-image" height="100%" />
           <div className="banner-content">
             <div className="container">
               <div className="banner-text banner-text--skeleton">
-                <SkeletonBlock className="banner-skeleton__subtitle" />
-                <SkeletonBlock className="banner-skeleton__title" />
-                <SkeletonBlock className="banner-skeleton__description" />
-                <SkeletonBlock className="banner-skeleton__button" />
+                <SkeletonBlock tone="dark" className="banner-skeleton__subtitle" />
+                <SkeletonBlock tone="dark" className="banner-skeleton__title" />
+                <SkeletonBlock tone="dark" className="banner-skeleton__description" />
+                <SkeletonBlock tone="dark" className="banner-skeleton__button" />
               </div>
             </div>
           </div>
