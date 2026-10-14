@@ -53,9 +53,7 @@ export const saveAuthData = (token: string, user: any, rememberMe: boolean) => {
 
 // Kiểm tra người dùng đã đăng nhập hay chưa
 export const isAuthenticated = (): boolean => {
-  return !!(
-    localStorage.getItem("authToken") || sessionStorage.getItem("authToken")
-  );
+  return !!getAuthToken();
 };
 
 // Lấy token xác thực
@@ -69,7 +67,22 @@ export const getAuthToken = (): string | null => {
 export const getAuthUser = (): any => {
   const userStr =
     localStorage.getItem("user") || sessionStorage.getItem("user");
-  return userStr ? JSON.parse(userStr) : null;
+  if (!userStr) return null;
+
+  try {
+    return JSON.parse(userStr);
+  } catch {
+    return null;
+  }
+};
+
+export const updateAuthUser = (user: any) => {
+  const storage =
+    localStorage.getItem("authToken") || localStorage.getItem("user")
+      ? localStorage
+      : sessionStorage;
+
+  storage.setItem("user", JSON.stringify(user));
 };
 
 // đăng nhập với google

@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { Product, PaginatedResponse, Variant } from "../types";
 import { convertToAdminApiUrl } from "../utils/url";
+import { getAuthToken } from "../services/loginService";
 
 const handleApiResponse = (response: any, errorMessage: string) => {
   if (!response || !response.data) {
@@ -43,7 +44,7 @@ export const getAllProducts = async (
     //   )}?${queryParams.toString()}`
     // );
 
-    const token = sessionStorage.getItem("authToken"); // hoặc localStorage nếu bạn dùng nó
+    const token = getAuthToken();
 
     const response = await axios.get(convertToAdminApiUrl("/products"), {
       params: queryParams,
@@ -93,9 +94,7 @@ export const getProductBySlug = async (
   related_products: any[];
 }> => {
   try {
-    const response = await axios.get(
-      convertToAdminApiUrl(`/products/test/${slug}`)
-    );
+    const response = await axios.get(convertToAdminApiUrl(`/products/${slug}`));
     return handleApiResponse(response, "No data received from API");
   } catch (error) {
     // xử lý lỗi...
@@ -159,7 +158,7 @@ export const getNewestProducts = async (
   limit: number = 8
 ): Promise<Product[]> => {
   try {
-    const token = sessionStorage.getItem("authToken"); // hoặc localStorage.getItem()
+    const token = getAuthToken();
 
     const response = await axios.get(convertToAdminApiUrl("/products/newest"), {
       params: { limit },

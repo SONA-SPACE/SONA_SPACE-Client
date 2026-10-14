@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 const EmailVerified: React.FC = () => {
     const location = useLocation();
@@ -34,7 +32,6 @@ const EmailVerified: React.FC = () => {
 
     return (
         <>
-            <Header />
             <div className="email-verified-page">
                 <div className="container">
                     <div className="email-verified-content">
@@ -78,7 +75,6 @@ const EmailVerified: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </>
     );
 };

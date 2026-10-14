@@ -1,24 +1,65 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 // Component
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import Filter from "../../components/Filter";
+import Filter from "../../components/filter";
 import ProductComponent from "../../components/Product";
 import PolicyProduct from "../../components/Policy";
-import GetInTouch from "../../components/GetInTouch";
+import GetInTouch from "../../components/getintouch";
 import PopularCategory from "../../components/PopularCategory";
 import Seemore from "../../components/seemore";
-import { toast, ToastContainer } from "react-toastify";
+import BannerSlider from "../../components/BannerSlider";
+import {
+  EmptyState,
+  InlineErrorState,
+  PageSectionSkeleton,
+  RetryState,
+} from "../../components/StateFeedback";
 
 // Type
 import type { Product } from "../../types";
 
 // Service or API
 import { fetchAllProducts } from "../../services/productService";
-import BannerSlider from "../../components/BannerSlider";
+
+const DEFAULT_FILTER_LABELS = [
+  "Chọn danh mục",
+  "Chọn phòng",
+  "Chọn giá",
+  "Chọn màu",
+  "Sắp xếp",
+];
+
+type ProductFilters = { [key: string]: string };
+
+const PRODUCT_FILTER_KEYS = ["category", "room", "price", "color", "sort"];
+
+const getFiltersFromSearchParams = (
+  searchParams: URLSearchParams
+): ProductFilters =>
+  PRODUCT_FILTER_KEYS.reduce<ProductFilters>((currentFilters, key) => {
+    const value = searchParams.get(key);
+
+    if (value && !DEFAULT_FILTER_LABELS.includes(value)) {
+      currentFilters[key] = value;
+    }
+
+    return currentFilters;
+  }, {});
+
+const getSearchParamsFromFilters = (filters: ProductFilters) => {
+  const nextParams = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value && !DEFAULT_FILTER_LABELS.includes(value)) {
+      nextParams.set(key, value);
+    }
+  });
+
+  return nextParams;
+};
 
 const ProductPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -27,8 +68,9 @@ const ProductPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState<{ [key: string]: string }>({});
+  const [filters, setFilters] = useState<ProductFilters>({});
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const searchParamsKey = searchParams.toString();
 
   const fetchProducts = async (
     pageNumber: number,
@@ -40,6 +82,7 @@ const ProductPage: React.FC = () => {
     } else {
       setLoading(true);
     }
+    setError(null);
 
     try {
       const { products: newProducts, totalPages } = await fetchAllProducts(
@@ -49,10 +92,8 @@ const ProductPage: React.FC = () => {
       );
 
       if (isLoadMore) {
-        // Thêm sản phẩm mới vào danh sách hiện tại
         setProducts((prevProducts) => [...prevProducts, ...newProducts]);
       } else {
-        // Load lại từ đầu (khi thay đổi filter)
         setProducts(newProducts);
       }
 
@@ -67,89 +108,36 @@ const ProductPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const pageParam = parseInt(searchParams.get("page") || "1", 10);
-    setPage(pageParam);
-
-    // Lấy các tham số lọc từ URL và chỉ lấy các giá trị không rỗng và không phải giá trị mặc định
-    const urlFilters: { [key: string]: string } = {};
-    const category = searchParams.get("category");
-    const room = searchParams.get("room");
-    const price = searchParams.get("price");
-    const color = searchParams.get("color");
-    const sort = searchParams.get("sort");
-
-    if (category && category !== "Chọn danh mục")
-      urlFilters.category = category;
-    if (room && room !== "Chọn phòng") urlFilters.room = room;
-    if (price && price !== "Chọn giá") urlFilters.price = price;
-    if (color && color !== "Chọn màu") urlFilters.color = color;
-    if (sort && sort !== "Sắp xếp") urlFilters.sort = sort;
-
+    const urlFilters = getFiltersFromSearchParams(searchParams);
+    setPage(1);
     setFilters(urlFilters);
-    fetchProducts(pageParam, urlFilters, false);
-  }, []);
+    fetchProducts(1, urlFilters, false);
+  }, [searchParamsKey]);
 
-  useEffect(() => {
-    // Cập nhật URL với các tham số lọc, chỉ thêm các giá trị không rỗng và không phải giá trị mặc định
-    const params: { [key: string]: string } = {};
+  const handleFilterChange = (newFilters: ProductFilters) => {
+    const nextParams = getSearchParamsFromFilters(newFilters);
 
-    // Chỉ thêm page vào URL khi page > 1
-    if (page > 1) {
-      params.page = page.toString();
+    if (nextParams.toString() === searchParamsKey) {
+      setPage(1);
+      setFilters(newFilters);
+      fetchProducts(1, newFilters, false);
+      return;
     }
 
-    Object.entries(filters).forEach(([key, value]) => {
-      if (
-        value &&
-        value !== "Chọn danh mục" &&
-        value !== "Chọn phòng" &&
-        value !== "Chọn giá" &&
-        value !== "Chọn màu" &&
-        value !== "Sắp xếp"
-      ) {
-        params[key] = value;
-      }
-    });
-
-    // Chỉ set search params khi có tham số thực sự
-    if (Object.keys(params).length > 0) {
-      setSearchParams(new URLSearchParams(params));
-    } else {
-      setSearchParams({});
-    }
-  }, [page, filters]);
-
-  const handleFilterChange = (newFilters: { [key: string]: string }) => {
-    setPage(1); // Reset về trang 1 khi thay đổi bộ lọc
-    setFilters(newFilters);
-    fetchProducts(1, newFilters, false); // Load lại từ đầu khi thay đổi filter
+    setSearchParams(nextParams);
   };
 
   const handleSeeMore = () => {
     if (page < totalPages) {
       const nextPage = page + 1;
       setPage(nextPage);
-      fetchProducts(nextPage, filters, true); // Load thêm sản phẩm
+      fetchProducts(nextPage, filters, true);
     }
   };
 
   return (
     <>
-      <Header />
       <BannerSlider page="san-pham" />
-      {/* <div className="banner-slider">
-        <div className="header-banner">
-          <img src="images/products/banner-slider.jpg" alt="" />
-        </div>
-        <div className="header-text">
-          <div className="text1">Chào mừng đến với</div>
-          <div className="text2">Bộ sưu tập nội thất của chúng tôi</div>
-          <div className="text3">
-            Khám phá nhiều loại đồ nội thất chất lượng cao của chúng tôi.
-          </div>
-        </div>
-      </div> */}
-      {/* Breadcrumb */}
       <div className="breadcrumb-container">
         <div className="container">
           <div className="breadcrumb">
@@ -165,28 +153,47 @@ const ProductPage: React.FC = () => {
       </section>
 
       <section className="product-section mt-94">
-        <Filter onFilterChange={handleFilterChange} />
+        <Filter
+          initialFilters={filters}
+          onFilterChange={handleFilterChange}
+        />
         <div className="boxProducts">
           <div className="container">
             <div className="section-box-products">
-              {loading && <p className="empty-text">Đang tải sản phẩm...</p>}
-              {products.length === 0 && !loading && (
-                <p className="empty-text">
-                  Không có sản phẩm phù hợp với bộ lọc.
-                </p>
+              {loading && <PageSectionSkeleton count={8} />}
+              {!loading && error && (
+                <RetryState
+                  message={error}
+                  onRetry={() => fetchProducts(page, filters, false)}
+                  secondaryActionLabel="Về trang chủ"
+                  secondaryActionTo="/"
+                />
               )}
-              <div className="box-products-container">
-                {!loading &&
-                  products.map((product) => (
+              {!loading && !error && products.length === 0 && (
+                <EmptyState
+                  title="Không có sản phẩm phù hợp"
+                  message="Hãy thử đổi bộ lọc hoặc quay lại danh sách sản phẩm đầy đủ."
+                  actionLabel="Xóa bộ lọc"
+                  onAction={() => handleFilterChange({})}
+                  secondaryActionLabel="Về trang chủ"
+                  secondaryActionTo="/"
+                />
+              )}
+              {!loading && !error && products.length > 0 && (
+                <div className="box-products-container">
+                  {products.map((product) => (
                     <ProductComponent
                       key={product.id}
                       product={product}
                       slug={product.slug}
                     />
                   ))}
-              </div>
-              {isLoadingMore && <p>Đang tải thêm sản phẩm...</p>}
-              {!loading && !isLoadingMore && page < totalPages && (
+                </div>
+              )}
+              {isLoadingMore && (
+                <InlineErrorState message="Đang tải thêm sản phẩm..." />
+              )}
+              {!loading && !error && !isLoadingMore && page < totalPages && (
                 <Seemore onClick={handleSeeMore} />
               )}
             </div>
@@ -199,7 +206,6 @@ const ProductPage: React.FC = () => {
       <section className="get-in-touch mt-94">
         <GetInTouch />
       </section>
-      <Footer />
       <ToastContainer
         position="top-right"
         autoClose={3000}

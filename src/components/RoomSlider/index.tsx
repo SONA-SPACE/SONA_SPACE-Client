@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { fetchAllRooms } from "../../services/roomService";
 import type { Room } from "../../types";
 import { useEffect, useState } from "react";
+import { SkeletonBlock } from "../StateFeedback";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Scrollbar } from "swiper/modules";
 import "swiper/css";
@@ -31,7 +32,7 @@ export default function RoomSlider() {
         loadRooms();
     }, []);
     const DebugInfo = () => {
-        const isDev = true; // Always show debug info for now
+        const isDev = false; // Debug details are for local troubleshooting, never for shoppers
         return isDev && debugInfo ? (
             <div className="category-list-debug">
                 <details>
@@ -41,12 +42,24 @@ export default function RoomSlider() {
             </div>
         ) : null;
     };
+    // Same footprint as the loaded slider, so the sections below do not jump when rooms arrive
     if (loading) {
         return (
-            <div className="category-list-loading">
-                <div className="loading-spinner"></div>
-                <p>Đang tải không gian...</p>
-                <DebugInfo />
+            <div className="categories-flex" aria-busy="true" aria-label="Đang tải không gian">
+                {[...Array(4)].map((_, idx) => (
+                    <div key={idx} className="category-item">
+                        <SkeletonBlock
+                            width={300}
+                            height={420}
+                            className="category-slider-skeleton__image"
+                        />
+                        <SkeletonBlock
+                            width="100%"
+                            height={40}
+                            className="category-slider-skeleton__title"
+                        />
+                    </div>
+                ))}
             </div>
         );
     }

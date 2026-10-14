@@ -1,72 +1,66 @@
-'use client';
-import { Link } from "react-router-dom";
-import type { NewsArticle } from "../../types";
-import React, { useState, useEffect } from "react";
-import { getAllNewsByView } from "../../api/new";
+"use client";
 
-interface NewsItem {
-  id: string;
-  title: string;
-  image: string;
-  slug: string;
-  category: string;
-  date?: string;
-}
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getAllNewsByView } from "../../api/new";
+import type { NewsArticle } from "../../types";
+import { EmptyState, InlineErrorState, SkeletonText } from "../StateFeedback";
 
 interface RecentPostsProps {
-  newsItems: NewsItem[];
   limit?: number;
 }
 
-const RecentPosts: React.FC<RecentPostsProps> = ({
-  limit
-}) => {
+const RecentPosts: React.FC<RecentPostsProps> = ({ limit }) => {
   const [newsByView, setNewsByView] = useState<NewsArticle[]>([]);
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await getAllNewsByView();
-        setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
-        setNewsByView(data);
         setError(null);
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
+        const data = await getAllNewsByView();
+        setNewsByView(data);
+      } catch (fetchError) {
+        console.error("Lỗi khi lấy dữ liệu:", fetchError);
+        setNewsByView([]);
+        setError("Không thể tải bài viết nổi bật.");
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchData();
   }, [limit]);
+
   return (
     <div className="recent-posts">
       <h2>Bài viết nổi bật</h2>
-      <ul>
-        {newsByView.slice(0, 4).map((item) => (
-          <li key={item.news_id}>
-            <Link to={`/tin-tuc/${item.news_slug}`} className="recent-post-item">
-              {(() => {
-                try {
-                  return <img src={item.news_image} alt={item.news_title} />;
-                } catch (error) {
-                  return <img src="/fallback-image.jpg" alt={item.news_title} />;
-                }
-              })()}
-
-              <div className="post-info">
-                <span className="post-title">{item.news_title}</span>
-                <span className="post-date">
-                  lượt xem: {item.news_view}
-
-                </span>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <SkeletonText lines={4} />
+      ) : error ? (
+        <InlineErrorState message={error} />
+      ) : newsByView.length === 0 ? (
+        <EmptyState
+          title="Chưa có bài viết nổi bật"
+          message="Các bài viết được quan tâm sẽ xuất hiện tại đây."
+        />
+      ) : (
+        <ul>
+          {newsByView.slice(0, limit || 4).map((item) => (
+            <li key={item.news_id}>
+              <Link to={`/tin-tuc/${item.news_slug}`} className="recent-post-item">
+                <img src={item.news_image || "/fallback-image.jpg"} alt={item.news_title} />
+                <div className="post-info">
+                  <span className="post-title">{item.news_title}</span>
+                  <span className="post-date">lượt xem: {item.news_view}</span>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

@@ -1,9 +1,10 @@
 // services/paymentService.ts
 import axios from "axios";
 import { convertToAdminApiUrl } from "../utils/url";
+import { getAuthToken } from "./loginService";
 
 export const createOrderService = async (orderData: any) => {
-  const token = sessionStorage.getItem("authToken"); 
+  const token = getAuthToken(); 
   try {
     const res = await axios.post(convertToAdminApiUrl("/orders"), orderData, {
       headers: {
@@ -26,7 +27,7 @@ export const createOrderService = async (orderData: any) => {
  */
 export const returnOrder = async (orderId: number | string, reason: string, images: File[]): Promise<any> => {
   try {
-    const token = sessionStorage.getItem("authToken");
+    const token = getAuthToken();
     if (!token) {
       throw new Error('Không tìm thấy token xác thực');
     }

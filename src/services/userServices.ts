@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { convertToAdminApiUrl } from '../utils/url';
+import { getAuthToken } from './loginService';
 
 /**
  * Hủy đơn hàng
@@ -9,7 +10,7 @@ import { convertToAdminApiUrl } from '../utils/url';
  */
 export const cancelOrder = async (orderId: number, reason?: string): Promise<any> => {
   try {
-    const token = sessionStorage.getItem('authToken');
+    const token = getAuthToken();
     if (!token) {
       throw new Error('Không tìm thấy token xác thực');
     }

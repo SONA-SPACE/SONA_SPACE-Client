@@ -1,11 +1,8 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 const Policy: React.FC = () => {
   return (
     <>
-      <Header />
       <div className="mt-94">
       <div className="policy-page">
         <div className="container">
@@ -112,7 +109,6 @@ const Policy: React.FC = () => {
         
       </div>
       </div>
-      <Footer />
     </>
   );
 };

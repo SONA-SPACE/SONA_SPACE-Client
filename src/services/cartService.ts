@@ -3,6 +3,7 @@ import axios from "axios";
 import { saveToCart } from "../api/cart";
 import { fetchCartFromDatabase } from "../api/cart";
 import { convertToAdminApiUrl } from "../utils/url";
+import { getAuthToken } from "./loginService";
 const notifyCartUpdated = () => {
   window.dispatchEvent(new CustomEvent("cart-updated"));
 };
@@ -48,8 +49,24 @@ export const loadCartService = async () => {
     };
   }
 };
+
+export const getCartCount = async (): Promise<number> => {
+  try {
+    const data = await fetchCartFromDatabase();
+    const items = Array.isArray(data) ? data : data?.items || data?.wishlistItems || [];
+    if (!Array.isArray(items)) return 0;
+
+    return items.reduce((total: number, item: any) => {
+      const quantity = Number(item?.quantity ?? item?.wishlist_quantity ?? 1);
+      return total + (Number.isFinite(quantity) && quantity > 0 ? quantity : 1);
+    }, 0);
+  } catch {
+    return 0;
+  }
+};
+
 export const updateCartQuantityService = async (wishlistId: number, quantity: number) => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   const response = await axios.put(convertToAdminApiUrl(`/wishlists/${wishlistId}`), {
@@ -64,7 +81,7 @@ export const updateCartQuantityService = async (wishlistId: number, quantity: nu
 };
 
 export const removeFromCartService = async (wishlistId: number) => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   const response = await axios.delete(convertToAdminApiUrl(`/wishlists/${wishlistId}`), {
@@ -77,7 +94,7 @@ notifyCartUpdated();
 };
 
 export const clearCartService = async () => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   try {
@@ -96,7 +113,7 @@ notifyCartUpdated();
 };
 
 export const clearCartServiceid = async (selectedItemIds: number[]) => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   const res = await axios.delete(convertToAdminApiUrl("/wishlists/clearid"), {
     headers: { Authorization: `Bearer ${token}` },
     data: { selectedItemIds }

@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { convertToAdminApiUrl } from '../utils/url';
+import { getAuthToken } from './loginService';
 
 export const getOrderByHash = async (orderHash: string) => {
-    const token = sessionStorage.getItem("authToken"); 
+    const token = getAuthToken(); 
   try {
     const response = await axios.get(convertToAdminApiUrl(`/orders/complete/${orderHash}`), {
       headers: {

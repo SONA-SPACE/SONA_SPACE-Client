@@ -1,200 +1,302 @@
-import React, { useState, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
-import { getBannersByPage, type Banner } from '../../api/banner';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperInstance } from "swiper";
+import { Autoplay, EffectFade } from "swiper/modules";
+import { getBannersByPage, type Banner } from "../../api/banner";
+import { useRegisterHeaderHero } from "../../hooks/useHeaderHero";
+import { loadMotion, prefersReducedMotion } from "../../motion/gsap";
+import { SkeletonBlock } from "../StateFeedback";
+import { optimizedImageSrcSet, optimizedImageUrl } from "../../utils/image";
 
-// Import Swiper styles
-import 'swiper/swiper-bundle.css';
-import './styles.scss';
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "./styles.scss";
+
+// An image already in the cache can finish before React attaches onLoad
+const markLoadedIfComplete = (image: HTMLImageElement | null) => {
+  if (image?.complete && image.naturalWidth > 0) image.setAttribute("data-loaded", "");
+};
 
 interface BannerSliderProps {
   className?: string;
-  page?: string; // Trang để lấy banner (home, san-pham, etc.)
+  page?: string;
 }
 
-const BannerSlider: React.FC<BannerSliderProps> = ({ className = '', page = 'home' }) => {
+type BannerFallbackConfig = {
+  subtitle: string;
+  title: string;
+  link: string;
+};
+
+const pageBannerFallbacks: Record<string, BannerFallbackConfig> = {
+  home: { subtitle: "SONA SPACE", title: "Thiết Kế Nội Thất Cao Cấp", link: "/san-pham" },
+  "san-pham": { subtitle: "BỘ SƯU TẬP", title: "Khám Phá Sản Phẩm Nội Thất", link: "/san-pham" },
+  "khong-gian": { subtitle: "KHÔNG GIAN SỐNG", title: "Gợi Ý Bố Trí Nội Thất", link: "/khong-gian" },
+  "gio-hang": { subtitle: "HOÀN TẤT ĐƠN HÀNG", title: "Kiểm Tra Giỏ Hàng Của Bạn", link: "/thanh-toan" },
+  "tai-khoan": { subtitle: "TÀI KHOẢN", title: "Quản Lý Đơn Hàng Và Ưu Đãi", link: "/tai-khoan" },
+  "tin-tuc": { subtitle: "SONA JOURNAL", title: "Cập Nhật Tin Tức Nội Thất", link: "/tin-tuc" },
+};
+
+const fallbackBannerImage = "/images/hero-banner.png";
+const AUTOPLAY_DELAY_MS = 6000;
+
+type SlideContent = {
+  key: string | number;
+  image: string;
+  imageAlt: string;
+  subtitle: string;
+  title: string;
+  link: string;
+};
+
+const isExternalLink = (link: string) => /^https?:\/\//i.test(link);
+
+function ArrowIcon({ direction = "right" }: { direction?: "left" | "right" }) {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" className={`banner-arrow-icon banner-arrow-icon--${direction}`}>
+      <path d="M4 10h12m-5-5 5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Editorial caption: the photo carries the banner, a single underlined line names it and links on.
+// The caption text is the page heading, so it is announced once.
+function SlideBody({ slide, isFirst }: { slide: SlideContent; isFirst: boolean }) {
+  // Only the first slide carries the page <h1>; the others are secondary headings.
+  const Heading = isFirst ? "h1" : "h2";
+  const caption = (
+    <>
+      <span className="banner-subtitle" data-banner-anim>
+        {slide.subtitle}
+      </span>
+      <Heading className="banner-title" data-banner-anim>
+        {slide.title}
+        <ArrowIcon />
+      </Heading>
+    </>
+  );
+
+  return (
+    <div className="banner-slide">
+      <div className="banner-image">
+        {/* Optimised Cloudinary sizes; the image fades in only once fully decoded (data-loaded),
+            so a large file is never painted half-way over the dark backdrop */}
+        <img
+          src={optimizedImageUrl(slide.image, 1920)}
+          srcSet={optimizedImageSrcSet(slide.image)}
+          sizes="100vw"
+          alt={slide.imageAlt}
+          loading={isFirst ? "eager" : "lazy"}
+          fetchPriority={isFirst ? "high" : "auto"}
+          decoding="async"
+          ref={markLoadedIfComplete}
+          onLoad={(event) => event.currentTarget.setAttribute("data-loaded", "")}
+          onError={(event) => {
+            const image = event.currentTarget;
+            image.removeAttribute("srcset");
+            if (!image.src.endsWith(fallbackBannerImage)) image.src = fallbackBannerImage;
+            else image.setAttribute("data-loaded", "");
+          }}
+        />
+      </div>
+      <div className="banner-content">
+        <div className="container">
+          {isExternalLink(slide.link) ? (
+            <a href={slide.link} className="banner-caption" target="_blank" rel="noopener noreferrer">
+              {caption}
+            </a>
+          ) : (
+            <Link to={slide.link} className="banner-caption">
+              {caption}
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Text of the active slide rises in as a short sequence each time the slide changes.
+function playSlideEntrance(slideElement: Element | null | undefined) {
+  if (!slideElement || prefersReducedMotion()) return;
+  const parts = slideElement.querySelectorAll("[data-banner-anim]");
+  if (parts.length === 0) return;
+
+  loadMotion().then(({ gsap }) => {
+    gsap.fromTo(
+      parts,
+      { opacity: 0, y: 28 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.09,
+        overwrite: true,
+        clearProps: "opacity,transform",
+      }
+    );
+  });
+}
+
+const BannerSlider: React.FC<BannerSliderProps> = ({ className = "", page = "home" }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useRegisterHeaderHero(sectionRef);
 
   useEffect(() => {
     const fetchBanners = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        // console.log(`Starting to fetch banners for page: ${page}...`);
+
         const bannerData = await getBannersByPage(page);
-        // console.log('Received banner data:', bannerData);
-        // console.log('Banner data type:', typeof bannerData);
-        // console.log('Banner data length:', Array.isArray(bannerData) ? bannerData.length : 'Not an array');
-        
-        if (Array.isArray(bannerData) && bannerData.length > 0) {
-          // console.log('First banner sample:', bannerData[0]);
-        }
-        
-        // Sắp xếp theo position và chỉ lấy những banner có status = 1
         const activeBanners = bannerData
-          .filter((banner: Banner) => {
-            // console.log(`Banner ${banner.id}: status = ${banner.status}, position = ${banner.position}`);
-            return banner.status === 1;
-          })
+          .filter((banner: Banner) => banner.status === 1)
           .sort((a: Banner, b: Banner) => a.position - b.position);
-        
-        // console.log('Active banners after filtering:', activeBanners);
-        // console.log('Number of active banners:', activeBanners.length);
+
         setBanners(activeBanners);
-        
-        if (activeBanners.length === 0) {
-          // console.warn(`No active banners found for page: ${page} - showing fallback content`);
-        } else {
-          // console.log(`Successfully loaded ${activeBanners.length} active banners for page: ${page}`);
-        }
       } catch (err) {
-        console.error('Error fetching banners:', err);
-        setError('Không thể tải banner. Vui lòng thử lại sau.');
-        setBanners([]); // Set empty array on error
+        console.error("Error fetching banners:", err);
+        setError("Không thể tải banner. Đang hiển thị nội dung dự phòng.");
+        setBanners([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBanners();
-  }, [page]); // Thêm page vào dependency array
+  }, [page]);
+
+  const pageFallback = pageBannerFallbacks[page] ?? pageBannerFallbacks.home;
+  const variant = page === "home" ? "full" : "compact";
+  const sectionClassName = `hero-banner hero-banner--${variant} ${className}`.trim();
+
+  const slides: SlideContent[] =
+    banners.length > 0
+      ? banners.map((banner) => ({
+          key: banner.id,
+          image: banner.image,
+          imageAlt: banner.title,
+          subtitle: banner.subtitle || pageFallback.subtitle,
+          title: banner.title,
+          link: banner.link || pageFallback.link,
+        }))
+      : [
+          {
+            key: "fallback",
+            image: fallbackBannerImage,
+            imageAlt: "SONA SPACE - Thiết kế nội thất cao cấp",
+            ...pageFallback,
+          },
+        ];
+
+  const handleSwiper = useCallback((instance: SwiperInstance) => {
+    setSwiper(instance);
+    playSlideEntrance(instance.slides[instance.activeIndex]);
+  }, []);
+
+  useEffect(() => {
+    if (swiper && prefersReducedMotion()) swiper.autoplay?.stop();
+  }, [swiper]);
 
   if (loading) {
     return (
-      <section className={`hero-banner loading ${className}`}>
-        <div className="loading-placeholder">
-          <div className="loading-spinner"></div>
-          <p>Đang tải banner...</p>
-        </div>
-      </section>
-    );
-  }
-
-  if (error || banners.length === 0) {
-    return (
-      <section className={`hero-banner ${className}`}>
+      <section ref={sectionRef} className={`${sectionClassName} loading`} aria-busy="true">
         <div className="banner-slide">
-          <div className="banner-image">
-            <img 
-              src="/images/default-banner.jpg" 
-              alt="SONA SPACE - Thiết kế nội thất cao cấp"
-              loading="lazy"
-              onError={(e) => {
-                // If default image fails, use a placeholder gradient
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                target.parentElement!.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-              }}
-            />
-          </div>
+          <SkeletonBlock tone="dark" className="banner-image" height="100%" />
           <div className="banner-content">
             <div className="container">
-              <div className="banner-text">
-                <p className="banner-subtitle">SONA SPACE</p>
-                <h1 className="banner-title">Thiết Kế Nội Thất Cao Cấp</h1>
-                <p className="banner-description">
-                  Khám phá bộ sưu tập nội thất độc đáo và hiện đại. 
-                  Tạo nên không gian sống hoàn hảo cho ngôi nhà của bạn.
-                </p>
-                <a href="/san-pham" className="banner-button">
-                  Khám Phá Ngay
-                  <i className="fas fa-arrow-right"></i>
-                </a>
+              <div className="banner-text banner-text--skeleton">
+                <SkeletonBlock tone="dark" className="banner-skeleton__subtitle" />
+                <SkeletonBlock tone="dark" className="banner-skeleton__title" />
+                <SkeletonBlock tone="dark" className="banner-skeleton__description" />
+                <SkeletonBlock tone="dark" className="banner-skeleton__button" />
               </div>
             </div>
           </div>
         </div>
-        {error && (
-          <div className="error-notice">
-            <p>{error}</p>
-          </div>
-        )}
       </section>
     );
   }
 
-  return (
-    <section className={`hero-banner ${className}`}>
-      <Swiper
-        modules={[Navigation, Pagination, Autoplay, EffectFade]}
-        spaceBetween={0}
-        slidesPerView={1}
-        navigation={{
-          nextEl: '.banner-slider-next',
-          prevEl: '.banner-slider-prev',
-        }}
-        pagination={{
-          el: '.banner-slider-pagination',
-          clickable: true,
-          bulletClass: 'banner-bullet',
-          bulletActiveClass: 'banner-bullet-active',
-        }}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        effect="fade"
-        fadeEffect={{
-          crossFade: true,
-        }}
-        loop={banners.length > 1}
-        className="banner-swiper"
-      >
-        {banners.map((banner) => (
-          <SwiperSlide key={banner.id}>
-            <div className="banner-slide">
-              <div className="banner-image">
-                <img 
-                  src={banner.image} 
-                  alt={banner.title}
-                  loading="lazy"
-                />
-              </div>
-              <div className="banner-content">
-                <div className="container">
-                  <div className="banner-text">
-                    <p className="banner-subtitle">{banner.subtitle || "SONA SPACE"}</p>
-                    <h1 className="banner-title">{banner.title}</h1>
-                    <p className="banner-description">
-                      {banner.description || "Khám phá bộ sưu tập nội thất độc đáo và hiện đại"}
-                    </p>
-                    <a 
-                      href={banner.link || "/san-pham"} 
-                      className="banner-button"
-                      target={banner.link?.startsWith('http') ? '_blank' : '_self'}
-                      rel={banner.link?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    >
-                      {banner.button_text || "Khám Phá Ngay"}
-                      <i className="fas fa-arrow-right"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+  const hasMultipleSlides = slides.length > 1;
 
-      {/* Navigation Arrows */}
-      {banners.length > 1 && (
-        <>
-          {/* <div className="banner-slider-prev banner-nav-arrow">
-            <i className="fas fa-chevron-left"></i>
-          </div>
-          <div className="banner-slider-next banner-nav-arrow">
-            <i className="fas fa-chevron-right"></i>
-          </div> */}
-        </>
+  return (
+    <section ref={sectionRef} className={sectionClassName} aria-roledescription="carousel" aria-label="Banner">
+      {hasMultipleSlides ? (
+        <Swiper
+          modules={[Autoplay, EffectFade]}
+          slidesPerView={1}
+          effect="fade"
+          fadeEffect={{ crossFade: true }}
+          speed={900}
+          loop
+          autoplay={{ delay: AUTOPLAY_DELAY_MS, disableOnInteraction: false, pauseOnMouseEnter: true }}
+          className="banner-swiper"
+          onSwiper={handleSwiper}
+          onSlideChange={(instance) => setActiveIndex(instance.realIndex)}
+          onSlideChangeTransitionStart={(instance) => playSlideEntrance(instance.slides[instance.activeIndex])}
+          onAutoplayTimeLeft={(_instance, _timeLeft, progress) => {
+            progressRef.current?.style.setProperty("--banner-progress", String(1 - progress));
+          }}
+        >
+          {slides.map((slide, index) => (
+            <SwiperSlide key={slide.key}>
+              <SlideBody slide={slide} isFirst={index === 0} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <div className="banner-static swiper-slide-active">
+          <SlideBody slide={slides[0]} isFirst />
+        </div>
       )}
 
-      {/* Pagination */}
-      {/* {banners.length > 1 && (
-        <div className="banner-slider-pagination"></div>
-      )} */}
+      {hasMultipleSlides && (
+        <div className="banner-controls">
+          <div className="container banner-controls__inner">
+            <div className="banner-controls__counter" aria-live="polite">
+              <span className="banner-controls__current">{String(activeIndex + 1).padStart(2, "0")}</span>
+              <span className="banner-controls__track" aria-hidden="true">
+                <span ref={progressRef} className="banner-controls__progress" />
+              </span>
+              <span className="banner-controls__total">{String(slides.length).padStart(2, "0")}</span>
+            </div>
+            <div className="banner-controls__buttons">
+              <button
+                type="button"
+                className="banner-nav-arrow banner-slider-prev"
+                aria-label="Banner trước"
+                onClick={() => swiper?.slidePrev()}
+              >
+                <ArrowIcon direction="left" />
+              </button>
+              <button
+                type="button"
+                className="banner-nav-arrow banner-slider-next"
+                aria-label="Banner tiếp theo"
+                onClick={() => swiper?.slideNext()}
+              >
+                <ArrowIcon />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <p className="error-notice" role="status">
+          {error}
+        </p>
+      )}
     </section>
   );
 };

@@ -1,69 +1,62 @@
 "use client";
-import { Link } from "react-router-dom";
-import React, { useState, useEffect } from "react";
-import type { NewsArticle, NewsCategory } from "../../types";
-import { getAllNewsCategories } from "../../api/new"; // Import hàm API
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  icon: string;
-}
-
-interface NewsItem {
-  id: string;
-  title: string;
-  image: string;
-  slug: string;
-  category: string;
-  date?: string;
-}
+import React, { useEffect, useState } from "react";
+import { getAllNewsCategories } from "../../api/new";
+import type { NewsCategory } from "../../types";
+import { EmptyState, InlineErrorState, SkeletonText } from "../StateFeedback";
 
 interface NewsProps {
   limit?: number;
-  showProductCount?: boolean;
 }
-const NewsCategories: React.FC<NewsProps> = ({
-  limit
-}) => {
+
+const NewsCategories: React.FC<NewsProps> = ({ limit }) => {
   const [news, setNews] = useState<NewsCategory[]>([]);
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await getAllNewsCategories();
-        setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
-        // Apply limit if provided
-        const limitedData = limit ? data.slice(0, limit) : data;
-        setNews(limitedData);
         setError(null);
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
+        const data = await getAllNewsCategories();
+        setNews(limit ? data.slice(0, limit) : data);
+      } catch (fetchError) {
+        console.error("Lỗi khi lấy dữ liệu:", fetchError);
+        setNews([]);
+        setError("Không thể tải danh mục tin tức.");
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchData();
   }, [limit]);
+
   return (
     <div className="news-categories">
       <h2>Danh mục tin tức</h2>
-      <ul>
-        {news.map((category, idx) => (
-          <li key={category.news_category_id || idx}>
-            <div className="category-item">
-              <span className="category-name">{category.name}</span>
-              <span className="post-count">
-                {category.news_count}
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <SkeletonText lines={4} />
+      ) : error ? (
+        <InlineErrorState message={error} />
+      ) : news.length === 0 ? (
+        <EmptyState
+          title="Chưa có danh mục"
+          message="Danh mục tin tức sẽ xuất hiện khi có nội dung mới."
+        />
+      ) : (
+        <ul>
+          {news.map((category, idx) => (
+            <li key={category.news_category_id || idx}>
+              <div className="category-item">
+                <span className="category-name">{category.name}</span>
+                <span className="post-count">{category.news_count}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

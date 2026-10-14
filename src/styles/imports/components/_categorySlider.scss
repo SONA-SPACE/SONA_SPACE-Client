@@ -1,0 +1,97 @@
+@use "../core/mixins";
+@use "../core/variables";
+
+.categories-flex {
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 48px;
+
+  .swiper-slide {
+    width: 300px !important;
+    flex-shrink: 0;
+  }
+
+  .category-item {
+    width: 300px;
+    flex: 0 0 auto;
+  }
+
+  .category-link {
+    display: block;
+    color: variables.$dark-cl;
+    text-decoration: none;
+
+    &:focus-visible {
+      outline: 2px solid variables.$yellow-cl;
+      outline-offset: 4px;
+      border-radius: var(--radius-md);
+    }
+  }
+
+  .category-image {
+    aspect-ratio: 5 / 7;
+    margin-bottom: 14px;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: variables.$gray-cl-3;
+    box-shadow: var(--shadow-xs);
+    transition: box-shadow var(--dur-slow) var(--ease-out);
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--dur-image) var(--ease-out);
+    }
+  }
+
+  .category-name {
+    margin: 0;
+    text-align: left;
+    @include mixins.text(18px, "Be-B", 1.4, variables.$dark-cl, none);
+    transition: color var(--dur-base) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .category-link:hover {
+      .category-image {
+        box-shadow: var(--shadow-sm);
+
+        img {
+          transform: scale(1.03);
+        }
+      }
+
+      .category-name {
+        color: variables.$yellow-cl;
+      }
+    }
+  }
+
+  .swiper-scrollbar {
+    height: 2px;
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  .swiper-scrollbar-drag {
+    background: variables.$dark-cl;
+  }
+
+  @include mixins.xs {
+    .swiper-slide,
+    .category-item {
+      width: 220px !important;
+    }
+
+    .category-name {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .categories-flex .category-image img {
+    transition: none;
+  }
+}

@@ -43,6 +43,20 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
     }
   }, [isVisible]);
   useEffect(() => {
+    if (!isVisible) {
+      return;
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isVisible]);
+  useEffect(() => {
     const count = cartItems.reduce((total, item) => total + item.quantity, 0);
     onCartUpdated?.(count);
   }, [cartItems]);
@@ -112,11 +126,22 @@ const MiniCart = forwardRef<MiniCartHandle, MiniCartProps>(({ userId, onCartUpda
   );
 
   return (
-    <div className={`mini-cart ${isVisible ? "show" : ""}`}>
+    <div
+      className={`mini-cart ${isVisible ? "show" : ""}`}
+      id="mini-cart-panel"
+      role="dialog"
+      aria-modal="false"
+      aria-label="Giỏ hàng thu gọn"
+    >
       <div className="mini-cart-content">
         <div className="mini-cart-header">
           <h3>Giỏ hàng của bạn ({cartItems.length})</h3>
-          <button className="close-mini-cart" onClick={() => setIsVisible(false)}>
+          <button
+            className="close-mini-cart"
+            type="button"
+            aria-label="Đóng giỏ hàng thu gọn"
+            onClick={() => setIsVisible(false)}
+          >
             <img src="/images/icons/close.svg" alt="Đóng" />
           </button>
         </div>

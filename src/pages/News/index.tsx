@@ -1,61 +1,110 @@
-"use client";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import NewsCategories from "../../components/CategoryNews";
-import RecentPosts from "../../components/RecentPosts";
-import React, { useState, useEffect } from "react";
-import PolicyProduct from "../../components/Policy";
 import BannerSlider from "../../components/BannerSlider";
-import type { NewsArticle, NewsCategory } from "../../types";
-import { getAllNews, getAllNewsSimple } from "../../api/new"; // Import hàm API
-
-interface NewsItem {
-  id: string;
-  title: string;
-  image: string;
-  slug: string;
-  category: string;
-  date?: string;
-}
+import NewsCategories from "../../components/CategoryNews";
+import PolicyProduct from "../../components/Policy";
+import RecentPosts from "../../components/RecentPosts";
+import {
+  EmptyState,
+  RetryState,
+  SkeletonBlock,
+} from "../../components/StateFeedback";
+import { getAllNewsSimple } from "../../api/new";
+import type { NewsArticle } from "../../types";
 
 interface NewsProps {
   limit?: number;
-  showProductCount?: boolean;
 }
-const News: React.FC<NewsProps> = ({
-  limit
-}) => {
+
+const News: React.FC<NewsProps> = ({ limit }) => {
   const [news, setNews] = useState<NewsArticle[]>([]);
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
         const data = await getAllNewsSimple();
-        // console.log("Fetched news data:", data);
-        setNews(data.slice(0, limit));
-        setDebugInfo(prev => `${prev}\nReceived ${data.length} news`);
-        // Apply limit if provided
-        const limitedData = limit ? data.slice(0, limit) : data;
-        setNews(limitedData);
-        setError(null); // gọi API lấy danh sách news
-      } catch (error) {
-        //  console.error("Lỗi khi lấy dữ liệu:", error);
+        setNews(limit ? data.slice(0, limit) : data);
+      } catch (fetchError) {
+        setNews([]);
+        setError("Không thể tải danh sách tin tức. Vui lòng thử lại.");
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchData();
   }, [limit]);
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="news-grid news-grid--loading" aria-label="Đang tải tin tức">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div className="news-item news-item--skeleton" key={index}>
+              <SkeletonBlock className="news-item__image-skeleton" />
+              <SkeletonBlock width="82%" height={24} />
+              <SkeletonBlock width="56%" height={18} />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="news-state-container">
+          <RetryState
+            message={error}
+            onRetry={() => window.location.reload()}
+            secondaryActionLabel="Về trang chủ"
+            secondaryActionTo="/"
+          />
+        </div>
+      );
+    }
+
+    if (news.length === 0) {
+      return (
+        <div className="news-state-container">
+          <EmptyState
+            title="Chưa có bài viết nào"
+            message="Hiện chưa có nội dung tin tức để hiển thị. Vui lòng quay lại sau."
+            actionLabel="Khám phá sản phẩm"
+            actionTo="/san-pham"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="news-grid">
+        {news.map((newsItem) => (
+          <article className="news-item" key={newsItem.news_id} data-reveal>
+            <Link to={`/tin-tuc/${newsItem.news_slug}`}>
+              <span className="news-item__media">
+                <img
+                  src={newsItem.news_image || "/images/hero-banner.png"}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <h3>{newsItem.news_title}</h3>
+            </Link>
+          </article>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <>
-      <Header />
 
       <div className="news-page">
-        {/* Banner Section */}
         <BannerSlider page="tin-tuc" />
 
         <div className="breadcrumb-container">
@@ -68,35 +117,20 @@ const News: React.FC<NewsProps> = ({
           </div>
         </div>
 
-        {/* New Content */}
         <div className="container">
           <div className="news-content">
-            <div className="content-right">
-              <div className="news-grid">
-                {news.map((news: NewsArticle) => (
-                  <div className="news-item" key={news.news_id}>
-                    <Link to={`/tin-tuc/${news.news_slug}`}>
-                      <img src={news.news_image || "/fallback-image.jpg"} alt={news.news_title} />
-                      <h3>{news.news_title}</h3>
-                      {/* <p>{news.category_name}</p> */}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="content-right">{renderContent()}</div>
             <div className="content-left">
               <NewsCategories limit={5} />
-              <RecentPosts newsItems={newsItems} />
+              <RecentPosts limit={4} />
             </div>
           </div>
         </div>
-        {/* Policy Section */}
+
         <section className="policy-product mt-94">
           <PolicyProduct />
         </section>
 
-        {/* Footer */}
-        <Footer />
       </div>
     </>
   );

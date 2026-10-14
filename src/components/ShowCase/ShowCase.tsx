@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { isAxiosError } from "axios";
+import { EmptyState, PageSectionSkeleton, RetryState } from "../StateFeedback";
 import { Link } from "react-router-dom";
 import type { NewsArticle } from "../../types";
 import { getNewsByCategory } from "../../api/new";
@@ -8,10 +10,18 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
-export default function Showcase({ categoryName }: { categoryName: string }) {
+type ShowcaseProps = {
+      categoryName: string;
+      // Render nothing while loading or when there are no projects, instead of a skeleton and an
+      // empty state, for pages where the showcase is an optional extra
+      hideWhenEmpty?: boolean;
+};
+
+export default function Showcase({ categoryName, hideWhenEmpty = false }: ShowcaseProps) {
       const [items, setItems] = useState<NewsArticle[]>([]);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
+      const [reloadToken, setReloadToken] = useState(0);
 
       useEffect(() => {
             const fetchItems = async () => {
@@ -21,24 +31,36 @@ export default function Showcase({ categoryName }: { categoryName: string }) {
                         const res = await getNewsByCategory(categoryName);
                         setItems(res || []);
                   } catch (error) {
-                        setError(error instanceof Error ? error.message : "Lỗi khi tải dự án");
                         setItems([]);
+                        // A missing project category is an empty showcase, not a failure to report.
+                        if (!(isAxiosError(error) && error.response?.status === 404)) {
+                              setError("Không thể tải danh sách dự án. Vui lòng thử lại.");
+                        }
                   } finally {
                         setLoading(false);
                   }
             };
             fetchItems();
-      }, [categoryName]);
+      }, [categoryName, reloadToken]);
+
+      if (hideWhenEmpty && !error && (loading || items.length === 0)) return null;
 
       return (
             <section className="design-showcase-swiper mt-94">
                   <div className="container">
                         <h2 className="section-title">Dự án tiêu biểu</h2>
-                        {loading && <div className="showcase-loading">Đang tải dự án...</div>}
-                        {error && <div className="showcase-error">{error}</div>}
+                        {loading && <PageSectionSkeleton count={3} />}
+                        {!loading && error && (
+                              <RetryState message={error} onRetry={() => setReloadToken((token) => token + 1)} />
+                        )}
                         {!loading && !error && (
                               items.length === 0 ? (
-                                    <div className="showcase-empty">Chưa có dự án nào!</div>
+                                    <EmptyState
+                                          title="Chưa có dự án nào"
+                                          message="Các dự án tiêu biểu sẽ sớm được cập nhật."
+                                          actionLabel="Xem không gian mẫu"
+                                          actionTo="/khong-gian"
+                                    />
                               ) : (
                                     <Swiper
                                           modules={[Autoplay, Navigation]}

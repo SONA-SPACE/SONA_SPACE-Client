@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import { Link, Links, useNavigate, useLocation } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import CancelOrderModal from "../../components/CancelOrderModal";
-import BannerSlider from "../../components/BannerSlider";
+import PageHero from "../../components/PageHero";
 import axios from "axios";
 import { cancelOrder } from "../../services/userServices";
 import { getOrderItems } from "../../api/order";
-import { message } from 'antd';
 
 import type {
   OrderItemAPI,
@@ -19,6 +15,12 @@ import type {
 } from "../../types";
 import { convertToAdminApiUrl } from "../../utils/url";
 import { toast } from "react-toastify";
+import { getAuthToken, getAuthUser, updateAuthUser } from "../../services/loginService";
+import {
+  EmptyState,
+  PageSectionSkeleton,
+  RetryState,
+} from "../../components/StateFeedback";
 
 // Định nghĩa interface cho API mới
 interface ProductColor {
@@ -142,12 +144,12 @@ const User: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Mock data for user information with default values
+  // Filled from the API; starts empty so no placeholder identity is ever shown or saved
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: "Nguyễn Văn A",
-    email: "example@gmail.com",
-    phone: "0987654321",
-    address: ["123 Đường ABC, Phường XYZ, Quận 1, TP.HCM"],
+    name: "",
+    email: "",
+    phone: "",
+    address: [],
   });
 
   // State để theo dõi khi nào cần tải lại dữ liệu người dùng
@@ -161,10 +163,9 @@ const User: React.FC = () => {
 
   // Lấy thông tin người dùng từ sessionStorage khi component mount
   useEffect(() => {
-    const userDataStr = sessionStorage.getItem("user");
-    if (userDataStr) {
-      try {
-        const userData = JSON.parse(userDataStr);
+    try {
+      const userData = getAuthUser();
+      if (userData) {
         // Cập nhật thông tin người dùng từ sessionStorage
         setUserInfo({
           name: userData.name || userData.full_name || "Chưa cập nhật",
@@ -177,22 +178,25 @@ const User: React.FC = () => {
 
         // Gọi API để lấy dữ liệu đơn hàng
         fetchOrders(userData.id);
-      } catch (error) {
+      } else {
+        // No persisted auth user is available.
+        setError("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
+        setIsLoading(false);
+      }
+    } catch (error) {
         console.error(
           "Lỗi khi parse dữ liệu người dùng từ sessionStorage:",
           error
         );
       }
-    } else {
       // console.log("Không tìm thấy thông tin người dùng trong sessionStorage");
-    }
   }, [refreshUserData]);
 
   // Hàm lấy dữ liệu đơn hàng từ API
   // Fetch detailed order items to get individual product status
   const fetchDetailedOrderItems = async (orderId: number) => {
     try {
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) return;
 
       const response = await getOrderItems(orderId, token);
@@ -214,12 +218,9 @@ const User: React.FC = () => {
     await fetchDetailedOrderItems(orderId);
 
     // Also refresh main orders data
-    const userDataStr = sessionStorage.getItem("user");
-    if (userDataStr) {
-      const userData = JSON.parse(userDataStr);
-      if (userData.id) {
-        await fetchOrders(userData.id);
-      }
+    const userData = getAuthUser();
+    if (userData?.id) {
+      await fetchOrders(userData.id);
     }
   };
 
@@ -233,7 +234,7 @@ const User: React.FC = () => {
 
     try {
       // Lấy token từ sessionStorage
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) {
         setError("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         setIsLoading(false);
@@ -277,7 +278,7 @@ const User: React.FC = () => {
 
   const fetchPromoCodes = async () => {
     try {
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) return;
 
       const res = await axios.get(convertToAdminApiUrl("/couponcodes/user-has-coupon"), {
@@ -563,20 +564,19 @@ const User: React.FC = () => {
 
     try {
       // Lấy token từ sessionStorage
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) {
         toast.success("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         return;
       }
 
       // Lấy thông tin người dùng từ sessionStorage để lấy ID
-      const userDataStr = sessionStorage.getItem("user");
-      if (!userDataStr) {
+      const userData = getAuthUser();
+      if (!userData) {
         toast.warn("Không tìm thấy thông tin người dùng");
         return;
       }
 
-      const userData = JSON.parse(userDataStr);
       const userId = userData.id;
 
       // Chuẩn bị dữ liệu để cập nhật
@@ -614,7 +614,7 @@ const User: React.FC = () => {
             ? userInfo.address
             : userInfo.address[0],
       };
-      sessionStorage.setItem("user", JSON.stringify(updatedUser));
+      updateAuthUser(updatedUser);
 
       // Cập nhật state để tải lại thông tin người dùng
       setRefreshUserData((prev) => !prev);
@@ -788,20 +788,19 @@ const User: React.FC = () => {
 
     try {
       // Lấy token từ sessionStorage
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) {
         toast.error("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn");
         return;
       }
 
       // Lấy thông tin người dùng từ sessionStorage
-      const userDataStr = sessionStorage.getItem("user");
-      if (!userDataStr) {
+      const userData = getAuthUser();
+      if (!userData) {
         toast.error("Không tìm thấy thông tin người dùng");
         return;
       }
 
-      const userData = JSON.parse(userDataStr);
       const userId = userData.id;
 
       // Gọi API đổi mật khẩu
@@ -828,7 +827,7 @@ const User: React.FC = () => {
         ...userData,
         password: passwordData.newPassword,
       };
-      sessionStorage.setItem("user", JSON.stringify(updatedUser));
+      updateAuthUser(updatedUser);
 
       // Thông báo thành công
       toast.success("Đổi mật khẩu thành công");
@@ -902,15 +901,12 @@ const User: React.FC = () => {
       // console.log("Hủy đơn hàng thành công:", result);
 
       // Cập nhật lại danh sách đơn hàng
-      const userDataStr = sessionStorage.getItem("user");
-      if (userDataStr) {
-        const userData = JSON.parse(userDataStr);
-        if (userData.id) {
-          await fetchOrders(userData.id);
-        }
+      const userData = getAuthUser();
+      if (userData?.id) {
+        await fetchOrders(userData.id);
       }
 
-      message.success("Đơn hàng đã được hủy thành công!");
+      toast.success("Đơn hàng đã được hủy thành công!");
 
       // Đóng modal và reset state
       setShowCancelModal(false);
@@ -921,9 +917,9 @@ const User: React.FC = () => {
 
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
-        message.error(`Lỗi: ${error.response.data.message}`);
+        toast.error(`Lỗi: ${error.response.data.message}`);
       } else {
-        message.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
+        toast.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
       }
     } finally {
       setIsCancelling(false);
@@ -1033,10 +1029,41 @@ const User: React.FC = () => {
     }
   };
 
+  const retryFetchOrders = () => {
+    const userData = getAuthUser();
+    if (userData?.id) {
+      fetchOrders(userData.id);
+    }
+  };
+
+  const accountHero = (
+    <PageHero
+      title="Tài khoản của bạn"
+      breadcrumbs={[{ label: "Trang chủ", to: "/" }, { label: "Tài khoản" }]}
+    />
+  );
+
+  if (!getAuthToken()) {
+    return (
+      <>
+        {accountHero}
+        <div className="account-guest">
+          <EmptyState
+            title="Đăng nhập để xem tài khoản"
+            message="Theo dõi đơn hàng, quản lý địa chỉ và mã giảm giá sau khi đăng nhập."
+            actionLabel="Đăng nhập"
+            actionTo="/dang-nhap"
+            secondaryActionLabel="Tạo tài khoản"
+            secondaryActionTo="/dang-ky"
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
-      <Header />
-      <BannerSlider page="tai-khoan" />
+      {accountHero}
       <div className="user-account-page">
         <div className="container">
           <div className="account-wrapper">
@@ -1110,11 +1137,16 @@ const User: React.FC = () => {
 
                   {isLoading ? (
                     <div className="loading-state">
-                      <p>Đang tải dữ liệu đơn hàng...</p>
+                      <PageSectionSkeleton variant="account-list" count={3} />
                     </div>
                   ) : error ? (
                     <div className="error-state">
-                      <p>{error}</p>
+                      <RetryState
+                        message={error}
+                        onRetry={retryFetchOrders}
+                        secondaryActionLabel="Khám phá sản phẩm"
+                        secondaryActionTo="/san-pham"
+                      />
                     </div>
                   ) : apiOrders.length > 0 ? (
                     <div className="order-list">
@@ -1209,7 +1241,12 @@ const User: React.FC = () => {
                     </div>
                   ) : (
                     <div className="empty-state">
-                      <p>Bạn chưa có đơn hàng nào</p>
+                      <EmptyState
+                        title="Bạn chưa có đơn hàng nào"
+                        message="Các đơn hàng mới sẽ xuất hiện tại đây sau khi bạn hoàn tất thanh toán."
+                        actionLabel="Khám phá sản phẩm"
+                        actionTo="/san-pham"
+                      />
                     </div>
                   )}
                 </div>
@@ -1717,11 +1754,16 @@ const User: React.FC = () => {
 
                   {isLoading ? (
                     <div className="loading-state">
-                      <p>Đang tải dữ liệu đơn hàng...</p>
+                      <PageSectionSkeleton variant="account-list" count={3} />
                     </div>
                   ) : error ? (
                     <div className="error-state">
-                      <p>{error}</p>
+                      <RetryState
+                        message={error}
+                        onRetry={retryFetchOrders}
+                        secondaryActionLabel="Khám phá sản phẩm"
+                        secondaryActionTo="/san-pham"
+                      />
                     </div>
                   ) : getFilteredOrders().length > 0 ? (
                     <div className="order-list-container">
@@ -1919,10 +1961,12 @@ const User: React.FC = () => {
                     </div>
                   ) : (
                     <div className="empty-state">
-                      <p>Không có đơn hàng nào trong trạng thái này</p>
-                      <Link to="/san-pham" className="btn-primary">
-                        Tiếp tục mua sắm
-                      </Link>
+                      <EmptyState
+                        title="Không có đơn hàng nào trong trạng thái này"
+                        message="Hãy đổi bộ lọc hoặc tiếp tục mua sắm để tạo đơn hàng mới."
+                        actionLabel="Tiếp tục mua sắm"
+                        actionTo="/san-pham"
+                      />
                     </div>
                   )}
                 </div>
@@ -1933,19 +1977,23 @@ const User: React.FC = () => {
 
         {/* Design Services Showcase */}
       </div>
-      <Footer />
 
       {/* Modal hủy đơn hàng */}
-      <CancelOrderModal
-        visible={showCancelModal}
-        onCancel={handleCancelModalClose}
-        onSubmit={handleCancelOrderSubmit}
-        loading={isCancelling}
-        orderHash={selectedOrderHash}
-        orderId={selectedOrderId || undefined}
-      />
+      {showCancelModal && (
+        <Suspense fallback={null}>
+          <CancelOrderModal
+            visible={showCancelModal}
+            onCancel={handleCancelModalClose}
+            onSubmit={handleCancelOrderSubmit}
+            loading={isCancelling}
+            orderHash={selectedOrderHash}
+            orderId={selectedOrderId || undefined}
+          />
+        </Suspense>
+      )}
     </>
   );
 };
 
 export default User;
+const CancelOrderModal = lazy(() => import("../../components/CancelOrderModal"));

@@ -1,0 +1,104 @@
+@use "../core/mixins";
+@use "../core/variables";
+
+.get-in-touch {
+  &__title {
+    margin: 0 0 24px;
+    text-align: left;
+    @include mixins.text(clamp(24px, 2.1vw, 30px), "M-SB", 1.25, variables.$dark-cl, null);
+  }
+
+  &__box {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px 80px;
+  }
+
+  &__description {
+    margin: 0;
+    @include mixins.text(16px, "Be-R", 1.7, variables.$gray-cl-5, null);
+    text-align: left;
+  }
+
+  &__option {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    min-height: 56px;
+    padding: 14px 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+
+    &:hover .get-in-touch__label {
+      color: variables.$yellow-cl;
+    }
+
+    &:focus-visible {
+      outline: 2px solid variables.$yellow-cl;
+      outline-offset: 2px;
+      border-radius: var(--radius-xs);
+    }
+  }
+
+  &__label {
+    @include mixins.text(16px, "Be-M", 1.4, variables.$dark-cl, null);
+    transition: color var(--dur-base) var(--ease-out);
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 15px;
+    height: 8px;
+    color: variables.$dark-cl;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  &__option.active &__icon {
+    transform: rotate(180deg);
+  }
+
+  // grid-rows 0fr -> 1fr animates to the content's real height (no fixed max-height cap)
+  &__content-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--dur-slow) var(--ease-out);
+
+    > * {
+      overflow: hidden;
+    }
+  }
+
+  &__option.active &__content-wrapper {
+    grid-template-rows: 1fr;
+  }
+
+  &__content {
+    @include mixins.text(15px, "Be-R", 1.7, variables.$gray-cl-5, null);
+
+    p {
+      margin: 0 0 16px;
+      text-align: left;
+    }
+  }
+
+  @include mixins.md {
+    &__box {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .get-in-touch__content-wrapper,
+  .get-in-touch__icon {
+    transition: none;
+  }
+}

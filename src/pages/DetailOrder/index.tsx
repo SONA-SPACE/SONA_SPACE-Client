@@ -1,16 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { Suspense, lazy, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import ReturnOrderModal from "../../components/ReturnOrderModal";
-import CancelOrderModal from "../../components/CancelOrderModal";
 import axios from "axios";
 import { returnOrder } from "../../services/ordersService";
 import { cancelOrder } from "../../services/userServices";
 import { convertToAdminApiUrl } from "../../utils/url";
-import { message, Modal } from 'antd';
+import { Modal } from "antd";
 import { getOrderItems, OrderItem, cancelOrderProduct } from "../../api/order";
+import { getAuthToken } from "../../services/loginService";
+import { PageSectionSkeleton, RetryState } from "../../components/StateFeedback";
+import { toast } from "react-toastify";
+
+const ReturnOrderModal = lazy(() => import("../../components/ReturnOrderModal"));
+const CancelOrderModal = lazy(() => import("../../components/CancelOrderModal"));
 
 interface OrderProduct {
   order_item_id: string;
@@ -55,8 +57,21 @@ interface OrderDetails {
   };
 }
 
+const firstImageUrl = (value: unknown): string => {
+  if (Array.isArray(value)) {
+    return String(value.find((image) => String(image || "").trim()) || "/images/default.jpg");
+  }
+
+  return String(value || "")
+    .split(",")
+    .map((image) => image.trim())
+    .find(Boolean) || "/images/default.jpg";
+};
+
 const DetailOrder: React.FC = () => {
   const [order, setOrder] = useState<OrderDetails | null>(null);
+  const [isOrderLoading, setIsOrderLoading] = useState(true);
+  const [orderLoadError, setOrderLoadError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
   const [detailedOrderItems, setDetailedOrderItems] = useState<Map<string, OrderItem[]>>(new Map());
   const starFilledImg = "/images/404/star-filled.svg";
@@ -78,8 +93,10 @@ const DetailOrder: React.FC = () => {
   const [cancellingProductId, setCancellingProductId] = useState<string | null>(null);
 
   const fetchOrder = async () => {
+    setIsOrderLoading(true);
+    setOrderLoadError(null);
     try {
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       const res = await axios.get(
           convertToAdminApiUrl(`/orders/hash/${id}?_t=${Date.now()}`),
         {
@@ -91,23 +108,13 @@ const DetailOrder: React.FC = () => {
         }
       );
       if (res.data.success) {
-        console.log("Raw order data:", res.data.order);
-        
         const mappedProducts: OrderProduct[] = res.data.order.products.map(
           (p: any) => {
-            console.log("Mapping product:", {
-              id: p.id,
-              product_id: p.product_id,
-              item_id: p.item_id,
-              order_item_id: p.order_item_id,
-              name: p.product_name || p.name
-            });
-            
             return {
               order_item_id: p.id || p.item_id || p.order_item_id,
               product_id: p.product_id || p.id,
               name: p.product_name || p.name,
-              image: p.image || p.product_image || "/images/default.jpg",
+              image: firstImageUrl(p.image || p.product_image),
               price: p.price_sale ?? p.price,
               quantity: p.quantity,
               slug: p.slug,
@@ -121,8 +128,6 @@ const DetailOrder: React.FC = () => {
             };
           }
         );
-        
-        console.log("Mapped products:", mappedProducts);
         
         // Map order data and ensure processType and statusStep are properly set
         const orderData = {
@@ -146,16 +151,22 @@ const DetailOrder: React.FC = () => {
           (product) => product.has_comment
         );
         setAllProductsReviewed(allCommented);
+      } else {
+        setOrder(null);
+        setOrderLoadError(res.data.message || "Không thể tải thông tin đơn hàng.");
       }
     } catch (err) {
-      console.error("Lỗi khi tải đơn hàng:", err);
+      setOrder(null);
+      setOrderLoadError("Không thể tải thông tin đơn hàng. Vui lòng thử lại.");
+    } finally {
+      setIsOrderLoading(false);
     }
   };
 
   // Enhanced API call to get detailed order items with cache busting
   const fetchDetailedOrderItems = async (orderId: number) => {
     try {
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) return;
 
       const response = await getOrderItems(orderId, token);
@@ -303,19 +314,6 @@ const DetailOrder: React.FC = () => {
   useEffect(() => {
     fetchOrder();
     
-    // Test message component khi component mount
-    console.log("DetailOrder component mounted, testing message component...");
-    
-    // Test message sau 1 giây để đảm bảo component đã render xong
-    setTimeout(() => {
-      message.info({
-        content: "DetailOrder component đã sẵn sàng",
-        duration: 2,
-        style: {
-          marginTop: '20px',
-        },
-      });
-    }, 1000);
   }, [id]);
 
   useEffect(() => {
@@ -599,7 +597,7 @@ const DetailOrder: React.FC = () => {
     setReviewMessage("");
 
     try {
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       const payload = {
         order_item_id: currentReviewProduct.order_item_id,
         product_id: currentReviewProduct.product_id,
@@ -659,13 +657,7 @@ const DetailOrder: React.FC = () => {
       setIsProcessingReturn(true);
       await returnOrder(order.order_hash, reason, images);
       
-      message.success({
-        content: "Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.",
-        duration: 5,
-        style: {
-          marginTop: '20px',
-        },
-      });
+      toast.success("Yêu cầu trả hàng đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
       
       // Đóng modal
       setShowReturnModal(false);
@@ -675,21 +667,9 @@ const DetailOrder: React.FC = () => {
     } catch (error: any) {
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
-        message.error({
-          content: `Lỗi: ${error.response.data.message}`,
-          duration: 5,
-          style: {
-            marginTop: '20px',
-          },
-        });
+        toast.error(`Lỗi: ${error.response.data.message}`);
       } else {
-        message.error({
-          content: "Không thể gửi yêu cầu trả hàng. Vui lòng thử lại sau.",
-          duration: 5,
-          style: {
-            marginTop: '20px',
-          },
-        });
+        toast.error("Không thể gửi yêu cầu trả hàng. Vui lòng thử lại sau.");
       }
     } finally {
       setIsProcessingReturn(false);
@@ -730,13 +710,7 @@ const DetailOrder: React.FC = () => {
       
       await cancelOrder(orderId, reason);
       
-      message.success({
-        content: "Đơn hàng đã được hủy thành công!",
-        duration: 4,
-        style: {
-          marginTop: '20px',
-        },
-      });
+      toast.success("Đơn hàng đã được hủy thành công!");
       
       // Đóng modal
       setShowCancelModal(false);
@@ -746,21 +720,9 @@ const DetailOrder: React.FC = () => {
     } catch (error: any) {
       // Hiển thị thông báo lỗi cụ thể từ API nếu có
       if (error.response && error.response.data && error.response.data.message) {
-        message.error({
-          content: `Lỗi: ${error.response.data.message}`,
-          duration: 5,
-          style: {
-            marginTop: '20px',
-          },
-        });
+        toast.error(`Lỗi: ${error.response.data.message}`);
       } else {
-        message.error({
-          content: "Không thể hủy đơn hàng. Vui lòng thử lại sau.",
-          duration: 5,
-          style: {
-            marginTop: '20px',
-          },
-        });
+        toast.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
       }
     } finally {
       setIsProcessingCancel(false);
@@ -774,43 +736,15 @@ const DetailOrder: React.FC = () => {
 
   // Xử lý hủy sản phẩm cụ thể
   const handleCancelProduct = async (product: OrderProduct) => {
-    console.log("handleCancelProduct called with product:", product);
-    console.log("Current order:", order);
-    
     if (!order || !order.id) {
       console.error("No order or order.id found:", { order, orderId: order?.id });
-      message.error({
-        content: "Không thể xác định thông tin đơn hàng",
-        duration: 3,
-        style: {
-          marginTop: '20px',
-        },
-      });
+      toast.error("Không thể xác định thông tin đơn hàng");
       return;
     }
 
     const productName = product.name || "sản phẩm này";
     
-    // Debug logging
-    console.log("Cancelling product:", {
-      productName,
-      orderId: order.id,
-      itemId: product.order_item_id,
-      productId: product.product_id
-    });
-    
-    // Test message first
-    console.log("Testing message component...");
-    message.info({
-      content: "Đang chuẩn bị hủy sản phẩm...",
-      duration: 2,
-      style: {
-        marginTop: '20px',
-      },
-    });
-    
-    // Sử dụng Modal.confirm thay vì window.confirm
-    console.log("Showing Modal.confirm...");
+    // Confirm before cancelling only the selected product.
     Modal.confirm({
       title: 'Xác nhận hủy sản phẩm',
       content: (
@@ -825,47 +759,26 @@ const DetailOrder: React.FC = () => {
       cancelText: 'Không',
       okType: 'danger',
       onOk: async () => {
-        console.log("User confirmed cancellation");
         try {
           setCancellingProductId(product.order_item_id);
           
-          const token = sessionStorage.getItem("authToken");
+          const token = getAuthToken();
           if (!token) {
             console.error("No auth token found");
-            message.error({
-              content: "Vui lòng đăng nhập lại",
-              duration: 3,
-              style: {
-                marginTop: '20px',
-              },
-            });
+            toast.error("Vui lòng đăng nhập lại");
             return;
           }
 
           // Sử dụng order_item_id làm itemId để đảm bảo hủy đúng sản phẩm
           const itemId = parseInt(product.order_item_id);
           
-          console.log("API call params:", {
-            orderId: order.id,
-            itemId: itemId,
-            endpoint: `/orders-id/cancel-item/${order.id}/${itemId}`
-          });
-
           await cancelOrderProduct(
             order.id!,
             itemId,
             `Khách hàng yêu cầu hủy sản phẩm: ${productName}`,
             token
           );
-
-          console.log("Cancel product API call successful");
-          message.success({
-            content: `Đã hủy sản phẩm "${productName}" thành công!`,
-            duration: 4,
-            style: {
-              marginTop: '20px',
-            },
-          });
+          toast.success(`Đã hủy sản phẩm "${productName}" thành công!`);
           
           // Tải lại thông tin đơn hàng để cập nhật trạng thái
           await fetchOrder();
@@ -873,49 +786,54 @@ const DetailOrder: React.FC = () => {
           console.error("Error cancelling product:", error);
           
           if (error.message) {
-            message.error({
-              content: `Lỗi: ${error.message}`,
-              duration: 5,
-              style: {
-                marginTop: '20px',
-              },
-            });
+            toast.error(`Lỗi: ${error.message}`);
           } else {
-            message.error({
-              content: "Không thể hủy sản phẩm. Vui lòng thử lại sau.",
-              duration: 5,
-              style: {
-                marginTop: '20px',
-              },
-            });
+            toast.error("Không thể hủy sản phẩm. Vui lòng thử lại sau.");
           }
         } finally {
           setCancellingProductId(null);
         }
       },
-      onCancel: () => {
-        console.log("User cancelled the action");
-        // Không làm gì khi user hủy
-      }
     });
   };
 
 const formatPrice1 = (value: number | string): string => {
-  if (!value) return "0";
-
-  const cleaned = String(value).replace(/[^\d]/g, "");
-
-  const result = Math.floor(Number(cleaned) / 100);
-
-  return result.toLocaleString("vi-VN");
+  const amount = Number(value);
+  return Number.isFinite(amount) ? amount.toLocaleString("vi-VN") : "0";
 };
 
   
-  if (!order) return <p>Đang tải đơn hàng...</p>;
+  if (isOrderLoading) {
+    return (
+      <>
+        <div className="detail-order-page">
+          <div className="container">
+            <PageSectionSkeleton variant="cart-list" count={2} />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!order || orderLoadError) {
+    return (
+      <>
+        <div className="detail-order-page">
+          <div className="container">
+            <RetryState
+              message={orderLoadError || "Không tìm thấy thông tin đơn hàng."}
+              onRetry={fetchOrder}
+              secondaryActionLabel="Quay lại tài khoản"
+              secondaryActionTo="/tai-khoan/don-hang"
+            />
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
-      <Header />
 
       <section className="detail-order-page">
         <div className="container">
@@ -1035,7 +953,14 @@ const formatPrice1 = (value: number | string): string => {
                 return (
                   <div className="product-item" key={product.order_item_id}>
                     <div className="product-image">
-                      <img src={product.image} alt={product.name} />
+                      <img
+                        src={firstImageUrl(product.image)}
+                        alt={product.name}
+                        onError={(event) => {
+                          event.currentTarget.onerror = null;
+                          event.currentTarget.src = "/images/default.jpg";
+                        }}
+                      />
                     </div>
                     <div className="product-detailss">
                       <h4>{product.name}</h4>
@@ -1296,26 +1221,34 @@ const formatPrice1 = (value: number | string): string => {
         </div>
       </section>
 
-      <Footer />
 
       {/* Modal trả hàng */}
-      <ReturnOrderModal
-        visible={showReturnModal}
-        onCancel={handleReturnModalCancel}
-        onSubmit={handleReturnOrderSubmit}
-        loading={isProcessingReturn}
-      />
+      {showReturnModal && (
+        <Suspense fallback={null}>
+          <ReturnOrderModal
+            visible={showReturnModal}
+            onCancel={handleReturnModalCancel}
+            onSubmit={handleReturnOrderSubmit}
+            loading={isProcessingReturn}
+          />
+        </Suspense>
+      )}
 
       {/* Modal hủy đơn hàng */}
-      <CancelOrderModal
-        visible={showCancelModal}
-        onCancel={handleCancelModalClose}
-        onSubmit={handleCancelOrderSubmit}
-        loading={isProcessingCancel}
-        orderHash={order?.order_hash || ''}
-      />
+      {showCancelModal && (
+        <Suspense fallback={null}>
+          <CancelOrderModal
+            visible={showCancelModal}
+            onCancel={handleCancelModalClose}
+            onSubmit={handleCancelOrderSubmit}
+            loading={isProcessingCancel}
+            orderHash={order?.order_hash || ''}
+          />
+        </Suspense>
+      )}
     </>
   );
 };
 
 export default DetailOrder;
+

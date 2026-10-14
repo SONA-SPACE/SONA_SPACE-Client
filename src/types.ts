@@ -234,6 +234,7 @@ export interface ApiResponse<T> {
   data?: T;
   error?: string;
   status?: number;
+  code?: string;
   errors?: Record<string, string>;
   message?: string;
 }

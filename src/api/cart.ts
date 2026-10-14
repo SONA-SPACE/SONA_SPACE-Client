@@ -1,9 +1,10 @@
 // api/cart.ts
 import axios from "axios";
 import { convertToAdminApiUrl } from "../utils/url";
+import { getAuthToken } from "../services/loginService";
 
 export const saveToCart = async (data: { status: number; cartItems: any[] }) => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
 
   if (!token) {
     throw new Error("Token không tồn tại, vui lòng đăng nhập.");
@@ -36,7 +37,7 @@ const response = await axios.post(
 
 
 export const fetchCartFromDatabase = async () => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   const response = await axios.get(convertToAdminApiUrl("/wishlists?status=0"), {

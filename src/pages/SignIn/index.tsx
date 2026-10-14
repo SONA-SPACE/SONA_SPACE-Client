@@ -1,11 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import { BannerSection } from "../../components/BannerSection";
+import PageHero from "../../components/PageHero";
 import { useLogin } from "../../hooks/useLogin";
+import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 import "./styles.css";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 
 const SignIn: React.FC = () => {
@@ -19,17 +17,21 @@ const SignIn: React.FC = () => {
     handleCheckboxChange,
     handleSubmit,
     unverifiedError,
-    handleGoogleLogin,
   } = useLogin();
+  const {
+    googleLoading,
+    googleError,
+    handleGoogleLogin,
+    handleGoogleError,
+  } = useGoogleLogin();
 
   return (
     <>
-      <Header />
-      <BannerSection title={"Đăng Nhập"} height="50dvh" />
+      <PageHero title="Đăng Nhập" breadcrumbs={[{ label: "Trang chủ", to: "/" }, { label: "Đăng Nhập" }]} />
       <div className="signin-page">
         <div className="container">
           <div className="signin-content">
-            <h1>Đăng Nhập</h1>
+            <h2>Đăng Nhập</h2>
             <p className="signin-description">Chào mừng bạn trở lại!</p>
 
             {success && (
@@ -46,6 +48,11 @@ const SignIn: React.FC = () => {
             {apiError && (
               <div className="error-message api-error">
                 {apiError}
+              </div>
+            )}
+            {googleError && (
+              <div className="error-message api-error">
+                {googleError}
               </div>
             )}
 
@@ -103,18 +110,14 @@ const SignIn: React.FC = () => {
 
             <div className="social-signin">
               <div className="divider">
-                <span>Đăng nhập với Google</span>
+                <span>{googleLoading ? "Đang xử lý Google..." : "Đăng nhập với Google"}</span>
               </div>
-              <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-                <GoogleLogin
-                  onSuccess={handleGoogleLogin}
-                  onError={() => {
-                    // console.log("Login error");
-                  }}
-                />
-              </GoogleOAuthProvider>
+              <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={handleGoogleError}
+              />
 
-              {/* <button className="google-signin-btn" disabled={loading || success}>
+              {/* <button className="google-signin-btn" disabled={loading || googleLoading || success}>
                 <img src="/images/sign-up/Google.svg" alt="Google" />
                 <span>Google</span>
               </button> */}
@@ -126,7 +129,6 @@ const SignIn: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

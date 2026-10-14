@@ -1,0 +1,368 @@
+@use "../core/mixins";
+@use "../core/variables";
+
+// Product grid + card (src/components/Product)
+.section-box-products {
+  width: 100%;
+  margin: 0 auto;
+
+  h5 {
+    padding: 30px 0;
+    font-size: 20px;
+    font-family: "M-SB";
+  }
+
+  .box-products-container {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px 24px;
+    margin: 0 auto;
+
+    @include mixins.md {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @include mixins.sm {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px 16px;
+    }
+
+    @include mixins.xs {
+      gap: 16px 12px;
+    }
+  }
+}
+
+.product-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
+  background: variables.$white-cl;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--dur-slow) var(--ease-out);
+
+  &__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 0 0;
+    background: #f5f5f5;
+  }
+
+  &__image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 10%;
+      object-fit: contain;
+      transition: transform var(--dur-image) var(--ease-out);
+    }
+  }
+
+  &__badges {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    display: flex;
+    gap: 6px;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: var(--radius-pill);
+    font-family: "M-SB", system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1;
+
+    &--new {
+      background: rgba(58, 166, 85, 0.12);
+      color: #23803c;
+    }
+
+    &--sale {
+      background: rgba(216, 59, 1, 0.1);
+      color: variables.$error-cl;
+    }
+  }
+
+  &__wishlist {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--shadow-xs);
+    color: variables.$dark-cl;
+    cursor: pointer;
+    transition: color var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out);
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      color: variables.$error-cl;
+      box-shadow: var(--shadow-sm);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    &.is-active {
+      color: variables.$error-cl;
+
+      svg {
+        animation: product-tile-heart var(--dur-slow) var(--ease-out);
+      }
+    }
+
+    &:disabled {
+      cursor: progress;
+    }
+
+    &:focus-visible {
+      outline: 2px solid variables.$yellow-cl;
+      outline-offset: 2px;
+    }
+  }
+
+  // Desktop-only affordance; on touch the whole card is the link.
+  &__quick {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(6px);
+    color: variables.$white-cl;
+    font-family: "Be-M", system-ui, sans-serif;
+    font-size: 15px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+    pointer-events: none;
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 18px 20px;
+  }
+
+  &__category {
+    margin: 0;
+    color: variables.$text-gray;
+    font-family: "Be-M", system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  &__name {
+    margin: 0;
+    font-family: "Be-B", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // Stretched link: the whole card is one target, the wishlist button sits above it.
+  &__link {
+    color: variables.$dark-cl;
+    text-decoration: none;
+    transition: color var(--dur-base) var(--ease-out);
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: var(--radius-lg);
+    }
+
+    &:focus-visible {
+      outline: none;
+
+      &::after {
+        outline: 2px solid variables.$yellow-cl;
+        outline-offset: 3px;
+      }
+    }
+  }
+
+  &__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li > span:first-child {
+      display: block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
+    }
+  }
+
+  &__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    margin: auto 0 0;
+    padding-top: 6px;
+    text-align: left;
+  }
+
+  &__price-current {
+    color: variables.$dark-cl;
+    font-family: "M-SB", system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  &__price-old {
+    color: variables.$text-gray;
+    font-family: "Be-R", system-ui, sans-serif;
+    font-size: 14px;
+  }
+
+  // Restrained hover: a soft shadow, a slight zoom and the quick-view bar. No lift, no recolor.
+  @media (hover: hover) {
+    &:hover {
+      box-shadow: var(--shadow-sm);
+
+      .product-tile__image-link img {
+        transform: scale(1.04);
+      }
+
+      .product-tile__quick {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  @include mixins.xs {
+    border-radius: var(--radius-md);
+
+    &__media {
+      border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
+    }
+
+    &__link::after {
+      border-radius: var(--radius-md);
+    }
+
+    &__badges {
+      top: 8px;
+      left: 8px;
+    }
+
+    &__badge {
+      height: 22px;
+      padding: 0 8px;
+      font-size: 11px;
+    }
+
+    &__wishlist {
+      top: 4px;
+      right: 4px;
+      width: 36px;
+      height: 36px;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    &__body {
+      gap: 6px;
+      padding: 12px 12px 14px;
+    }
+
+    &__category {
+      font-size: 11px;
+    }
+
+    &__name {
+      font-size: 14px;
+    }
+
+    &__price-current {
+      font-size: 15px;
+    }
+
+    &__price-old {
+      font-size: 12px;
+    }
+  }
+}
+
+@keyframes product-tile-heart {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-tile,
+  .product-tile__image-link img,
+  .product-tile__quick {
+    transition: none;
+  }
+
+  .product-tile:hover .product-tile__image-link img {
+    transform: none;
+  }
+
+  .product-tile__wishlist.is-active svg {
+    animation: none;
+  }
+}

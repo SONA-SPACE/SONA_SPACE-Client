@@ -21,7 +21,12 @@ export interface BannerApiResponse {
   banner_id: number;
   category_id: number;
   title: string;
+  subtitle?: string;
+  description?: string;
   image_url: string;
+  link?: string;
+  link_url?: string;
+  button_text?: string;
   page_type: string;
   position: number;
   is_active: number;
@@ -59,11 +64,11 @@ export const getBannersByPage = async (page: string): Promise<Banner[]> => {
       const banners: Banner[] = response.data.map((apiItem: BannerApiResponse) => ({
         id: apiItem.banner_id,
         title: apiItem.title,
-        subtitle: undefined, // API không có field này
-        description: undefined, // API không có field này
+        subtitle: apiItem.subtitle,
+        description: apiItem.description,
         image: apiItem.image_url,
-        link: undefined, // API không có field này
-        button_text: undefined, // API không có field này
+        link: apiItem.link || apiItem.link_url,
+        button_text: apiItem.button_text,
         position: apiItem.position,
         status: apiItem.is_active,
         page: apiItem.page_type,

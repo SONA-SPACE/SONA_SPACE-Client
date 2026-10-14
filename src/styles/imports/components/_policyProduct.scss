@@ -1,0 +1,89 @@
+@use "../core/mixins";
+@use "../core/variables";
+
+.box-policy {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  padding: 48px 0;
+
+  .policy-text {
+    margin: 0 0 10px;
+    @include mixins.text(18px, "Be-B", 1.35, variables.$dark-cl, null);
+  }
+
+  .p {
+    margin: 0;
+    @include mixins.text(15px, "Be-R", 1.65, variables.$gray-cl-5, null);
+  }
+
+  // Lead: a plain text heading on the page background
+  &-1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8px 8px 8px 0;
+
+    .policy-eyebrow {
+      margin: 0 0 10px;
+      @include mixins.text(12px, "Be-M", 1.4, variables.$yellow-cl, uppercase);
+      letter-spacing: 0.2em;
+    }
+
+    .policy-text {
+      @include mixins.text(22px, "M-SB", 1.3, variables.$dark-cl, null);
+    }
+  }
+
+  // Service cards: a hairline border, no resting shadow, a faint one on hover
+  &-2 {
+    padding: 28px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-lg);
+    background: variables.$white-cl;
+    transition: box-shadow var(--dur-slow) var(--ease-out);
+
+    .policy-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 20px;
+      border-radius: var(--radius-md);
+      background: rgba(240, 160, 10, 0.12);
+
+      img {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        box-shadow: var(--shadow-xs);
+      }
+    }
+  }
+
+  @include mixins.md {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include mixins.xs {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 32px 0;
+
+    &-1,
+    &-2 {
+      padding: 20px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box-policy-2 {
+    transition: none;
+  }
+}

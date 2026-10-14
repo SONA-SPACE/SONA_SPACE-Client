@@ -1,0 +1,409 @@
+@use "../core/mixins";
+
+.box-recomment {
+    display: flex;
+    justify-content: space-around;
+    align-self: center;
+    align-items: center;
+
+    .recomment-user {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        // width: 50%;
+        margin: 0 auto;
+
+        .user-name {
+            font-size: 24px;
+            font-family: 'M-B';
+        }
+
+        .user-star {
+            display: flex;
+            align-items: center;
+
+            .list-star img {
+                width: 33px;
+                height: 33px;
+                margin: 0 5px;
+            }
+
+            .list-number {
+                margin: 0 10px;
+                font-size: 24px;
+                font-family: 'M-B';
+            }
+        }
+
+        .user-description {
+            color: #8C8A8A;
+            font-size: 14px;
+            font-family: 'Be-R';
+        }
+    }
+
+    .recomment-star {
+        border-left: 1px solid #EEEEEE;
+        padding-left: 90px;
+        margin: 30px 0 30px 10px;
+        width: 50%;
+
+        .star-input {
+
+            .star-evalue {
+                display: flex;
+                align-items: center;
+                gap: 30px;
+                margin: 20px 0;
+
+                span {
+                    font-size: 20px;
+                    font-family: 'M-B';
+                }
+
+                .star-frame {
+                    background-color: #FCFCFC;
+                    border: 1px solid #D9E4C8;
+                    border-radius: 50px;
+                    width: 400px;
+                    height: 25px;
+
+                    .frame-value {
+                        background-color: #FFC515;
+                        height: 100%;
+                        border-radius: 50px;
+                    }
+
+                    progress {
+                        display: flex;
+                        align-items: center;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.filter-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .filter-value {
+        &-title {
+            font-size: 18px;
+            font-family: 'Be-R';
+        }
+    }
+
+    .filter-sort-comment {
+        position: relative;
+
+        .sort-togle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            width: 156px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+            font-family: "M-R";
+            font-size: 14px;
+            box-sizing: border-box;
+
+            img {
+                width: 16px;
+                height: 16px;
+                margin-right: 8px;
+            }
+
+            span {
+                flex: 1;
+            }
+
+            i {
+                border: solid #333;
+                border-width: 0 2px 2px 0;
+                display: inline-block;
+                padding: 3px;
+                transform: rotate(45deg);
+                transition: transform 0.3s ease;
+            }
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            min-width: 100%;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 500;
+
+            .dropdown-item {
+                padding: 8px 12px;
+                cursor: pointer;
+                font-family: "M-R";
+                font-size: 14px;
+                color: #333;
+            }
+        }
+    }
+}
+
+.comment-content-value {
+    margin-top: 30px;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #d9d9d9;
+
+    .content-value-infomation {
+        display: flex;
+        justify-content: space-between;
+
+        .info-img {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+            img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 1px solid #333;
+            }
+
+            .info-name {
+                display: flex;
+                flex-direction: column;
+
+                .name {
+                    font-size: 20px;
+                    font-family: 'Be-R';
+                }
+
+                .status {
+                    font-size: 18px;
+                    font-family: 'Be-R';
+                    color: #43A23E;
+                }
+            }
+        }
+
+        .info-star {
+            // display: flex;
+            // flex-direction: column;
+            // align-items: center;
+            align-items: center;
+
+            .star-comment {
+                align-items: center;
+                justify-content: right;
+                display: flex;
+                gap: 10px;
+            }
+
+            span {
+                font-size: 16px;
+                font-family: 'Be-R';
+                display: flex;
+                justify-content: right;
+
+            }
+        }
+    }
+
+    .comment-value-evalute {
+        flex-direction: column;
+        display: flex;
+
+        .evalute-title {
+            font-size: 18px;
+            font-family: 'Be-R';
+        }
+
+        .evalute-comment {
+            color: #8C8A8A;
+            font-size: 18px;
+            font-family: 'Be-R';
+        }
+    }
+
+    .conment-value-attached {
+        display: flex;
+        justify-content: space-between;
+
+        span {
+            color: #8C8A8A;
+            font-size: 16px;
+            font-family: 'Be-R';
+        }
+
+        .attached {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+            span {
+                font-family: 'Be-R';
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+
+@include mixins.lg {
+    .box-comment {
+        .box-recomment {
+            .recomment-star {
+                .star-input {
+                    .star-evalue {
+                        span {
+                            font-size: 20px;
+                        }
+
+                        .star-frame {
+                            width: 400px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include mixins.md {
+    .box-comment {
+        .box-recomment {
+            .recomment-user {
+                .user-name {
+                    font-size: 18px;
+                }
+
+                .user-star {
+                    .list-star {
+                        img {
+                            width: 25px;
+                            height: 25px;
+                        }
+                    }
+                }
+            }
+
+            .recomment-star {
+                margin: 30px 0 30px 30px;
+                padding-left: 60px;
+
+                .star-input {
+                    .star-evalue {
+                        span {
+                            font-size: 18px;
+                        }
+
+                        .star-frame {
+                            width: 300px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include mixins.sm {
+    .box-comment {
+        .box-recomment {
+            .recomment-user {
+                .user-name {
+                    font-size: 16px;
+                }
+
+                .user-star {
+                    .list-star {
+                        img {
+                            width: 25px;
+                            height: 25px;
+                        }
+                    }
+                }
+            }
+
+            .recomment-star {
+                margin: 30px 0 30px 10px;
+                padding-left: 60px;
+
+                .star-input {
+
+                    .star-evalue {
+                        gap: 20px;
+
+                        span {
+                            font-size: 16px;
+                        }
+
+                        .star-frame {
+                            width: 200px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include mixins.xs {
+    .box-comment {
+        .box-recomment {
+            .recomment-user {
+                width: 50%;
+
+                .user-name {
+                    font-size: 14px;
+                }
+
+                .user-star {
+                    .list-star {
+                        img {
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+
+                    .list-number {
+                        font-size: 16px;
+                    }
+                }
+            }
+
+            .recomment-star {
+                width: 50%;
+                margin: 30px 0 30px 10px;
+                padding-left: 20px;
+
+                .star-input {
+                    .star-evalue {
+                        gap: 20px;
+
+                        span {
+                            font-size: 14px;
+                        }
+
+                        .star-frame {
+                            width: 170px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

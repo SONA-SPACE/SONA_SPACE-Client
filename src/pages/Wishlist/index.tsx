@@ -1,60 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import ProductComponent from "../../components/Product";
-import { loadWishlistService1 } from "../../services/wishlistService";
-import { fetchWishlistFromDatabase1 } from "../../services/wishlistService";
+import { isAuthenticated as hasAuthSession } from "../../services/loginService";
+import { loadWishlistService } from "../../services/wishlistService";
 import type { Product } from "../../types";
 import PolicyProduct from "../../components/Policy";
+import {
+  EmptyState,
+  PageSectionSkeleton,
+  RetryState,
+} from "../../components/StateFeedback";
 
 const Wishlist: React.FC = () => {
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [wishlistVariantIds, setWishlistVariantIds] = useState<number[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [isGuestWishlistView, setIsGuestWishlistView] = useState(false);
 
-
-  useEffect(() => {
-    const loadWishlist = async () => {
-      try {
-        const data = await fetchWishlistFromDatabase1();
-        const ids = data.map((item: any) => item.variant_id); // đảm bảo item có `variant_id`
-        setWishlistVariantIds(ids);
-      } catch (err) {
-        console.warn("Không thể load wishlist:", err);
-      }
-    };
-
-    loadWishlist();
-  }, []);
-
-
-  useEffect(() => {
-    const fetchWishlist = async () => {
-      const res = await loadWishlistService1();
-      // console.log("Wishlist data:", res);
-      if (res.success) {
-        setWishlistProducts(res.wishlistItems);
-      } else {
-        console.error("Lỗi khi tải wishlist:", res.message);
-      }
+  const fetchWishlist = useCallback(async () => {
+    if (!hasAuthSession()) {
+      setWishlistProducts([]);
+      setLoadError(null);
+      setIsGuestWishlistView(true);
       setLoading(false);
-    };
+      return;
+    }
 
-    fetchWishlist();
+    setLoading(true);
+    setLoadError(null);
+    setIsGuestWishlistView(false);
+
+    const res = await loadWishlistService();
+    if (res.success) {
+      setWishlistProducts(Array.isArray(res.wishlistItems) ? res.wishlistItems : []);
+    } else {
+      setWishlistProducts([]);
+      setLoadError(res.message || "Không thể tải danh sách yêu thích.");
+    }
+    setLoading(false);
   }, []);
 
-  const removeFromWishlist = (productId: number) => {
-    setWishlistProducts((prev) => prev.filter((product) => product.id !== productId));
-  };
-
-  const formatPrice = (price: number): string => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  };
+  useEffect(() => {
+    fetchWishlist();
+  }, [fetchWishlist]);
 
   return (
     <>
-      <Header />
       <div className="wishlist-pages">
         {/* Breadcrumb */}
         <div className="breadcrumb-container">
@@ -70,7 +61,29 @@ const Wishlist: React.FC = () => {
         {/* Wishlist Content */}
         <section className="wishlist-content">
           {loading ? (
-            <p>Đang tải danh sách yêu thích...</p>
+            <div className="wishlist-state-container">
+              <PageSectionSkeleton variant="product-grid" count={8} />
+            </div>
+          ) : isGuestWishlistView ? (
+            <div className="wishlist-state-container">
+              <EmptyState
+                title="Bạn chưa có sản phẩm trong danh sách yêu thích"
+                message="Hãy đăng nhập để xem danh sách yêu thích của bạn."
+                actionLabel="Đăng nhập"
+                actionTo="/dang-nhap"
+                secondaryActionLabel="Khám phá sản phẩm"
+                secondaryActionTo="/san-pham"
+              />
+            </div>
+          ) : loadError ? (
+            <div className="wishlist-state-container">
+              <RetryState
+                message={loadError}
+                onRetry={fetchWishlist}
+                secondaryActionLabel="Khám phá sản phẩm"
+                secondaryActionTo="/san-pham"
+              />
+            </div>
           ) : wishlistProducts.length > 0 ? (
             <>
               <div className="wishlist-title">
@@ -100,17 +113,13 @@ const Wishlist: React.FC = () => {
               </section>
             </>
           ) : (
-            <div className="empty-wishlist">
-              <div className="wishlist-title">
-                <h4>Danh sách yêu thích của bạn đang trống</h4>
-                <p>
-                  Hãy thêm sản phẩm vào danh sách yêu thích để dễ dàng theo dõi
-                  và mua sắm sau này.
-                </p>
-                <Link to="/san-pham" className="btn-shop-now">
-                  Khám phá sản phẩm ngay
-                </Link>
-              </div>
+            <div className="wishlist-state-container">
+              <EmptyState
+                title="Danh sách yêu thích của bạn đang trống"
+                message="Hãy thêm sản phẩm vào danh sách yêu thích để dễ dàng theo dõi và mua sắm sau này."
+                actionLabel="Khám phá sản phẩm ngay"
+                actionTo="/san-pham"
+              />
             </div>
           )}
         </section>
@@ -118,7 +127,6 @@ const Wishlist: React.FC = () => {
       <section className="policy-product mt-94">
         <PolicyProduct />
       </section>
-      <Footer />
     </>
   );
 };

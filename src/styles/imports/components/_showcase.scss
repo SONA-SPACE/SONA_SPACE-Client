@@ -1,0 +1,122 @@
+@use "../core/mixins";
+@use "../core/variables";
+
+.design-showcase-swiper {
+  .section-title {
+    @include mixins.text(24px, "M-SB", normal, variables.$text-cl, none);
+    margin-bottom: 32px;
+  }
+  .showcase-loading,
+  .showcase-error {
+    color: #888;
+    text-align: center;
+    font-size: 16px;
+    padding: 24px 0;
+  }
+  .showcase-empty {
+    color: #aaa;
+    text-align: center;
+    font-size: 16px;
+    padding: 40px 0;
+  }
+}
+
+.showcase-swiper {
+  padding-bottom: 46px;
+  .swiper-slide {
+    width: 400px !important;
+    flex-shrink: 0;
+  }
+  .showcase-item {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    width: 400px;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: scale 0.2s;
+    &:hover {
+      scale: 1.02;
+    }
+    .showcase-thumb-link {
+      display: block;
+      img {
+        width: 100%;
+        height: 420px;
+        border-radius: 4px;
+        object-fit: cover;
+        transition: transform 0.3s;
+      }
+    }
+    .showcase-content {
+      flex-direction: column;
+      align-items: left;
+    }
+    .showcase-title {
+      font-size: 16px;
+      color: #222;
+      font-family: "M-SB";
+      margin-top: 12px;
+      a {
+        color: inherit;
+        text-decoration: none;
+        &:hover {
+          color: #f5a623;
+        }
+      }
+    }
+    .showcase-desc {
+      font-size: 14px;
+      color: #666;
+      flex: 1;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .showcase-date {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 10px;
+    }
+  }
+
+  // Swiper navigation custom
+  .swiper-button-next,
+  .swiper-button-prev {
+    background: rgba(255, 255, 255, 0.82);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    color: #f5a623;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    transition: background 0.18s;
+    &::after {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    &:hover {
+      background: #fff;
+      color: #d2881c;
+    }
+  }
+  .swiper-button-next {
+    right: 6px;
+  }
+  .swiper-button-prev {
+    left: 6px;
+  }
+  .swiper-button-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .showcase-swiper .showcase-item {
+    max-width: 95vw;
+  }
+}
+@media (max-width: 600px) {
+  .showcase-swiper .showcase-item {
+    min-height: 320px;
+  }
+}

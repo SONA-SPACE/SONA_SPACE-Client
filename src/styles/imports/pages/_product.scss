@@ -1,0 +1,101 @@
+@use "../core/mixins";
+
+body {
+  background-color: #fcfcfc;
+}
+
+.banner-slider {
+  position: relative;
+
+  // padding-bottom: 74px;
+  .header-banner {
+    height: 100dvh;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(73%);
+    }
+  }
+
+  .header-text {
+    position: absolute;
+    bottom: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    text-align: center;
+    color: white;
+
+    .text1,
+    .text2 {
+      font-size: 40px;
+      margin-bottom: 20px;
+      font-family: "M-B";
+    }
+
+    .text3 {
+      color: #fff8f8;
+      font-size: 18px;
+      font-family: "M-R";
+    }
+  }
+
+  @include mixins.lg {
+    .header-banner {
+      height: 80dvh;
+    }
+
+    .header-text {
+
+      .text1,
+      .text2 {
+        font-size: 30px;
+      }
+
+      .text3 {
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+// "Xem thêm sản phẩm" under product grids (components/seemore)
+.box-seemore {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin: 30px auto 0;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  &__label {
+    font-family: "Be-M";
+    font-size: 18px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f0a00a;
+    outline-offset: 2px;
+  }
+
+  .arow-seemore {
+    display: grid;
+    justify-items: center;
+  }
+}
+
+.empty-text {
+  font-family: "Be-R";
+  font-size: 1.8rem;
+  text-align: center;
+  margin-top: 20px;
+  padding: 50px;
+  margin-top: var(--section-gap);
+}

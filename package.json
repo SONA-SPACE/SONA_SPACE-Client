@@ -8,6 +8,7 @@
     "axios": "^1.10.0",
     "dompurify": "^3.2.6",
     "google-auth-library": "^10.1.0",
+    "gsap": "^3.13.0",
     "he": "^1.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -22,11 +23,19 @@
     "@types/he": "^1.2.3",
     "@vitejs/plugin-react": "^4.5.0",
     "sass": "^1.89.1",
+    "typescript": "^6.0.3",
     "vite": "^6.3.5"
   },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "qa:spa-routing": "node scripts/qa-spa-routing-contract.js",
+    "qa:about-page": "node scripts/qa-about-page-contract.js",
+    "qa:public-asset-paths": "node scripts/qa-public-asset-paths.js",
+    "qa:banner-stability": "node scripts/qa-banner-stability-contract.js",
+    "qa:product-filter-history": "node scripts/qa-product-filter-history-contract.js",
+    "qa:home-product-state": "node scripts/qa-home-product-state-contract.js",
+    "qa:sass-modules": "node scripts/qa-sass-module-contract.js"
   }
 }

@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Product as ProductType } from "../../types";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import PopularCategory from "../../components/PopularCategory";
-import InteriorDesign from "../../components/InteriorDesign";
+import InteriorDesign from "../../components/interiorDesign";
 import ProductSlider from "../../components/ProductSlider";
 import CategorySlider from "../../components/RoomSlider";
 import Product from "../../components/Product";
 import BannerSlider from "../../components/BannerSlider";
 import { getNewestProducts } from "../../api/product";
 import { formatProductForDisplay } from "../../services/productService";
+import { InlineErrorState, PageSectionSkeleton } from "../../components/StateFeedback";
 
 const Rooms: React.FC = () => {
   // Lấy danh sách sản phẩm mới nhất khi component mount
@@ -49,7 +48,6 @@ const Rooms: React.FC = () => {
   }, []);
   return (
     <>
-      <Header />
       <div className="rooms-page">
 
         {/* Banner */}
@@ -69,7 +67,7 @@ const Rooms: React.FC = () => {
         {/* Room Categories */}
         <section className="room-categories mt-94">
           <div className="container">
-            <h1 className="section-title">Khám phá thêm các căn phòng</h1>
+            <h2 className="section-title">Khám phá thêm các căn phòng</h2>
             <CategorySlider />
           </div>
         </section>
@@ -79,8 +77,8 @@ const Rooms: React.FC = () => {
           <div className="container">
             <div className="section-box-products">
               <h5>Sản Phẩm Mới</h5>
-              {loading && <div className="loading-indicator">Đang tải sản phẩm...</div>}
-              {error && <div className="error-message">{error}</div>}
+              {loading && <PageSectionSkeleton count={8} />}
+              {error && <InlineErrorState message={error} />}
               <div className="box-products-container">
                 {newestProducts.map((product) => (
                   <Product
@@ -111,7 +109,6 @@ const Rooms: React.FC = () => {
         <InteriorDesign />
 
       </div>
-      <Footer />
     </>
   );
 };

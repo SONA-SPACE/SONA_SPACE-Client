@@ -1,8 +1,9 @@
 import axios from "axios";
 import { convertToAdminApiUrl } from "../utils/url";
+import { getAuthToken } from "./loginService";
 
 export const addToWishlist = async (variant_id: number, quantity: number) => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
 
   try {
     const response = await axios.post(
@@ -27,7 +28,7 @@ export const addToWishlist = async (variant_id: number, quantity: number) => {
 };
 
 export const fetchWishlistFromDatabase = async () => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   const response = await axios.get(convertToAdminApiUrl("/wishlists?status=1"), {
@@ -37,34 +38,6 @@ export const fetchWishlistFromDatabase = async () => {
   });
 
   return response.data;
-};
-
-export const fetchWishlistFromDatabase1 = async () => {
-  const token = sessionStorage.getItem("authToken");
-  if (!token) throw new Error("Bạn chưa đăng nhập");
-
-  const response = await axios.get(convertToAdminApiUrl("/wishlists/wwww?status=1"), {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  // console.log("fetchWishlistFromDatabase1", response.data);
-  return response.data;
-
-};
-export const loadWishlistService1 = async () => {
-  try {
-    const data = await fetchWishlistFromDatabase1();
-    return {
-      success: true,
-      wishlistItems: data,
-    };
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.message || "Lỗi không xác định khi load wishlist",
-    };
-  }
 };
 export const loadWishlistService = async () => {
   try {
@@ -82,7 +55,7 @@ export const loadWishlistService = async () => {
 };
 
 export const removeFromWishlistService = async (variantId: number) => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   const response = await axios.delete(convertToAdminApiUrl(`/wishlists/variant/${variantId}`), {
@@ -96,7 +69,7 @@ export const removeFromWishlistService = async (variantId: number) => {
 
 // Kiểm tra variant_id có trong wishlist của user không
 export const checkVariantInWishlist = async (variantId: number): Promise<boolean> => {
-  const token = sessionStorage.getItem("authToken");
+  const token = getAuthToken();
   if (!token) throw new Error("Bạn chưa đăng nhập");
 
   try {

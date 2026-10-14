@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button, List, Divider, message } from 'antd';
 import { getOrderItems, cancelOrderProduct, type OrderItem } from '../../api/order';
 import CancelProductModal from '../CancelProductModal';
+import { getAuthToken } from '../../services/loginService';
 import './styles.scss';
 
 interface CancelOrderModalProps {
@@ -43,7 +44,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
     
     try {
       setLoadingItems(true);
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) {
         message.error('Không tìm thấy token xác thực');
         return;
@@ -90,7 +91,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 
     try {
       setCancellingProduct(true);
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) {
         message.error('Không tìm thấy token xác thực');
         return;

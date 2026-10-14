@@ -1,0 +1,128 @@
+@use "../core/mixins";
+@use "../core/variables";
+
+// Legacy global: every section paragraph is left-aligned. Pages built before Sprint 06 rely on
+// it, so it stays until each page sets its own alignment.
+section p {
+  text-align: left;
+}
+
+// Popular categories (src/components/PopularCategory): an intro panel plus MediaTile cards
+.category-of-products {
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 48px;
+
+  .category-of-products-s1,
+  .category-of-products-s2 {
+    display: grid;
+    gap: 20px;
+  }
+
+  .category-of-products-s1 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    height: 360px;
+  }
+
+  .category-of-products-s2 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    height: 300px;
+    margin-top: 20px;
+  }
+
+  .popular-skeleton {
+    display: block;
+    border-radius: var(--radius-lg);
+  }
+
+  .popular-error {
+    margin: 16px 0 0;
+    @include mixins.text(14px, "Be-R", 1.5, variables.$error-cl, null);
+  }
+}
+
+.popular-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(240, 160, 10, 0.18) 0%, rgba(240, 160, 10, 0) 60%),
+    variables.$snow-white-cl;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+
+  &__eyebrow {
+    margin: 0 0 12px;
+    @include mixins.text(13px, "Be-M", 1.4, variables.$yellow-cl, uppercase);
+    letter-spacing: 0.2em;
+  }
+
+  &__title {
+    margin: 0 0 12px;
+    @include mixins.text(clamp(22px, 2.2vw, 28px), "M-SB", 1.3, variables.$dark-cl, null);
+    text-wrap: balance;
+  }
+
+  &__text {
+    margin: 0;
+    @include mixins.text(15px, "Be-R", 1.65, variables.$gray-cl-5, null);
+  }
+}
+
+@include mixins.md {
+  .category-of-products {
+    .category-of-products-s1 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      height: auto;
+
+      .popular-intro {
+        grid-column: 1 / -1;
+      }
+
+      .media-tile,
+      .popular-skeleton {
+        height: 340px;
+      }
+    }
+
+    .category-of-products-s2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      height: auto;
+
+      .media-tile,
+      .popular-skeleton {
+        height: 280px;
+      }
+    }
+  }
+}
+
+@include mixins.xs {
+  .category-of-products {
+    .category-of-products-s1,
+    .category-of-products-s2 {
+      gap: 12px;
+    }
+
+    .category-of-products-s1 {
+      .media-tile,
+      .popular-skeleton {
+        height: 240px;
+      }
+    }
+
+    .category-of-products-s2 {
+      margin-top: 12px;
+
+      .media-tile,
+      .popular-skeleton {
+        height: 200px;
+      }
+    }
+  }
+
+  .popular-intro {
+    padding: 20px;
+  }
+}

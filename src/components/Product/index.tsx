@@ -1,101 +1,112 @@
-//Product
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import type { Product, Variant } from "../../types";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import type { Product } from "../../types";
 import { removeFromWishlistService } from "../../services/wishlistService";
 import { saveToOrCart } from "../../services/cartService";
-import { toast } from "react-toastify";
 import { convertToAdminApiUrl } from "../../utils/url";
+import { getAuthToken } from "../../services/loginService";
+
+const NEW_PRODUCT_DAYS = 3;
+
+const formatPrice = (value: number): string =>
+  Math.round(value)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+const getDiscountPercent = (price: number, priceSale?: number): number => {
+  // A sale price at or below 1.000đ, or not below the list price, is treated as no sale.
+  if (priceSale === undefined || priceSale <= 1000 || priceSale >= price) return 0;
+  return Math.round(((price - priceSale) / price) * 100);
+};
+
+const isRecent = (createdAt?: string) => {
+  if (!createdAt) return false;
+  const created = new Date(createdAt);
+  const now = new Date();
+  const threshold = new Date();
+  threshold.setDate(now.getDate() - NEW_PRODUCT_DAYS);
+  return created >= threshold && created <= now;
+};
+
+function HeartIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M12 20.5s-7.5-4.6-9.3-9.2C1.6 8.4 3.3 5 6.6 4.6c2-.3 3.9.8 5.4 2.7 1.5-1.9 3.4-3 5.4-2.7 3.3.4 5 3.8 3.9 6.7-1.8 4.6-9.3 9.2-9.3 9.2Z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 const ProductComponent = ({ product }: { product: Product; slug: string }) => {
   const [wishlist, setWishlist] = useState<boolean>(product.isWishlist || false);
-  const [hoveredColor, setHoveredColor] = useState<string | null>(null);
-  const defaultVariantId = product.variant_id;
+  const [pending, setPending] = useState(false);
   const navigate = useNavigate();
-
+  const detailUrl = `/san-pham/${product.slug}`;
 
   useEffect(() => {
     setWishlist(product.isWishlist || false);
   }, [product.isWishlist]);
-useEffect(() => {
 
+  useEffect(() => {
+    const handleWishlistChange = (event: Event) => {
+      const removedVariantId = (event as CustomEvent).detail?.variantId;
 
-const handleWishlistChange = (e: Event) => {
-  const customEvent = e as CustomEvent;
-  const removedVariantId = customEvent.detail?.variantId;
+      if (removedVariantId !== undefined && removedVariantId === product.variant_id) {
+        setWishlist(false);
+        return;
+      }
 
-  if (removedVariantId !== undefined && removedVariantId === product.variant_id) {
-    setWishlist(false);
-    return;
-  }
+      // Without a detail payload, re-read the wishlist to learn this card's state
+      const token = getAuthToken();
+      if (!token) return;
 
-  // fallback nếu không có detail, gọi lại API như cũ
-  const token = sessionStorage.getItem("authToken");
-  if (!token) return;
+      fetch(convertToAdminApiUrl(`/wishlists?status=1`), {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setWishlist(data.some((item: { variant_id: number }) => item.variant_id === product.variant_id));
+        })
+        .catch((err) => {
+          console.error("Lỗi khi kiểm tra wishlist:", err);
+        });
+    };
 
-  fetch(convertToAdminApiUrl(`/wishlists?status=1`), {
-    headers: {
-      Authorization: `Bearer ${token}`
+    window.addEventListener("wishlist-changed", handleWishlistChange);
+    return () => window.removeEventListener("wishlist-changed", handleWishlistChange);
+  }, [product.variant_id]);
+
+  const addItemToWishlist = async () => {
+    if (!getAuthToken()) {
+      toast.warning("Vui lòng đăng nhập để thêm vào wishlist!", { position: "top-right", autoClose: 1000 });
+      setTimeout(() => navigate("/dang-nhap"), 1000);
+      return;
     }
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      const isWishlisted = data.some(
-        (item: any) => item.variant_id === product.variant_id
-      );
-      setWishlist(isWishlisted);
-    })
-    .catch((err) => {
-      console.error("Lỗi khi kiểm tra wishlist:", err);
-    });
-};
 
-
-  window.addEventListener("wishlist-changed", handleWishlistChange);
-
-  // Cleanup
-  return () => {
-    window.removeEventListener("wishlist-changed", handleWishlistChange);
-  };
-}, [product.variant_id]);
-
-const addItemToWishlist = async () => {
-  const token = sessionStorage.getItem("authToken");
-
-  if (!token) {
-    toast.warning("Vui lòng đăng nhập để thêm vào wishlist!", {
-      position: "top-right",
-      autoClose: 1000,
-    });
-
-    setTimeout(() => {
-      navigate("/dang-nhap"); 
-    }, 1000);
-    return;
-  }
-
-  try {
-    const response = await saveToOrCart({
-      status: 1,
-      cartItems: [{ variant_id: product.variant_id, quantity: 1 }],
-    });
-
-    if (response.success) {
-      setWishlist(true);
-      toast.success("Đã thêm vào wishlist!", {
-        position: "top-right",
-        autoClose: 2000,
+    try {
+      const response = await saveToOrCart({
+        status: 1,
+        cartItems: [{ variant_id: product.variant_id, quantity: 1 }],
       });
-        window.dispatchEvent(new Event("wishlist-changed"));
-    } else {
-      toast.error("Thêm vào wishlist thất bại: " + response.message);
-    }
-  } catch (error) {
-    console.error("Lỗi khi thêm vào wishlist:", error);
-    toast.error("Có lỗi khi thêm vào wishlist.");
-  }
-};
 
+      if (response.success) {
+        setWishlist(true);
+        toast.success("Đã thêm vào wishlist!", { position: "top-right", autoClose: 2000 });
+        window.dispatchEvent(new Event("wishlist-changed"));
+      } else {
+        toast.error("Thêm vào wishlist thất bại: " + response.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi thêm vào wishlist:", error);
+      toast.error("Có lỗi khi thêm vào wishlist.");
+    }
+  };
 
   const removeItemFromWishlist = async () => {
     try {
@@ -106,174 +117,116 @@ const addItemToWishlist = async () => {
 
       await removeFromWishlistService(product.variant_id);
       setWishlist(false);
-      toast.success("Đã xóa khỏi wishlist!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-        window.dispatchEvent(new Event("wishlist-changed"));
-      // console.log("Đã xoá khỏi wishlist!");
+      toast.success("Đã xóa khỏi wishlist!", { position: "top-right", autoClose: 2000 });
+      window.dispatchEvent(new Event("wishlist-changed"));
     } catch (error) {
       console.error("Lỗi khi xoá khỏi wishlist:", error);
       toast.error("Có lỗi khi xoá khỏi wishlist.");
     }
   };
 
-
   const toggleWishlist = async () => {
-    if (!product.variant_id) return;
-    if (wishlist) {
-      await removeItemFromWishlist();
-    } else {
-      await addItemToWishlist();
+    if (!product.variant_id || pending) return;
+    setPending(true);
+    try {
+      if (wishlist) {
+        await removeItemFromWishlist();
+      } else {
+        await addItemToWishlist();
+      }
+    } finally {
+      setPending(false);
     }
   };
 
+  const price = Number(product.price);
+  const priceSale = product.priceSale !== undefined ? Number(product.priceSale) : undefined;
+  const discountPercent = getDiscountPercent(price || 0, priceSale);
+  const hasValidSale = discountPercent > 0;
+  const isNew = isRecent(product.created_at);
 
+  const findColorName = (hexColor: string): string =>
+    product.variants?.find((v) => v.color_hex && v.color_hex.toLowerCase() === hexColor.toLowerCase())
+      ?.color_name || "";
 
-  const today = new Date();
-  const threeDaysAgo = new Date();
-  threeDaysAgo.setDate(today.getDate() - 3);
-  const price = Number(product.price); // "8000000.00" -> 8000000
-  const priceSale =
-    product.priceSale !== undefined ? Number(product.priceSale) : undefined;
-  const hasValidSale =
-    priceSale !== undefined && priceSale > 1000 && priceSale < price;
-
-  const parseDate = (dateStr?: string) =>
-    dateStr ? new Date(dateStr) : new Date(0);
-
-  const isNew = (createdAt?: string) => {
-    if (!createdAt) return false;
-    const createdDate = parseDate(createdAt);
-    return createdDate >= threeDaysAgo && createdDate <= today;
-  };
-
-  const getDiscountPercent = (
-    price: number,
-    priceSale?: number
-  ): number => {
-    if (priceSale === undefined) return 0;
-    if (priceSale <= 1000 || priceSale >= price) return 0; // giá sale quá nhỏ hoặc không hợp lệ
-    return Math.round(((price - priceSale) / price) * 100);
-  };
-
-  const formatPrice = (price: number): string => {
-    const rounded = Math.round(price); // bỏ phần thập phân nếu có
-    return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  };
-
-  // Tìm tên màu dựa vào mã hex
-  const findColorName = (hexColor: string): string => {
-    if (!product.variants) return "";
-
-    const variant = product.variants.find((v) =>
-      v.color_hex && v.color_hex.toLowerCase() === hexColor.toLowerCase());
-
-    return variant?.color_name || "";
-  };
-
-  const isProductNew = isNew(product.created_at);
-  const discountPercent = getDiscountPercent(
-    product.price ?? 0,
-    product.priceSale
-  );
-  const showNewLabel = isProductNew;
-  const showDiscountLabel = discountPercent > 0;
+  const swatches = ((product.color_hex ? [product.color_hex] : product.colors) ?? []) as unknown as string[];
 
   return (
-    <>
-      <div className="box-products-frame">
-        <div className="products-frame-news">
-          <div className="news-t">
-            {showNewLabel && <span className="news-tt">Mới</span>}
-            {showDiscountLabel && (
-              <span className="news-tt-1">Giảm {discountPercent}% </span>
+    <article className="product-tile" data-reveal>
+      <div className="product-tile__media">
+        <Link to={detailUrl} className="product-tile__image-link" tabIndex={-1} aria-hidden="true">
+          <img
+            src={product.image}
+            alt=""
+            width={480}
+            height={480}
+            loading="lazy"
+            decoding="async"
+          />
+        </Link>
+
+        {(isNew || hasValidSale) && (
+          <div className="product-tile__badges">
+            {isNew && <span className="product-tile__badge product-tile__badge--new">Mới</span>}
+            {hasValidSale && (
+              <span className="product-tile__badge product-tile__badge--sale">-{discountPercent}%</span>
             )}
           </div>
-          <div className="news-icon" >
-            <img
-              key={wishlist ? "heart-red" : "heart"}
-              src={wishlist ? "/images/products/heart-red.svg" : "/images/products/heart.svg"}
-              alt="wishlist"
-              onClick={toggleWishlist}
-              style={{ width: "20px", height: "20px", cursor: "pointer" }}
-            />
-          </div>
-        </div>
-        <div className="products-frame-image">
-          <Link to={`/san-pham/${product.slug}`}>
-            <img src={product.image} alt={product.name} />
-          </Link>
-        </div>
-        <div className="products-frame-name">
-          <span>{product.name}</span>
-        </div>
-        <div className="products-frame-description">
-          <span>{product.category?.name}</span>
-        </div>
-        <div className="products-frame-color">
-          <div className="color-name">
-            Màu {hoveredColor && <span style={{ fontSize: '14px', color: '#666', fontStyle: 'italic', marginLeft: '4px' }}>: {hoveredColor}</span>}
-          </div>
-          <div className="color-section">
-            {(product.color_hex ? [product.color_hex] : product.colors)?.map((color, index) => {
-              const colorName =
-                product.color_hex === color && product.color_name
-                  ? product.color_name
-                  : findColorName(color);
+        )}
 
-              return (
-                <span
-                  key={index}
-                  className={`color-${index + 1}`}
-                  style={{
-                    backgroundColor: color,
-                    cursor: 'pointer',
-                    position: 'relative',
-                    border: '1px solid #ccc',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    display: 'inline-block',
-                    marginRight: '4px',
-                  }}
-                  // onMouseEnter={() => setHoveredColor(colorName)}
-                  // onMouseLeave={() => setHoveredColor(null)}
-                  title={colorName}
-                ></span>
-              );
-            })}
+        <button
+          type="button"
+          className={`product-tile__wishlist${wishlist ? " is-active" : ""}`}
+          onClick={toggleWishlist}
+          aria-pressed={wishlist}
+          aria-label={wishlist ? `Bỏ ${product.name} khỏi yêu thích` : `Thêm ${product.name} vào yêu thích`}
+          disabled={pending}
+        >
+          <HeartIcon filled={wishlist} />
+        </button>
 
-          </div>
-        </div>
-        <div className="products-frame-cart">
-          <div className="cart-price">
-            <div className="cart-price">
-              {hasValidSale ? (
-                <>
-                  <span className="price1">
-                    <del>{formatPrice(price)}</del>
-                    <span className="unit"> đ</span>
-                  </span>
-                  <span className="price2">{formatPrice(priceSale!)} đ</span>
-                </>
-              ) : (
-                <span className="price2">
-                  {formatPrice(price)} <span className="unit">đ</span>
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="cart-button">
-            <Link to={`/san-pham/${product.slug}`}>
-              {" "}
-              <button>Xem chi tiết</button>
-            </Link>
-          </div>
-        </div>
+        <span className="product-tile__quick" aria-hidden="true">
+          Xem chi tiết
+        </span>
       </div>
 
-    </>
+      <div className="product-tile__body">
+        {product.category?.name && <p className="product-tile__category">{product.category.name}</p>}
+        <h3 className="product-tile__name">
+          <Link to={detailUrl} className="product-tile__link">
+            {product.name}
+          </Link>
+        </h3>
+
+        {swatches.length > 0 && (
+          <ul className="product-tile__swatches" aria-label="Màu sắc">
+            {swatches.map((color, index) => {
+              const colorName =
+                (product.color_hex as unknown as string) === color && product.color_name
+                  ? product.color_name
+                  : findColorName(color);
+              return (
+                <li key={`${color}-${index}`} title={colorName || undefined}>
+                  <span style={{ backgroundColor: color }} />
+                  {colorName && <span className="sr-only">{colorName}</span>}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        <p className="product-tile__price">
+          {hasValidSale ? (
+            <>
+              <span className="product-tile__price-current">{formatPrice(priceSale!)} đ</span>
+              <del className="product-tile__price-old">{formatPrice(price)} đ</del>
+            </>
+          ) : (
+            <span className="product-tile__price-current">{formatPrice(price)} đ</span>
+          )}
+        </p>
+      </div>
+    </article>
   );
 };
 

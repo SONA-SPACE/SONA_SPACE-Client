@@ -1,0 +1,29 @@
+.wishlist-pages{
+  margin-top: 100px;
+}
+
+.wishlist-state-container {
+  width: min(1180px, calc(100% - 32px));
+  margin: 72px auto;
+}
+
+/* wishlist */
+.wishlist-title {
+  margin: 80px auto;
+
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  h4{
+    margin-top: 50px;
+    font-family: 'M-B';
+    font-size: 24px;
+  }
+  p {
+    padding-top: 10px;
+    font-family: 'Be-R';
+    font-size: 20px;
+    text-align: center;
+  }
+}

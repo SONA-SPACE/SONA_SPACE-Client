@@ -38,3 +38,6 @@ dist-ssr
 *.zip
 *.md
 .md
+!docs/
+!docs/*.md
+!docs/**/*.md

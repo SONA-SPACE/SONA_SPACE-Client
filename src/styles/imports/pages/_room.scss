@@ -1,0 +1,48 @@
+@use "../core/mixins";
+@use "../core/variables";
+
+.rooms-page {
+
+  // Banner Section
+  .room-banner {
+    height: 100dvh;
+    overflow: hidden;
+    position: relative;
+    margin-top: -80px;
+
+    .banner-image {
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  // Room Categories
+  .room-categories {
+    margin-bottom: 44px;
+    overflow: visible;
+
+    .section-title {
+      @include mixins.text(24px, M-SB, normal, variables.$text-cl, null);
+      margin-bottom: 30px;
+      text-align: left;
+    }
+  }
+
+  // featured products
+  .featured-products {
+    padding: 0 0 44px;
+    margin-bottom: 44px;
+
+    .section-title {
+      @include mixins.text(24px, M-SB, normal, variables.$text-cl, null);
+      margin-bottom: 30px;
+      text-align: left;
+    }
+  }
+}

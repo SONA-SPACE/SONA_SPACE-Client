@@ -1,17 +1,22 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import ChatBot from "./components/ChatBot/index.tsx";
-import PopupAd from "./components/PopupAd/index.tsx";
 import App from "./App.tsx";
 import 'antd/dist/reset.css';
+
+const ChatBot = lazy(() => import("./components/ChatBot/index.tsx"));
+const PopupAd = lazy(() => import("./components/PopupAd/index.tsx"));
 
 createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
     <StrictMode>
-      <ChatBot />
       <App />
-      <PopupAd />
+      <Suspense fallback={null}>
+        <ChatBot />
+      </Suspense>
+      <Suspense fallback={null}>
+        <PopupAd />
+      </Suspense>
     </StrictMode>
   </GoogleOAuthProvider>
 );

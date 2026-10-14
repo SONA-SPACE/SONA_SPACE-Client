@@ -1,0 +1,304 @@
+@use "mixins";
+@use "variables";
+
+.footer {
+    background-color: variables.$snow-white-cl;
+    color: variables.$dark-cl;
+    padding: 72px 0 32px;
+
+    .design-tips {
+        margin-bottom: 56px;
+    }
+
+    // Three compact shortcuts in one row: thumbnail, title + note, arrow
+    .tips-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .tip-link {
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+        height: 100%;
+        padding: 12px 18px 12px 12px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: var(--radius-lg);
+        background: variables.$white-cl;
+        color: inherit;
+        text-decoration: none;
+        transition: border-color var(--dur-base) var(--ease-out);
+
+        img {
+            display: block;
+            width: 72px;
+            height: 72px;
+            margin: 0;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+        }
+
+        &__text {
+            display: grid;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        &__title {
+            @include mixins.text(15px, "Be-SB", 1.4, variables.$dark-cl, null);
+        }
+
+        &__note {
+            @include mixins.text(13px, "Be-R", 1.5, variables.$gray-cl-5, null);
+        }
+
+        .arrow-right {
+            width: 20px;
+            height: 20px;
+            color: variables.$yellow-cl;
+            transition: transform var(--dur-base) var(--ease-out);
+        }
+
+        &:hover {
+            border-color: rgba(240, 160, 10, 0.6);
+
+            .arrow-right {
+                transform: translateX(3px);
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid variables.$yellow-cl;
+            outline-offset: 3px;
+        }
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 32px;
+        margin-bottom: 48px;
+
+        .footer-column {
+            h3 {
+                @include mixins.text(14px, "Be-SB", 1.4, variables.$dark-cl, null);
+                margin-bottom: 18px;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+
+                li {
+                    margin-bottom: 12px;
+
+                    a {
+                        position: relative;
+                        @include mixins.text(14px, "Be-R", 1.5, variables.$gray-cl-5, null);
+                        text-decoration: none;
+                        transition: color var(--dur-base) var(--ease-out);
+
+                        &::after {
+                            content: "";
+                            position: absolute;
+                            left: 0;
+                            right: 0;
+                            bottom: -2px;
+                            height: 1px;
+                            background: currentColor;
+                            transform: scaleX(0);
+                            transform-origin: left center;
+                            transition: transform var(--dur-slow) var(--ease-out);
+                        }
+
+                        &:hover {
+                            color: variables.$dark-cl;
+
+                            &::after {
+                                transform: scaleX(1);
+                            }
+                        }
+
+                        &:focus-visible {
+                            outline: 2px solid variables.$yellow-cl;
+                            outline-offset: 2px;
+                        }
+                    }
+                }
+            }
+
+            .social-icons {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 20px;
+
+                .social-icon {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: var(--radius-pill);
+                    background-color: variables.$white-cl;
+                    box-shadow: var(--shadow-xs), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+                    transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+
+                    &:hover {
+                        transform: translateY(-3px);
+                        box-shadow: var(--shadow-md), inset 0 0 0 1px rgba(240, 160, 10, 0.5);
+                    }
+
+                    &:focus-visible {
+                        outline: 2px solid variables.$yellow-cl;
+                        outline-offset: 2px;
+                    }
+                }
+            }
+
+            .btn.btn-primary {
+                display: inline-flex;
+                align-items: center;
+                height: 42px;
+                padding: 0 24px;
+                border: 1px solid variables.$yellow-cl;
+                border-radius: var(--radius-sm);
+                background-color: variables.$white-cl;
+                box-shadow: var(--shadow-xs);
+                @include mixins.text(14px, "Be-M", 1, variables.$dark-cl, null);
+                text-decoration: none;
+                white-space: nowrap;
+                transition: background-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+
+                &:hover {
+                    background-color: variables.$yellow-cl;
+                    box-shadow: var(--shadow-md);
+                }
+
+                &:focus-visible {
+                    outline: 2px solid variables.$yellow-cl;
+                    outline-offset: 2px;
+                }
+            }
+        }
+    }
+
+    .footer-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px 24px;
+        padding-top: 28px;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+        p {
+            margin: 0;
+            @include mixins.text(13px, "Be-R", 1.5, variables.$gray-cl-5, null);
+
+            a {
+                @include mixins.text(13px, "Be-R", 1.5, variables.$gray-cl-5, null);
+                text-decoration: none;
+                transition: color var(--dur-base) var(--ease-out);
+
+                &:hover {
+                    color: variables.$dark-cl;
+                }
+            }
+        }
+
+        .payment-icons img {
+            display: block;
+            height: 24px;
+        }
+
+        .language {
+            p {
+                margin-bottom: 4px;
+            }
+
+            &-icons {
+                display: flex;
+                align-items: center;
+                column-gap: 8px;
+
+                span {
+                    @include mixins.text(14px, "Be-M", 1.4, variables.$dark-cl, null);
+                }
+            }
+        }
+    }
+}
+
+@include mixins.md {
+    .footer .footer-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    // Three shortcuts still share one row here, so the thumbnail gives up some width
+    .footer .tip-link {
+        grid-template-columns: 56px minmax(0, 1fr) auto;
+        gap: 12px;
+
+        img {
+            width: 56px;
+            height: 56px;
+        }
+    }
+}
+
+@include mixins.sm {
+    .footer .tip-link {
+        grid-template-columns: 72px minmax(0, 1fr) auto;
+        gap: 16px;
+
+        img {
+            width: 72px;
+            height: 72px;
+        }
+    }
+}
+
+@include mixins.sm {
+    .footer {
+        .tips-strip {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .footer-bottom {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+}
+
+@include mixins.xs {
+    .footer {
+        padding-top: 48px;
+
+        .design-tips {
+            margin-bottom: 40px;
+        }
+
+        .footer-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px 16px;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .footer {
+        .tip-link,
+        .tip-link .arrow-right,
+        .social-icon {
+            transition: none;
+        }
+    }
+}

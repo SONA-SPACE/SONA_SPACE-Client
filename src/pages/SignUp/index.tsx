@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import { BannerSection } from "../../components/BannerSection";
+import PageHero from "../../components/PageHero";
 import { useRegister } from "../../hooks/useRegister";
-import { useLogin } from "../../hooks/useLogin";
+import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 
 type Province = { code: number; name: string };
 type Ward = {
@@ -32,7 +30,12 @@ const SignUp: React.FC = () => {
     handleChangeSelect,
   } = useRegister();
 
-  const { handleGoogleLogin, handleGoogleError } = useLogin();
+  const {
+    googleLoading,
+    googleError,
+    handleGoogleLogin,
+    handleGoogleError,
+  } = useGoogleLogin();
 
   const [showModal, setShowModal] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
@@ -133,17 +136,17 @@ const SignUp: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <BannerSection title="Đăng Ký Tài Khoản" height="50dvh" />
+      <PageHero title="Đăng Ký Tài Khoản" breadcrumbs={[{ label: "Trang chủ", to: "/" }, { label: "Đăng Ký Tài Khoản" }]} />
       <div className="signup-page">
         <div className="container">
           <div className="signup-content">
-            <h1>Đăng Ký Tài Khoản</h1>
+            <h2>Đăng Ký Tài Khoản</h2>
             <p className="signup-description">
               Đăng ký thành viên để nhận thêm nhiều ưu đãi hấp dẫn
             </p>
 
             {apiError && <div className="error-message api-error">{apiError}</div>}
+            {googleError && <div className="error-message api-error">{googleError}</div>}
 
             <form className="signup-form" onSubmit={handleSubmit} noValidate>
               <div className="form-group">
@@ -303,11 +306,14 @@ const SignUp: React.FC = () => {
 
             <div className="social-signup">
               <div className="divider">
-                <span>Đăng ký với Google</span>
+                <span>{googleLoading ? "Đang xử lý Google..." : "Đăng ký với Google"}</span>
               </div>
 
               {/* Provider đã bọc ở root (main.tsx) */}
-              <GoogleLogin onSuccess={handleGoogleLogin} onError={() => {}} />
+              <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={handleGoogleError}
+              />
             </div>
 
             <div className="login-link">
@@ -324,7 +330,7 @@ const SignUp: React.FC = () => {
           <div className="custom-modal">
             <div className="modal-header">
               <div className="success-icon">
-                {/* Với Vite, ảnh nên đặt trong public/images/... */}
+                {/* Với Vite, ảnh trong public/ được truy cập từ /images/... */}
                 <img src="/images/Email/checked.png" alt="Thành công" />
               </div>
               <h2>Đăng ký tài khoản thành công!</h2>
@@ -379,7 +385,6 @@ const SignUp: React.FC = () => {
           </div>
         </div>
       )}
-      <Footer />
     </>
   );
 };

@@ -1,10 +1,10 @@
   import React, { useEffect, useState } from "react";
   import { Link, useParams } from "react-router-dom";
   import { getOrderByHash } from "../../services/ordersCompleteService";
-  import Footer from "../../components/Footer";
   import { createOrderService } from "../../services/ordersService"; // ADD
 
   import { clearCartServiceid } from "../../services/cartService";
+  import { EmptyState, SkeletonBlock } from "../../components/StateFeedback";
   interface OrderSummaryProps {
     orderId: string;
     orderDate: string;
@@ -15,6 +15,7 @@
   const OrderComplete: React.FC = () => {
     const { orderHash } = useParams(); // assuming route: /dat-hang-thanh-cong/:orderId
     const [orderSummary, setOrderSummary] = useState<OrderSummaryProps | null>(null);
+    const [orderMissing, setOrderMissing] = useState(false);
 
     useEffect(() => {
       const saveOrderIfNeeded = async () => {
@@ -29,7 +30,7 @@
           if (!data?.order_id || data.order_id !== momoOrderHash) return;
 
           const res = await getOrderByHash(data.order_id);
-          if (res.success && res.order) {
+          if (res?.success && res.order) {
             // console.log("Đơn đã tồn tại. Không cần tạo lại.");
             return;
           }
@@ -58,17 +59,22 @@
 
     useEffect(() => {
       const fetchOrder = async () => {
-        if (!orderHash) return;
-        const res = await getOrderByHash(orderHash);
+        if (!orderHash) {
+          setOrderMissing(true);
+          return;
+        }
+        const res = await getOrderByHash(orderHash).catch(() => null);
         // console.log("Order data:", res);
         // console.log("Order hash:", orderHash);
-        if (res.success && res.order) {
+        if (res?.success && res.order) {
           setOrderSummary({ 
             orderId: res.order.order_hash,
             orderDate: new Date(res.order.created_at).toLocaleString(),
             itemCount: res.order.total_quantity,
             total: res.order.order_total_final,
           });
+        } else {
+          setOrderMissing(true);
         }
       };
 
@@ -114,11 +120,29 @@
     const formatPrice = (price: number): string => {
       return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     };
-    if (!orderSummary) return <p>Đang tải thông tin đơn hàng...</p>;
+    if (orderMissing) {
+      return (
+        <div className="order-complete-state">
+          <EmptyState
+            title="Không tìm thấy đơn hàng"
+            message="Liên kết đơn hàng không hợp lệ hoặc đã hết hạn. Bạn có thể xem lại đơn trong tài khoản."
+            actionLabel="Xem đơn hàng của tôi"
+            actionTo="/tai-khoan/don-hang"
+            secondaryActionLabel="Tiếp tục mua sắm"
+            secondaryActionTo="/san-pham"
+          />
+        </div>
+      );
+    }
+
+    // The thank-you screen is static; while the order loads only its values are placeholders,
+    // so the layout does not change when the summary arrives
+    const summaryValue = (value: string | number | undefined, width: number) =>
+      orderSummary ? value : <SkeletonBlock width={width} height={18} />;
 
     return (
       <>
-        <div className="order-Complete-context">
+        <div className="order-Complete-context" aria-busy={!orderSummary}>
           <div className="order-Complete-text1">
             <img src="/images/Order-Completed/sonaspace.png" alt="" />
           </div>
@@ -147,24 +171,32 @@
                 <h4>Tóm tắt đơn hàng</h4>
                 <div className="complete-right-bill-voucher">
                   <span className="voucher1">Mã đơn hàng</span>
-                  <span className="voucher2">{orderSummary.orderId}</span>
+                  <span className="voucher2">{summaryValue(orderSummary?.orderId, 110)}</span>
                 </div>
                 <div className="complete-right-bill-shipping">
                   <span className="shipping1">Thời gian thanh toán</span>
-                  <span className="shipping2">{orderSummary.orderDate}</span>
+                  <span className="shipping2">{summaryValue(orderSummary?.orderDate, 140)}</span>
                 </div>
                 <div className="complete-right-bill-discount">
                   <span className="discount1">Sản phẩm đã mua</span>
-                  <span className="discount2">{orderSummary.itemCount} sản phẩm</span>
+                  <span className="discount2">
+                    {summaryValue(orderSummary ? `${orderSummary.itemCount} sản phẩm` : undefined, 90)}
+                  </span>
                 </div>
                 <div className="complete-right-bill-total">
                   <span className="total1">Tổng giá</span>
-                  <span className="stotal2">{formatPrice(orderSummary.total)} đ</span>
+                  <span className="stotal2">
+                    {summaryValue(orderSummary ? `${formatPrice(orderSummary.total)} đ` : undefined, 120)}
+                  </span>
                 </div>
                 <div className="complete-right-bill-button">
-                  <Link to={`/chi-tiet-don-hang/${orderSummary.orderId}`}>
-                    <button className="cart-button">Xem chi tiết đơn hàng</button>
-                  </Link>
+                  {orderSummary ? (
+                    <Link to={`/chi-tiet-don-hang/${orderSummary.orderId}`}>
+                      <button className="cart-button">Xem chi tiết đơn hàng</button>
+                    </Link>
+                  ) : (
+                    <SkeletonBlock width="100%" height={48} />
+                  )}
                 </div>
               </div>
             </div>
@@ -181,7 +213,6 @@
           </div>
         </div>
 
-        <Footer />
       </>
     );
   };

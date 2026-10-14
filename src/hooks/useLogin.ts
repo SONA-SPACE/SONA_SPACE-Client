@@ -105,11 +105,19 @@ export const useLogin = () => {
   };
 
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
+    const googleCredential = credentialResponse.credential;
+
+    if (!googleCredential) {
+      setApiError("Không nhận được thông tin đăng nhập từ Google. Vui lòng thử lại.");
+      return;
+    }
+
+    setApiError(null);
+    setUnverifiedError(null);
+    setLoading(true);
+
     try {
-      // gửi token đến backend
-      const response = await submitGoogleLoginForm(
-        credentialResponse.credential || ""
-      );
+      const response = await submitGoogleLoginForm(googleCredential);
       if (response.success && response.data) {
         const { token, user } = response.data;
         saveAuthData(token, user, false);
@@ -126,6 +134,8 @@ export const useLogin = () => {
       }
     } catch (error) {
       setApiError("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
     }
   };
 

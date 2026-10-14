@@ -1,6 +1,6 @@
 // contexts/CartContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { getCartCount } from "../services/cart"; // gọi API count item nếu có
+import { getCartCount } from "../services/cartService"; // gọi API count item nếu có
 
 const CartContext = createContext<{
   cartCount: number;

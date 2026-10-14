@@ -2,6 +2,7 @@ import type { PaginatedResponse, Product, Variant } from "../types";
 import { getProductBySlug, getAllProducts } from "../api/product";
 import { getProductsByRoom } from "../api/room";
 import { convertToAdminApiUrl } from "../utils/url";
+import { getAuthToken } from "./loginService";
 
 /**
  * Format raw product from API to usable Product type
@@ -126,7 +127,7 @@ export const formatProductForDisplay = (product: any): Product => {
   };
 
   // Xử lý hình ảnh - kiểm tra các định dạng URL khác nhau
-  let image = product.product_image || product.image || "";
+  let image = product.product_image || product.main_image || product.image || "";
 
   // Xử lý trường hợp URL ảnh có chứa dấu phẩy
   if (image && image.includes(",")) {
@@ -157,6 +158,24 @@ export const formatProductForDisplay = (product: any): Product => {
     image = "/images/placeholder.jpg";
   }
 
+  const attributes = Array.isArray(product.attributes)
+    ? product.attributes.map((attr: any) => {
+        const value =
+          attr.value_display !== undefined && attr.value_display !== null
+            ? attr.value_display
+            : attr.value;
+
+        return {
+          ...attr,
+          id: attr.attribute_id || attr.id,
+          name: attr.name || attr.attribute_name || "",
+          value,
+          unit: attr.unit || "",
+          is_required: attr.is_required === true || attr.is_required === 1,
+        };
+      })
+    : [];
+
   return {
     id: product.product_id || product.id,
     product_id: product.product_id || product.id,
@@ -174,7 +193,7 @@ export const formatProductForDisplay = (product: any): Product => {
     updated_at: product.updated_at,
     category: category,
     colors: colorHexArray,
-    specifications: [],
+    specifications: attributes,
     description: product.product_description || product.description || "",
     sold: product.product_sold || product.sold || 0,
     view: product.product_view || product.view || 0,
@@ -182,7 +201,7 @@ export const formatProductForDisplay = (product: any): Product => {
     images: product.images || [],
     variants: product.variants || [],
     variant_id: product.variant_id || 0,
-    attributes: product.attributes || [],
+    attributes,
     rooms: product.rooms || [],
   };
 };
@@ -263,7 +282,7 @@ export const getRelatedProductsByRoom = async (
   productId: number
 ): Promise<Product[]> => {
   try {
-    const token = sessionStorage.getItem("authToken");
+    const token = getAuthToken();
     const res = await fetch(
       convertToAdminApiUrl(`/products/related/by-room/${productId}`),
       {

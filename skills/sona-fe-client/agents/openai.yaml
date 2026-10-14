@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sona FE Client"
+  short_description: "Work inside the Sona frontend client"
+  default_prompt: "Use $sona-fe-client to implement a frontend change in SONA_SPACE-Client."

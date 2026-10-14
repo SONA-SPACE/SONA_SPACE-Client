@@ -6,6 +6,8 @@ import {
 } from 'react';
 import { Link } from 'react-router-dom';
 import { convertToAdminApiUrl } from '../../utils/url';
+import { getAuthToken } from '../../services/loginService';
+import { InlineErrorState, SkeletonText } from '../StateFeedback';
 export interface Notification {
   notification_id: number;
   title: string;
@@ -33,17 +35,30 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
   ({ onNotificationCountChange }, ref) => {
     const [isVisible, setIsVisible] = useState(false);
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const isExternalLink = (url: string) => /^https?:\/\//.test(url);
+    const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
+    const [actionError, setActionError] = useState<string | null>(null);
+    const [deletingIds, setDeletingIds] = useState<number[]>([]);
+    const [readingIds, setReadingIds] = useState<number[]>([]);
+    const isExternalLink = (url?: string) => /^https?:\/\//.test(url || '');
+    const getNotificationLink = (link?: string) => link || "/tai-khoan/ma-giam-gia";
+
     const refreshNotifications = async () => {
-      const token = sessionStorage.getItem("authToken");
+      const token = getAuthToken();
 
       if (!token) {
         setNotifications([]);
+        setLoadError(null);
+        setActionError(null);
+        setLoading(false);
         if (onNotificationCountChange) onNotificationCountChange(0);
         return;
       }
 
       try {
+        setLoading(true);
+        setLoadError(null);
+        setActionError(null);
         const response = await fetch(convertToAdminApiUrl("/couponcodes/notification"), {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,13 +68,19 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
         if (!response.ok) throw new Error("Failed to fetch notifications");
 
         const data = await response.json();
-        setNotifications(data);
+        const nextNotifications = Array.isArray(data) ? data : [];
+        setNotifications(nextNotifications);
 
         if (onNotificationCountChange) {
-          onNotificationCountChange(data.length);
+          onNotificationCountChange(nextNotifications.length);
         }
       } catch (error) {
         console.error("Lỗi lấy thông báo:", error);
+        setNotifications([]);
+        setLoadError("Không thể tải thông báo. Vui lòng thử lại.");
+        if (onNotificationCountChange) onNotificationCountChange(0);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -77,8 +98,17 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
       getNotificationCount: () => notifications.length,
     }));
     const handleDeleteNotification = async (id: number) => {
+      if (deletingIds.includes(id)) return;
+
       try {
-        const token = sessionStorage.getItem("authToken");
+        const token = getAuthToken();
+        if (!token) {
+          setActionError("Vui lòng đăng nhập để chỉnh sửa thông báo.");
+          return;
+        }
+
+        setDeletingIds((prev) => [...prev, id]);
+        setActionError(null);
         const response = await fetch(convertToAdminApiUrl(`/couponcodes/notification/${id}`), {
           method: 'DELETE',
           headers: {
@@ -88,19 +118,33 @@ const MiniNotification = forwardRef<MiniNotificationHandle, MiniNotificationProp
 
         if (!response.ok) throw new Error("Không thể xóa thông báo");
 
-        setNotifications((prev) => prev.filter((n) => n.notification_id !== id));
-
-        if (onNotificationCountChange) {
-          onNotificationCountChange(notifications.length - 1);
-        }
+        setNotifications((prev) => {
+          const nextNotifications = prev.filter((n) => n.notification_id !== id);
+          if (onNotificationCountChange) {
+            onNotificationCountChange(nextNotifications.length);
+          }
+          return nextNotifications;
+        });
       } catch (error) {
         console.error("Lỗi khi xoá thông báo:", error);
+        setActionError("Không thể xóa thông báo. Vui lòng thử lại.");
+      } finally {
+        setDeletingIds((prev) => prev.filter((itemId) => itemId !== id));
       }
     };
 
 const handleMarkAsRead = async (id: number) => {
-  const token = sessionStorage.getItem("authToken");
+  if (readingIds.includes(id)) return;
+
+  const token = getAuthToken();
+  if (!token) {
+    setActionError("Vui lòng đăng nhập để xem thông báo.");
+    return;
+  }
+
   try {
+    setReadingIds((prev) => [...prev, id]);
+    setActionError(null);
     const res = await fetch(convertToAdminApiUrl(`/couponcodes/notification/read/${id}`), {
       method: "PATCH",
       headers: {
@@ -111,12 +155,14 @@ const handleMarkAsRead = async (id: number) => {
 
     if (!res.ok) throw new Error("Failed to mark as read");
 
-    // Cập nhật trạng thái đã đọc trong danh sách hiện tại
     setNotifications(prev =>
       prev.map(n => n.notification_id === id ? { ...n, is_read: true } : n)
     );
   } catch (err) {
     console.error("Lỗi đánh dấu đã đọc:", err);
+    setActionError("Không thể cập nhật trạng thái thông báo.");
+  } finally {
+    setReadingIds((prev) => prev.filter((itemId) => itemId !== id));
   }
 };
 
@@ -133,37 +179,49 @@ const handleMarkAsRead = async (id: number) => {
             </button>
           </div>
           <div className="mini-notification-items" >
-            {notifications.length > 0 ? (
-              notifications.map((noti, index) => (
+            {loading ? (
+              <div className="mini-notification-loading" aria-label="Đang tải thông báo">
+                <SkeletonText lines={4} />
+                <SkeletonText lines={4} />
+              </div>
+            ) : loadError ? (
+              <InlineErrorState message={loadError} onRetry={refreshNotifications} />
+            ) : notifications.length > 0 ? (
+              <>
+                {actionError && <InlineErrorState message={actionError} />}
+                {notifications.map((noti) => (
 
                 <div
-                  key={index}
+                  key={noti.notification_id}
                   className={`mini-notification-item ${noti.is_read ? 'read' : 'unread'}`}
                 >
 
 
                   {isExternalLink(noti.link) ? (
-                    <Link className="noti-content" to={noti.link} target="_blank" rel="noopener noreferrer" onClick={() => handleMarkAsRead(noti.notification_id)}>
+                    <a className="noti-content" href={getNotificationLink(noti.link)} target="_blank" rel="noopener noreferrer" onClick={() => handleMarkAsRead(noti.notification_id)}>
                       <h4 className="noti-title">{noti.title}</h4>
                       <div className="noti-message">{noti.message}</div>  
-                    </Link>
+                    </a>
                   ) : (
-                    <a className="noti-content" href={noti.link || "/tai-khoan/ma-giam-gia"}   onClick={() => handleMarkAsRead(noti.notification_id)}>
+                    <Link className="noti-content" to={getNotificationLink(noti.link)} onClick={() => handleMarkAsRead(noti.notification_id)}>
                       <h4 className="noti-title">{noti.title}</h4>
                       <div className="noti-message">{noti.message}</div>
-                    </a>
+                    </Link>
                   )}
 
-                  <a
+                  <button
+                    type="button"
                     className="delete-noti"
                     onClick={() => handleDeleteNotification(noti.notification_id)}
-                    title="Xoá thông báo"
+                    title="Xóa thông báo"
+                    disabled={deletingIds.includes(noti.notification_id)}
                   >
-                    <img src="/images/icons/close.svg" alt="Xoá" />
-                  </a>
+                    <img src="/images/icons/close.svg" alt="Xóa" />
+                  </button>
                 </div>
 
-              ))
+                ))}
+              </>
 
             ) : (
               <div className="empty-cart">

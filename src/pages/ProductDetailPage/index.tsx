@@ -11,8 +11,6 @@ import {
 import { toast } from "react-toastify";
 
 // import components
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import PolicyProduct from "../../components/Policy";
 import Comment from "../../components/Comment";
 import type { MiniCartHandle } from "../../components/MiniCart";
@@ -28,11 +26,17 @@ import {
 import { fetchVariantBySlugAndColor } from "../../services/variantService";
 import { saveToOrCart } from "../../services/cartService";
 import { addToWishlist, removeFromWishlistService, checkVariantInWishlist, fetchWishlistFromDatabase } from "../../services/wishlistService";
+import { getAuthToken } from "../../services/loginService";
 // import types
 import type { Product } from "../../types";
 import type { CommentResponse } from "../../types";
 
 import ProductComponent from "../../components/Product";
+import {
+  EmptyState,
+  PageSectionSkeleton,
+  RetryState,
+} from "../../components/StateFeedback";
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const miniCartRef = useRef<MiniCartHandle>(null);
@@ -46,6 +50,9 @@ const ProductDetailPage: React.FC = () => {
   const [commentData, setCommentData] = useState<CommentResponse | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [cartCount, setCartCount] = useState<number>(0);
+  const [isLoadingProduct, setIsLoadingProduct] = useState<boolean>(true);
+  const [productError, setProductError] = useState<string | null>(null);
+  const [productReloadToken, setProductReloadToken] = useState<number>(0);
 
   const [wishlist, setWishlist] = useState<boolean>(false);
 
@@ -81,7 +88,13 @@ const ProductDetailPage: React.FC = () => {
     : product?.images || [];
 
   useEffect(() => {
-    if (!slug) return;
+    if (!slug) {
+      setIsLoadingProduct(false);
+      setProductError("Không tìm thấy đường dẫn sản phẩm.");
+      return;
+    }
+    setIsLoadingProduct(true);
+    setProductError(null);
     (async () => {
       try {
         const res = await getProductBySlug(slug);
@@ -144,12 +157,15 @@ const ProductDetailPage: React.FC = () => {
         if (selectedColorHex && selectedColorId) {
           await handleColorSelect(selectedColorHex, selectedColorId);
         }
+        setIsLoadingProduct(false);
       } catch (err) {
-        navigate("/not-found");
+        setProduct(null);
+        setProductError("Không thể tải thông tin sản phẩm. Vui lòng thử lại.");
+        setIsLoadingProduct(false);
         // console.error("Lỗi khi fetch product:", err);
       }
     })();
-  }, [slug]);
+  }, [slug, productReloadToken]);
 
   useEffect(() => {
     if (!product?.variants) return;
@@ -222,7 +238,7 @@ const ProductDetailPage: React.FC = () => {
       return;
     }
 
-    const token = sessionStorage.getItem("authToken");
+    const token = getAuthToken();
     if (!token) {
       toast.warning("Vui lòng đăng nhập để thêm vào giỏ hàng", {
         position: "top-right",
@@ -283,7 +299,7 @@ const ProductDetailPage: React.FC = () => {
   const toggleWishlist = async () => {
     if (!selectedVariant?.variant_id) return;
 
-    const token = sessionStorage.getItem("authToken");
+    const token = getAuthToken();
     if (!token) {
       toast.warning("Vui lòng đăng nhập để thêm vào yêu thích!", {
         autoClose: 2000,
@@ -319,7 +335,7 @@ const ProductDetailPage: React.FC = () => {
       if (!selectedVariant?.variant_id) return;
 
       try {
-        const token = sessionStorage.getItem("authToken");
+        const token = getAuthToken();
         if (!token) {
           setWishlist(false);
           return;
@@ -337,12 +353,41 @@ const ProductDetailPage: React.FC = () => {
   }, [selectedVariant?.variant_id]);
 
 
+  if (isLoadingProduct) {
+    return (
+      <>
+        <PageSectionSkeleton variant="product-detail" />
+      </>
+    );
+  }
+
+  if (productError) {
+    return (
+      <>
+        <RetryState
+          message={productError}
+          onRetry={() => setProductReloadToken((current) => current + 1)}
+          secondaryActionLabel="Xem sản phẩm khác"
+          secondaryActionTo="/san-pham"
+        />
+      </>
+    );
+  }
+
   if (!product) {
-    return <p className="text-center">Đang tải sản phẩm...</p>;
+    return (
+      <>
+        <EmptyState
+          title="Không tìm thấy sản phẩm"
+          message="Sản phẩm này có thể đã ngừng bán hoặc đường dẫn không còn hợp lệ."
+          actionLabel="Xem sản phẩm khác"
+          actionTo="/san-pham"
+        />
+      </>
+    );
   }
   return (
     <>
-      <Header />
       <div className="product-details">
         <div className="breadcrumb-container">
           <div className="container">
@@ -414,7 +459,7 @@ const ProductDetailPage: React.FC = () => {
 
               <div className="detail-content">
                 <div className="content-name">
-                  <h3>{product.name}</h3>
+                  <h1>{product.name}</h1>
                 </div>
                 <div className="content-description">
                   <span>
@@ -678,7 +723,6 @@ const ProductDetailPage: React.FC = () => {
 
       </div>
 
-      <Footer />
 
 
     </>
